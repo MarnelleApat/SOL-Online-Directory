@@ -19,6 +19,8 @@
         @inertiaHead
     </head>
     <body class="font-cardo antialiased">
-        @inertia
+        <div class="min-h-screen">
+            @inertia
+        </div>
     </body>
 </html>

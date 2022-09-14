@@ -9,7 +9,7 @@ const props = defineProps({
         default: '48'
     },
     contentClasses: {
-        default: () => ['bg-white']
+        default: () => ['']
     },
     isSearchForm: {
         type: Boolean,

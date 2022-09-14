@@ -2,6 +2,7 @@
     import { Link } from '@inertiajs/inertia-vue3';
     import Menu from '@/Pages/Homepage/Menu.vue';
     import Header from '@/Pages/Homepage/Header.vue'
+    import News from '@/Pages/Homepage/Sections/News.vue';
 
     defineProps({
         canLogin: Boolean,
@@ -12,9 +13,12 @@
 </script>
 
 <template>
+    <div class="container mx-auto">
+        <Header />
+        <Menu />
+    </div>
 
-    <Header />
-    <Menu />
+    <News />
 
     <div class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0">
 
