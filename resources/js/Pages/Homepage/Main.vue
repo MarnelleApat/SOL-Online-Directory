@@ -14,11 +14,11 @@
 
 <template>
     <div class="container mx-auto">
-        <Header />
-        <Menu />
+        <Header></Header>
+        <Menu></Menu>
     </div>
 
-    <News />
+    <News categoryName="News" />
 
     <div class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0">
 

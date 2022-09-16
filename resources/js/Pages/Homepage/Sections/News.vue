@@ -15,6 +15,6 @@
 
 <template>
     <div class="container mx-auto">
-        <SectionHeader categoryName="News" />
+        <SectionHeader :categoryName=this.categoryName />
     </div>
 </template>
