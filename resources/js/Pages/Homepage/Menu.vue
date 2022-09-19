@@ -82,7 +82,7 @@
                             </button>
                         </template>
                         <template #content>
-                            <div class="flex flex-col p-3" style="background-color: rgba(255, 255, 255, 0.7)">
+                            <div class="flex flex-col p-3" style="background-color: rgba(255, 255, 255, 0.95)">
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Videos</BreezeDropdownLink>
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Culture</BreezeDropdownLink>
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Arts</BreezeDropdownLink>
