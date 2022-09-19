@@ -4,6 +4,7 @@
     import BreezeDropdown from '@/Components/Dropdown.vue';
     import BreezeInput from '@/Components/Input.vue';
     import BreezeNavLink from '@/Components/NavLink.vue';
+    import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
     import BreezeDropdownLink from '@/Components/DropdownLink.vue';
 
     import { useForm } from '@inertiajs/inertia-vue3';
@@ -55,13 +56,13 @@
 
                     <!-- Navigation Links -->
                 <div class="hidden space-x-6 sm:-my-px sm:flex md:hidden md:-my-px md:flex lg:block">
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> News</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> Mission</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> Humanitarian</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> Theology</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> Opinions</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('login')"> Announcements</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')" :active="route().current('dashboard')"> Events</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'news')" :active="route().current('PostByCategory','news')"> News</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'mission')" :active="route().current('PostByCategory', 'mission')"> Mission</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'humanitarian')" :active="route().current('PostByCategory', 'humanitarian')"> Humanitarian</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'theology')" :active="route().current('PostByCategory', 'theology')"> Theology</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'opinions')" :active="route().current('PostByCategory', 'opinions')"> Opinions</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'announcements')" :active="route().current('PostByCategory', 'announcements')"> Announcements</BreezeNavLink>
+                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'events')" :active="route().current('PostByCategory', 'events')"> Events</BreezeNavLink>
                     <template v-if="!$page.props.auth.user">
                         <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')"> Login</BreezeNavLink>
                         <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('register')"> Register</BreezeNavLink>
@@ -91,7 +92,7 @@
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Analysis</BreezeDropdownLink>
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Contributions</BreezeDropdownLink>
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Traineeship Programmes</BreezeDropdownLink>
-                                <BreezeDropdownLink v-if="$page.props.auth.user" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('logout')" method="post" as="button">Log Out</BreezeDropdownLink>
+                                <!-- <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('logout')" method="post" as="button">Log Out</BreezeDropdownLink> -->
                             </div>
                         </template>
                     </BreezeDropdown>
@@ -136,25 +137,24 @@
             <form @submit.prevent="submit">
                 <BreezeInput id="search" type="text" placeholder="Search anything..." class="block w-full rounded-none text-gray-900 mb-3" v-model="form.search" required autofocus autocomplete="search" />
             </form>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">News</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Mission </BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Humanitarian </BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Theology</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Opinions</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Announcements</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Events</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Videos</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Culture</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Arts</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Generations</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Lifestyle</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Analysis</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Contributions</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Traineeship Programmes</BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('login')"> Login </BreezeNavLink>
-            <BreezeNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('register')">Register </BreezeNavLink>
-            <BreezeNavLink :href="route('logout')" class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</BreezeNavLink>
-            <BreezeNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">News</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Mission </BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Humanitarian </BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Theology</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Opinions</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Announcements</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Events</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Videos</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Culture</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Arts</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Generations</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Lifestyle</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Analysis</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Contributions</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Traineeship Programmes</BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('login')"> Login </BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('register')">Register </BreezeResponsiveNavLink>
+            <BreezeResponsiveNavLink>
                 <div class="space-x-1 flex justify-start">
                     <a href="#" class="transition duration-150 ease-in-out">
                         <img src="/images/icons/fb.png" class="w-5" style="filter: brightness(0) invert(1);">
@@ -163,7 +163,7 @@
                         <img src="/images/icons/ig.png" class="w-5" style="filter: brightness(0) invert(1);">
                     </a>
                 </div>
-            </BreezeNavLink>
+            </BreezeResponsiveNavLink>
         </div>
 
 
