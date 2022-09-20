@@ -15,6 +15,7 @@
         <Menu></Menu>
     </div>
 
+
     <div class="container mx-auto py-6">
         <h1 class="text-3xl font-bol text-gray-700">{{ catData.slug }}</h1>
         <p>{{ catData.articles }}</p>
