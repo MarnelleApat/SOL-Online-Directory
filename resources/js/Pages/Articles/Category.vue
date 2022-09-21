@@ -17,7 +17,7 @@
 
 
     <div class="container mx-auto py-6">
-        <h1 class="text-3xl font-bol text-gray-700">{{ catData.slug }}</h1>
+        <h1 class="text-4xl font-bold text-gray-700 uppercase">{{ catData.category_name }}</h1>
         <p>{{ catData.articles }}</p>
     </div>
 

@@ -55,7 +55,7 @@
                 </div>
 
                     <!-- Navigation Links -->
-                <div class="hidden space-x-6 sm:-my-px sm:flex md:hidden md:-my-px md:flex lg:block">
+                <div class="hidden space-x-6 sm:-my-px sm:flex md:-my-px md:flex lg:block">
                     <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'news')" :active="route().current('PostByCategory','news')"> News</BreezeNavLink>
                     <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'mission')" :active="route().current('PostByCategory', 'mission')"> Mission</BreezeNavLink>
                     <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'humanitarian')" :active="route().current('PostByCategory', 'humanitarian')"> Humanitarian</BreezeNavLink>
@@ -84,14 +84,14 @@
                         </template>
                         <template #content>
                             <div class="flex flex-col p-3" style="background-color: rgba(255, 255, 255, 0.95)">
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Videos</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Culture</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Arts</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Generations</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Lifestyle</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Analysis</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Contributions</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="#">Traineeship Programmes</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'videos')">Videos</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Culture')">Culture</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Arts')">Arts</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Generations')">Generations</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Lifestyle')">Lifestyle</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'analysis')">Analysis</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'contributions')">Contributions</BreezeDropdownLink>
+                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="https://traineeship.sreamsoflife.sg">Traineeship Programmes</BreezeDropdownLink>
                                 <!-- <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('logout')" method="post" as="button">Log Out</BreezeDropdownLink> -->
                             </div>
                         </template>
@@ -99,7 +99,7 @@
                 </div>
 
                 <!-- Social Media Icons -->
-                <div class="hidden space-x-1 flex flex-col md:ml-2 md:hidden md:-my-px md:flex md:flex-col lg:block" style="margin-top: 2px;">
+                <div class="hidden space-x-1 md:ml-2 md:-my-px md:flex md:flex-col lg:block" style="margin-top: 2px;">
                     <button class="transition duration-150 ease-in-out" type="button" href="#">
                         <img src="/images/icons/fb.png" class="w-5">
                     </button>
@@ -124,48 +124,67 @@
             </div>
         </div>
 
+        <!-- :class="{'left-0': showingNavigationDropdown, '-left-80': ! showingNavigationDropdown}" -->
 
         <!-- Responsive Navigation Menu -->
-        <div :class="{'block left-0': showingNavigationDropdown, 'hidden -left-80': ! showingNavigationDropdown}"
-            style="background-color: rgba(0, 0, 0, 0.9)"
-            class="fixed top-0 h-screen z-50 w-[250px] p-3 flex flex-col md:flex md:flex-col space-y-1 text-white transition duration-150 ease-in-out">
-            <button @click="showingNavigationDropdown = ! showingNavigationDropdown" class="inline-flex items-end justify-end p-2 text-white hover:text-orange-700 focus:outline-none focus:text-orange-700">
-                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            <form @submit.prevent="submit">
-                <BreezeInput id="search" type="text" placeholder="Search anything..." class="block w-full rounded-none text-gray-900 mb-3" v-model="form.search" required autofocus autocomplete="search" />
-            </form>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">News</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Mission </BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Humanitarian </BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Theology</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Opinions</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Announcements</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Events</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Videos</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Culture</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Arts</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Generations</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Lifestyle</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Analysis</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Contributions</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Traineeship Programmes</BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('login')"> Login </BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('register')">Register </BreezeResponsiveNavLink>
-            <BreezeResponsiveNavLink>
-                <div class="space-x-1 flex justify-start">
-                    <a href="#" class="transition duration-150 ease-in-out">
-                        <img src="/images/icons/fb.png" class="w-5" style="filter: brightness(0) invert(1);">
-                    </a>
-                    <a href="#" class="transition duration-150 ease-in-out text-white">
-                        <img src="/images/icons/ig.png" class="w-5" style="filter: brightness(0) invert(1);">
-                    </a>
-                </div>
-            </BreezeResponsiveNavLink>
-        </div>
+        <transition name="slide-fade" style="background-color: rgba(0, 0, 0, 0.75)">
+            <div v-if="showingNavigationDropdown"
+                class="fixed top-0 h-screen z-50 w-[250px] p-3 flex flex-col md:flex md:flex-col space-y-1 text-white transition duration-150 ease-in-out">
+                <button @click="showingNavigationDropdown = ! showingNavigationDropdown" class="inline-flex items-end justify-end p-2 text-white hover:text-orange-700 focus:outline-none focus:text-orange-700">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <form @submit.prevent="submit">
+                    <BreezeInput id="search" type="text" placeholder="Search anything..." class="block w-full rounded-none text-gray-900 mb-3" v-model="form.search" required autofocus autocomplete="search" />
+                </form>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">News</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Mission </BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Humanitarian </BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Theology</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Opinions</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Announcements</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Events</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Videos</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Culture</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Arts</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Generations</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Lifestyle</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Analysis</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Contributions</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" href="#">Traineeship Programmes</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('login')"> Login </BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink class="text-white text-xs md:text-sm lg:text-sm uppercase focus:text-white hover:text-orange-700" :href="route('register')">Register </BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink>
+                    <div class="space-x-1 flex justify-start">
+                        <a href="#" class="transition duration-150 ease-in-out">
+                            <img src="/images/icons/fb.png" class="w-5" style="filter: brightness(0) invert(1);">
+                        </a>
+                        <a href="#" class="transition duration-150 ease-in-out text-white">
+                            <img src="/images/icons/ig.png" class="w-5" style="filter: brightness(0) invert(1);">
+                        </a>
+                    </div>
+                </BreezeResponsiveNavLink>
+            </div>
+        </transition>
 
 
     </div>
 </template>
+
+<style>
+    /* Enter and leave animations can use different */
+    /* durations and timing functions.              */
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .3s cubic-bezier(1.0, 1.0, 1.0, 1.0);
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active below version 2.1.8 */
+    {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+</style>
