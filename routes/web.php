@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Articles\CategoryController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\Article\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +23,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/category/{slug}', [CategoryController::class, 'PostByCategory'])
-    ->name('PostByCategory');
-// })->middleware(['auth', 'verified'])->name('category');
-
+Route::get('/category/{category_slug}', [ArticleController::class, 'PostByCategory'])->name('PostByCategory');
+Route::get('/article/{article_slug}', [ArticleController::class, 'SingleArticle'])->name('SingleArticle');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

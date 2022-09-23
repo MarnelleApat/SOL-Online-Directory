@@ -6,6 +6,7 @@
     import FullDisplay from '@/Pages/Homepage/Sections/FullDisplay.vue';
     import HalfFullDisplay from '@/Pages/Homepage/Sections/HalfFullDisplay.vue';
     import FlexContentDisplay from '@/Pages/Homepage/Sections/FlexContentDisplay.vue';
+    import VideoSection from '@/Pages/Homepage/Sections/VideosCategory.vue';
 
     import ContactUs from '@/Pages/Homepage/Sections/ContactUs.vue';
     import Traineeship from '@/Pages/Homepage/Sections/Traineeship.vue';
@@ -49,7 +50,7 @@
 
     <Divider></Divider>
 
-    <FullDisplay categoryName="Videos" :hasFooter=true></FullDisplay>
+    <VideoSection categoryName="Videos"></VideoSection>
 
     <Divider></Divider>
 
