@@ -21,4 +21,19 @@ class HomeController extends Controller
             'navigationMenu' => $categories
         ]);
     }
+
+    public function PostByCategory( WP_Category $wp_category, WP_Post $wp_post, $category_slug )
+    {
+        $categories = $wp_category->get();
+        $category = $wp_category->get_cat_by_slug($category_slug);
+        $articles = $wp_post->get_post_by_category_id( $category['id'] );
+
+        return Inertia::render( 'Articles/ArticlesByCategory', [
+            'articles' => $articles,
+            'category_name' => $category['name'],
+            'navigationMenu' => $categories
+        ]);
+    }
+
+
 }

@@ -3,7 +3,6 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Http\Controllers\Article\ArticleController;
 use App\Http\Controllers\HomeController;
 
 /*
@@ -18,9 +17,9 @@ use App\Http\Controllers\HomeController;
 */
 
 Route::get('/', [HomeController::class, 'homepage'])->name('Homepage');
+Route::get('/category/{category_slug}', [HomeController::class, 'PostByCategory'])->name('PostByCategory');
+// Route::get('/article/{article_slug}', [HomeController::class, 'SingleArticle'])->name('SingleArticle');
 
-Route::get('/category/{category_slug}', [ArticleController::class, 'PostByCategory'])->name('PostByCategory');
-Route::get('/article/{article_slug}', [ArticleController::class, 'SingleArticle'])->name('SingleArticle');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
