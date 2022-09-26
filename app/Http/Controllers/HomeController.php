@@ -13,12 +13,25 @@ class HomeController extends Controller
     public function homepage(WP_Post $wp_post, WP_Category $wp_category)
     {
         $categories = $wp_category->get();
-        // $posts = $wp_post->get();
 
         return Inertia::render('Homepage/Main', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'navigationMenu' => $categories
+            'canLogin'              => Route::has('login'),
+            'canRegister'           => Route::has('register'),
+            'navigationMenu'        => $categories,
+            'newsArticles'          => $wp_post->get_post_by_category_slug('news'),
+            'missionArticles'       => $wp_post->get_post_by_category_slug('mission-stories'),
+            'humanitarianArticles'  => $wp_post->get_post_by_category_slug('humanitarian'),
+            'theologyArticles'      => $wp_post->get_post_by_category_slug('theology'),
+            'opinionArticles'       => $wp_post->get_post_by_category_slug('opinion'),
+            'announcementArticles'  => $wp_post->get_post_by_category_slug('announcement'),
+            'eventArticles'         => $wp_post->get_post_by_category_slug('event'),
+            'videoArticles'         => $wp_post->get_post_by_category_slug('video'),
+            'cultureArticles'       => $wp_post->get_post_by_category_slug('culture'),
+            'artArticles'           => $wp_post->get_post_by_category_slug('art'),
+            'generationArticles'    => $wp_post->get_post_by_category_slug('generation'),
+            'lifestyleArticles'     => $wp_post->get_post_by_category_slug('lifestyle'),
+            'analysisArticles'      => $wp_post->get_post_by_category_slug('analysis'),
+            'contributionArticles'  => $wp_post->get_post_by_category_slug('contribution'),
         ]);
     }
 

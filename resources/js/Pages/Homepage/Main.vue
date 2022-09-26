@@ -12,11 +12,26 @@
     import Traineeship from '@/Pages/Homepage/Sections/Traineeship.vue';
 
     import Divider from '@/Pages/Homepage/Divider.vue';
+import { onMounted, ref } from 'vue';
 
     defineProps({
         canLogin: Boolean,
         canRegister: Boolean,
-        navigationMenu: Object
+        navigationMenu: Array,
+        newsArticles: Array,
+        missionArticles: Array,
+        humanitarianArticles: Array,
+        theologyArticles: Array,
+        opinionArticles: Array,
+        announcementArticles: Array,
+        eventArticles: Array,
+        videoArticles: Array,
+        cultureArticles: Array,
+        artArticles: Array,
+        generationArticles: Array,
+        lifestyleArticles: Array,
+        analysisArticles: Array,
+        contributionArticles: Array,
     });
 
 </script>
@@ -28,11 +43,11 @@
     </div>
 
 
-    <FullDisplay categoryName="News" :hasFooter=true></FullDisplay>
+    <FullDisplay :articles="newsArticles" categoryName="News" categorySlug="news" :hasFooter=true></FullDisplay>
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Mission Stories"></FlexContentDisplay>
+    <FlexContentDisplay :articles="missionArticles" categoryName="Mission Stories" categorySlug="mission-stories"></FlexContentDisplay>
 
     <Divider></Divider>
 

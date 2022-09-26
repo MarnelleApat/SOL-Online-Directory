@@ -5,6 +5,9 @@
         categoryName: {
             type: String,
         },
+        categorySlug: {
+            type: String,
+        },
         postTags: {
             type: Array,
             default: ['Singapore', 'Asia', 'World']
@@ -28,10 +31,9 @@
                     <BreezeNavLink class="text-gray-700 uppercase hover:text-orange-700 leading-3" href="#"> {{ postTags[2] }} </BreezeNavLink>
                 </div>
             </div>
-            <BreezeNavLink v-if="showViewAll" class="text-gray-700 my-2 hover:text-orange-700 leading-3 text-lg md:text-md"
-                :href="route('login')" :active="route().current('login')">
+            <a v-if="showViewAll" class="text-gray-700 my-2 hover:text-orange-700 leading-3 text-lg md:text-md" :href='`/category/${categorySlug}`'>
                 View All {{ categoryName }} <span class="ml-1 text-xl">▸</span>
-            </BreezeNavLink>
+            </a>
         </div>
     </div>
 </template>
