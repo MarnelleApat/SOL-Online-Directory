@@ -13,18 +13,20 @@
 
     import Divider from '@/Pages/Homepage/Divider.vue';
 
-
     defineProps({
         canLogin: Boolean,
         canRegister: Boolean,
-    })
+        navigationMenu: Object
+    });
+
 </script>
 
 <template>
     <div class="container mx-auto">
         <Header></Header>
-        <Menu></Menu>
+        <Menu :navLinks="navigationMenu"></Menu>
     </div>
+
 
     <FullDisplay categoryName="News" :hasFooter=true></FullDisplay>
 
@@ -50,7 +52,7 @@
 
     <Divider></Divider>
 
-    <VideoSection categoryName="Videos"></VideoSection>
+    <!-- <VideoSection categoryName="Videos"></VideoSection> -->
 
     <Divider></Divider>
 

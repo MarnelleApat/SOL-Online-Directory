@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
 
     import BreezeDropdown from '@/Components/Dropdown.vue';
     import BreezeInput from '@/Components/Input.vue';
@@ -10,9 +10,8 @@
     import { useForm } from '@inertiajs/inertia-vue3';
 
     defineProps({
-        title: {
-            type: String,
-            default: ""
+        navLinks: {
+            type: Array,
         },
     })
 
@@ -25,6 +24,7 @@
     };
 
     const showingNavigationDropdown = ref(false);
+
 </script>
 
 <template>
@@ -56,13 +56,16 @@
 
                     <!-- Navigation Links -->
                 <div class="hidden space-x-6 sm:-my-px sm:flex md:-my-px md:flex lg:block">
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'news')" :active="route().current('PostByCategory','news')"> News</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'mission')" :active="route().current('PostByCategory', 'mission')"> Mission</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'humanitarian')" :active="route().current('PostByCategory', 'humanitarian')"> Humanitarian</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'theology')" :active="route().current('PostByCategory', 'theology')"> Theology</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'opinions')" :active="route().current('PostByCategory', 'opinions')"> Opinions</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'announcements')" :active="route().current('PostByCategory', 'announcements')"> Announcements</BreezeNavLink>
-                    <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'events')" :active="route().current('PostByCategory', 'events')"> Events</BreezeNavLink>
+                    <template v-for="(menu, index) in navLinks" :key="menu.id">
+                        <!-- <pre>{{navLinks}}</pre> -->
+                        <BreezeNavLink v-if="menu.name==='Mission Stories'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Mission</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='Humanitarian'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Humanitarian</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='Theology'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Theology</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='Opinions'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Opinions</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='Announcements'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Announcements</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='Events'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">Events</BreezeNavLink>
+                        <BreezeNavLink v-if="menu.name==='News'" class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)" :active="route().current('PostByCategory', menu.slug)">News</BreezeNavLink>
+                    </template>
                     <template v-if="!$page.props.auth.user">
                         <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('login')"> Login</BreezeNavLink>
                         <BreezeNavLink class="uppercase text-gray-700 font-bold hover:text-orange-700" :href="route('register')"> Register</BreezeNavLink>
@@ -84,13 +87,15 @@
                         </template>
                         <template #content>
                             <div class="flex flex-col p-3" style="background-color: rgba(255, 255, 255, 0.95)">
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'videos')">Videos</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Culture')">Culture</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Arts')">Arts</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Generations')">Generations</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'Lifestyle')">Lifestyle</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'analysis')">Analysis</BreezeDropdownLink>
-                                <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', 'contributions')">Contributions</BreezeDropdownLink>
+                                <template v-for="(menu, index) in navLinks" :key="menu.id">
+                                    <BreezeDropdownLink v-if="menu.name==='Videos'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Videos</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Culture'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Culture</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Arts'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Arts</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Generations'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Generations</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Lifestyle'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Lifestyle</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Analysis'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Analysis</BreezeDropdownLink>
+                                    <BreezeDropdownLink v-if="menu.name==='Contributions'" class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('PostByCategory', menu.slug)">Contributions</BreezeDropdownLink>
+                                </template>
                                 <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" href="https://traineeship.sreamsoflife.sg">Traineeship Programmes</BreezeDropdownLink>
                                 <!-- <BreezeDropdownLink class="uppercase leading-normal text-gray-700 font-bold hover:text-orange-700" :href="route('logout')" method="post" as="button">Log Out</BreezeDropdownLink> -->
                             </div>

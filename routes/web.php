@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\Article\ArticleController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +17,7 @@ use App\Http\Controllers\Article\ArticleController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Homepage/Main', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-});
+Route::get('/', [HomeController::class, 'homepage'])->name('Homepage');
 
 Route::get('/category/{category_slug}', [ArticleController::class, 'PostByCategory'])->name('PostByCategory');
 Route::get('/article/{article_slug}', [ArticleController::class, 'SingleArticle'])->name('SingleArticle');
