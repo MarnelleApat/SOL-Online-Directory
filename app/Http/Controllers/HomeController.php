@@ -35,5 +35,16 @@ class HomeController extends Controller
         ]);
     }
 
+    public function SingleArticle( WP_Category $wp_category, WP_Post $wp_post, $article_slug )
+    {
+        $categories = $wp_category->get();
+        $post = $wp_post->get_single_post( $article_slug );
+
+        return Inertia::render( 'Articles/Single', [
+            'article' => $post,
+            'navigationMenu' => $categories
+        ]);
+    }
+
 
 }

@@ -99,4 +99,18 @@ public function get_post_by_category_id($category_id)
         return $author;
     }
 
+    public function get_single_post( $post_slug )
+    {
+        $posts = $this->get();
+        $returnValue = array();
+
+        foreach( $posts as $post )
+        {
+            if($post['slug'] === $post_slug)
+                $returnValue = $post;
+        }
+
+        return $returnValue;
+    }
+
 }

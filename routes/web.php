@@ -18,7 +18,7 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'homepage'])->name('Homepage');
 Route::get('/category/{category_slug}', [HomeController::class, 'PostByCategory'])->name('PostByCategory');
-// Route::get('/article/{article_slug}', [HomeController::class, 'SingleArticle'])->name('SingleArticle');
+Route::get('/article/{article_slug}', [HomeController::class, 'SingleArticle'])->name('SingleArticle');
 
 
 Route::get('/dashboard', function () {
