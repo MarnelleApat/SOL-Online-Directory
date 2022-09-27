@@ -39,10 +39,21 @@
 </script>
 
 <template>
-    <div class="container mx-auto">
-        <Header></Header>
-        <Menu :navLinks="navigationMenu"></Menu>
+    <div class="fixed bg-white w-full">
+        <div class="container mx-auto">
+            <Header></Header>
+            <Menu :navLinks="navigationMenu"></Menu>
+        </div>
     </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
 
 
     <div class="container mx-auto py-6">
@@ -58,10 +69,10 @@
 
     <div class="container mx-auto mb-5 px-3 md:px-2 lg:px-0">
         <!-- <div class="flex flex-col-flow gap-5 md:flex-row md:gap-4"> -->
-        <div class="grid lg:grid-cols-4 gap-6">
-            <div v-for="article in articles">
-                <div class="h-48 border">
-                    <img class="w-full h-full" :src='article.thumbnail' :alt='article.thumbnail'/>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div v-for="article in articles" class="basis-1/4">
+                <div class="h-60 lg:h-48 border">
+                    <img class="h-full w-full" :src='article.thumbnail' :alt='article.thumbnail'/>
                 </div>
                 <h1 class="font-bold text-2xl md:text-xl my-2 md:mb-3 leading-tight focus:text-orange-700 hover:text-orange-500 lg:overflow-y-hidden lg:h-[70px]">
                     {{ article.title }}

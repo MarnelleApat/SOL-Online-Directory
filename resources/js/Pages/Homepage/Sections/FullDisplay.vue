@@ -27,12 +27,10 @@
     <div class="container mx-auto">
 
         <SectionHeader :categoryName=this.categoryName :categorySlug=this.categorySlug />
-
         <div class="container mx-auto mb-5 px-3 md:px-2 lg:px-0">
             <div class="flex flex-col gap-1 md:flex-row md:gap-2">
                 <div class="basis-full md:basis-3/4 h-110">
                     <img class="w-full h-full" :src='articles[0].thumbnail' :alt='articles[0].thumbnail' />
-                    <!-- <img class="w-full h-full" src="https://beta.streamsoflife.sg/wp-content/uploads/2022/06/Untitled-27-768x507.jpg" alt="featured post in News category"/> -->
                 </div>
                 <div class="md:basis-1/4 md:pl-2">
                     <h1 class="font-bold text-2xl my-2 md:mb-4 leading-tight">{{ articles[0].title }}</h1>

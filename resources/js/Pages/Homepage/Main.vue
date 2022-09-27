@@ -8,11 +8,11 @@
     import FlexContentDisplay from '@/Pages/Homepage/Sections/FlexContentDisplay.vue';
     import VideoSection from '@/Pages/Homepage/Sections/VideosCategory.vue';
 
+    import SectionHeader from './Sections/SectionHeader.vue';
     import ContactUs from '@/Pages/Homepage/Sections/ContactUs.vue';
     import Traineeship from '@/Pages/Homepage/Sections/Traineeship.vue';
 
     import Divider from '@/Pages/Homepage/Divider.vue';
-import { onMounted, ref } from 'vue';
 
     defineProps({
         canLogin: Boolean,
@@ -33,15 +33,15 @@ import { onMounted, ref } from 'vue';
         analysisArticles: Array,
         contributionArticles: Array,
     });
-
 </script>
 
 <template>
-    <div class="container mx-auto">
-        <Header></Header>
-        <Menu :navLinks="navigationMenu"></Menu>
+    <div class="bg-white w-full">
+        <div class="container mx-auto">
+            <Header></Header>
+            <Menu :navLinks="navigationMenu"></Menu>
+        </div>
     </div>
-
 
     <FullDisplay :articles="newsArticles" categoryName="News" categorySlug="news" :hasFooter=true></FullDisplay>
 
@@ -51,47 +51,47 @@ import { onMounted, ref } from 'vue';
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Humanitarian"></FlexContentDisplay>
+    <FlexContentDisplay :articles="humanitarianArticles" categoryName="Humanitarian" categorySlug="humanitarian"></FlexContentDisplay>
 
     <Divider></Divider>
 
-    <FullDisplay categoryName="Theology" :hasFooter=false></FullDisplay>
+    <FullDisplay :articles="theologyArticles" categoryName="Theology" categorySlug="theology" :hasFooter=false></FullDisplay>
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Opinions"></FlexContentDisplay>
+    <FlexContentDisplay :articles="opinionArticles" categoryName="Opinions" categorySlug="opinions"></FlexContentDisplay>
 
     <Divider></Divider>
 
-    <HalfFullDisplay catNameLeft="Announcements" catNameRight="Events"></HalfFullDisplay>
+    <HalfFullDisplay :catDetails="{'leftCatName':'Announcements','leftCatSlug':'announcements','leftCatArticles':announcementArticles,'rightCatName':'Events','rightCatSlug':'events','rightCatArticles':eventArticles}">
+    </HalfFullDisplay>
 
     <Divider></Divider>
 
-    <!-- <VideoSection categoryName="Videos"></VideoSection> -->
+    <VideoSection :articles="videoArticles" categoryName="Videos" categorySlug="videos"></VideoSection>
 
     <Divider></Divider>
 
-    <FullDisplay categoryName="Culture" :hasFooter=false></FullDisplay>
+    <FullDisplay :articles="cultureArticles" categoryName="Culture" categorySlug="culture" :hasFooter=false></FullDisplay>
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Arts"></FlexContentDisplay>
+    <FlexContentDisplay :articles="artArticles" categoryName="Arts" categorySlug="arts"></FlexContentDisplay>
 
     <Divider></Divider>
 
-    <FullDisplay categoryName="Generations" :hasFooter=false></FullDisplay>
+    <FullDisplay :articles="generationArticles" categoryName="Generations" categorySlug="generations" :hasFooter=false></FullDisplay>
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Lifestyles"></FlexContentDisplay>
+    <FlexContentDisplay :articles="lifestyleArticles" categoryName="Lifestyles" categorySlug="lifestyle"></FlexContentDisplay>
 
     <Divider></Divider>
 
-    <FlexContentDisplay categoryName="Analysis"></FlexContentDisplay>
+    <FlexContentDisplay :articles="analysisArticles" categoryName="Analysis" categorySlug="analysis"></FlexContentDisplay>
 
-    <Divider></Divider>
-
-    <div class="container mx-auto mb-5 h-110 md:h-100" style=" background-size:top; background-repeat:none; background-size:cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-image: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url(https://beta.streamsoflife.sg/wp-content/uploads/2022/03/chris-karidis-7lSA8da0Qs8-unsplash-scaled.jpg);">
+    <div class="container mx-auto mb-5 h-[600px] lg:h-100" style=" background-size:top; background-repeat:none; background-size:cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-image: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url(https://beta.streamsoflife.sg/wp-content/uploads/2022/03/chris-karidis-7lSA8da0Qs8-unsplash-scaled.jpg);">
+        <SectionHeader categoryName="Contribution" categorySlug="ontribution"></SectionHeader>
         <div class="text-white w-full text-center px-3 pt-5 md:text-left md:pl-20 md:w-4/5">
             <h1 class="font-bold text-4xl leading-tight md:leading-none my-2 md:my-8 md:mb-4 ">The Voice of Tradition</h1>
             <p class="leading-6 text-lg">

@@ -1,5 +1,6 @@
 <script setup>
     import SectionHeader from '@/Pages/Homepage/Sections/SectionHeader.vue';
+import { ref } from 'vue';
 
     defineProps({
         asFooter: {
@@ -7,6 +8,9 @@
             default: false
         },
         categoryName: {
+            type: String,
+        },
+        categorySlug: {
             type: String,
         },
         articles: {
@@ -19,19 +23,20 @@
 
 <template>
     <div class="container mx-auto">
-        <SectionHeader v-if="!asFooter" :categoryName=this.categoryName />
-
+        <SectionHeader v-if="!asFooter" :categoryName=this.categoryName :categorySlug=this.categorySlug />
         <div class="container mx-auto mb-5 px-3 md:px-2 lg:px-0">
             <div class="flex flex-col gap-5 md:flex-row md:gap-4">
-                <div v-for="article in articles" class="basis-1/4">
-                    <div class="h-48">
-                        <img class="w-full h-full" :src='article.thumbnail' :alt='article.thumbnail' />
+                <template v-for="(article, idx) in articles">
+                    <div class="basis-1/4" v-if="idx<=3">
+                        <div class="h-48">
+                            <img class="w-full h-full" :src='article.thumbnail' :alt='article.thumbnail' />
+                        </div>
+                        <h1 class="font-bold text-2xl md:text-xl my-2 md:mb-3 leading-tight focus:text-orange-700 hover:text-orange-500 lg:overflow-y-hidden lg:h-[70px]">
+                            <a :href='`/article/${article.slug}`'>{{article.title}}</a>
+                        </h1>
+                        <p class="leading-5 text-lg md:text-md">{{article.excerpt}}</p>
                     </div>
-                    <h1 class="font-bold text-2xl md:text-xl my-2 md:mb-3 leading-tight focus:text-orange-700 hover:text-orange-500 lg:overflow-y-hidden lg:h-[70px]">
-                        <a :href='`/article/${article.slug}`'>{{article.title}}</a>
-                    </h1>
-                    <p class="leading-5 text-lg md:text-md">{{article.excerpt}}</p>
-                </div>
+                </template>
                 <!-- temporary only -->
                 <div v-if="articles.length<=3" class="basis-1/4">
                     <div class="h-48">

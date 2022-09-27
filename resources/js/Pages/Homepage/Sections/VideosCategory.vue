@@ -7,11 +7,23 @@
         props: {
             categoryName: {
                 type: String,
+            },
+            categorySlug: {
+                type: String,
+            },
+            articles: {
+                type: Array,
+                default: []
             }
         },
         data() {
             return {
                 ytURL: 'https://www.youtube.com/watch?v=GKJBEEXUha0',
+                initVideo: {
+                    title: this.articles[0].title,
+                    excerpt: this.articles[0].excerpt,
+                    slug: this.articles[0].slug
+                }
             }
         },
         components: {
@@ -35,7 +47,7 @@
 <template>
     <div class="container mx-auto">
 
-        <SectionHeader :categoryName=this.categoryName />
+        <SectionHeader :categoryName=this.categoryName :categorySlug=this.categorySlug />
 
         <div class="container mx-auto mb-5 px-3 md:px-2 lg:px-0">
             <div class="flex flex-col gap-1 md:flex-row md:gap-2">
@@ -48,14 +60,9 @@
                         ref="youtube" />
                 </div>
                 <div class="md:basis-1/4 md:pl-2">
-                    <h1 class="font-bold text-2xl my-2 md:mb-4 leading-tight">Lorem ipsum dolor sit amet, consectetur</h1>
-                    <p class="leading-6 text-lg mb-5">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex
-                    </p>
-                    <a href="#" class="w-full md:w-fit transition duration-150 ease-out hover:ease-in rounded-none bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4">
+                    <h1 class="font-bold text-2xl my-2 md:mb-4 leading-tight">{{initVideo.title}}</h1>
+                    <p class="leading-6 text-lg mb-5">{{initVideo.excerpt}}</p>
+                    <a :href="`/article/${initVideo.slug}`" class="w-full md:w-fit transition duration-150 ease-out hover:ease-in rounded-none bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4">
                         Read More
                     </a>
                 </div>
