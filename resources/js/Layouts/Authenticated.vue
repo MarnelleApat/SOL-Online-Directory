@@ -1,6 +1,6 @@
 <script setup>
     import { defineComponent } from 'vue';
-    import AuthencatedNavigation from './AuthencatedNavigation.vue';
+    import AuthencatedNavigation from './AuthenticatedNav.vue';
 
     defineComponent(() => {
         AuthencatedNavigation

@@ -31,7 +31,7 @@
                         <BreezeNavLink :href="route('partners.index')" :active="route().current('partners.index')">
                             Partners
                         </BreezeNavLink>
-                        <BreezeNavLink :href="route('events.index')" :active="route().current('events.index')">
+                        <BreezeNavLink :href="route('events.index')" :active="route().current('events.index') || route().current('events.create')">
                             Events
                         </BreezeNavLink>
                         <BreezeNavLink :href="route('registrants.index')" :active="route().current('registrants.index')">

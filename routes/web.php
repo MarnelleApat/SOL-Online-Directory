@@ -1,6 +1,5 @@
 <?php
 
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +20,10 @@ Route::get('/article/{article_slug}', [\App\Http\Controllers\HomeController::cla
 
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/events', [\App\Http\Controllers\EventController::class, 'index' ])->middleware(['auth', 'verified'])->name('events.index');
+Route::get('/event/create', [\App\Http\Controllers\EventController::class, 'create' ])->middleware(['auth', 'verified'])->name('events.create');
+Route::get('/event/{slug}', [\App\Http\Controllers\EventController::class, 'profile' ])->middleware(['auth', 'verified'])->name('event.profile');
 Route::get('/partners', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
+Route::get('/partner/{slug}', [\App\Http\Controllers\DashboardController::class, 'profile' ])->middleware(['auth', 'verified'])->name('partner.profile');
 Route::get('/registrants', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('registrants.index');
 Route::get('/users', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('users.index');
 Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('settings');

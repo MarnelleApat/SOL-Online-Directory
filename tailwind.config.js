@@ -13,7 +13,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-                cardo: ['cardo']
+                // cardo: ['cardo']
             },
             height: {
                 '100': '400px',
