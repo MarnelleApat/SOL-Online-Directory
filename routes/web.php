@@ -29,6 +29,7 @@ Route::get('/users', [\App\Http\Controllers\DashboardController::class, 'index' 
 Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('settings');
 Route::get('/partners', [\App\Http\Controllers\DepartmentController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
 Route::get('/partners/create', [\App\Http\Controllers\DepartmentController::class, 'create' ])->middleware(['auth', 'verified'])->name('partners.create');
+Route::post('/partners/store', [\App\Http\Controllers\DepartmentController::class, 'store' ])->middleware(['auth', 'verified'])->name('partners.store');
 
 
 
