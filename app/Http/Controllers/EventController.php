@@ -15,7 +15,7 @@ class EventController extends Controller
             ->where('isPublic', true)
             ->with('department')
             ->with('categories')
-            ->paginate();
+            ->paginate(7);
 
         return Inertia::render('Events/index', [
             'events' => $events
@@ -25,5 +25,17 @@ class EventController extends Controller
     public function create()
     {
         return Inertia::render('Events/create');
+    }
+
+    public function profile( $slug )
+    {
+        $event = Event::where('slug', $slug)
+            ->with('department')
+            ->with('categories')
+            ->first();
+
+        return Inertia::render('Events/profile', [
+            'event' => $event
+        ]);
     }
 }

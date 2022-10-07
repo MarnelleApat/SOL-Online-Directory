@@ -6,6 +6,7 @@
     import BreezeInput from '@/Components/Input.vue';
 
     import categories from '@/Utilities/Categories.vue'
+    import paginator from '@/Utilities/Paginator.vue'
 
     import moment from 'moment';
 
@@ -46,11 +47,8 @@
                         <BreezeButton class="ml-4 py-1 rounded-none" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Search</BreezeButton>
                     </div>
                 </form>
-
                 <!-- <pre>{{ events.data[0] }}</pre> -->
-                <!-- <pre>{{ events.links }}</pre> -->
-
-                <div class="grid grid-cols-4 gap-10">
+                <div class="grid grid-cols-4 gap-10 mb-12">
                     <!-- card for ADD NEW -->
                     <Link :href="route('events.create')">
                         <div class="group">
@@ -67,11 +65,11 @@
                         </div>
                     </Link>
 
-                    <div v-for="event in events.data" class="min-h-[200px] w-full bg-white border shadow-sm sm:rounded-lg">
+                    <div v-for="event in events.data" class="w-full bg-white border shadow-sm sm:rounded-lg">
                         <div class="md:shrink-0">
                             <img class="object-cover h-full w-full" :src="event.thumbnail" alt="Modern building architecture">
                         </div>
-                        <div class="p-6">
+                        <div class="px-6 py-4">
                             <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold leading-7">
                                 <Link :href="route('partner.profile', event.department.slug)">
                                     {{event.department.name}}
@@ -98,14 +96,16 @@
                             </div>
 
                             <!-- show categories of the event in encaptulated -->
-                            <div class="mt-6">
-                                <categories v-if="event.categories.length" :categories="event.categories" />
+                            <div class="mt-6" v-if="event.categories.length">
+                                <p class="text-xs italic text-gray-500 leading-6">Categories:</p>
+                                <categories :categories="event.categories" />
                             </div>
 
                         </div>
                     </div>
-
                 </div>
+                <paginator :links="events.links" />
+                <!-- <pre>{{ events.links }}</pre> -->
             </div>
         </div>
     </BreezeAuthenticatedLayout>
