@@ -64,9 +64,6 @@
                     </Link>
 
                     <div v-for="partner in partners.data" class="min-h-[200px] w-full bg-white border shadow-sm sm:rounded-lg">
-                        <div class="md:shrink-0">
-                            <img class="object-cover h-full w-full" :src="partner.id" alt="Modern building architecture">
-                        </div>
                         <div class="p-6">
                             <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold">
                                 <Link :href="route('event.profile', partner.slug)">
@@ -77,8 +74,13 @@
                                 
                                 {{partner.description}}
                             </Link>
+                            <br>
                             <p class="mt-2 text-slate-500">
-                                Date: {{ partner.created_at }}
+                                Website link: <span class="text-red-800">
+                                        <Link :href="partner.websiteUrl" target="_blank">
+                                            {{ partner.websiteUrl }}
+                                        </Link>
+                                    </span>
                             </p>
                         </div>
                     </div>
