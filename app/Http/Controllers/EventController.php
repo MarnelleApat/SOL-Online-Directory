@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
 use Inertia\Inertia;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with('department')->paginate();
+        $events = Event::where('status', true)
+            ->where('isActive', true)
+            ->where('isPublic', true)
+            ->with('department')
+            ->paginate();
 
         return Inertia::render('Events/index', [
             'events' => $events

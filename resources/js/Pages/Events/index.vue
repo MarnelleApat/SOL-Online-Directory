@@ -5,6 +5,8 @@
     import BreezeButton from '@/Components/Button.vue';
     import BreezeInput from '@/Components/Input.vue';
 
+    import moment from 'moment';
+
     defineProps({
         events: Array
     });
@@ -50,7 +52,7 @@
                     <!-- card for ADD NEW -->
                     <Link :href="route('events.create')">
                         <div class="group">
-                            <div class="min-h-[330px] w-full mx-auto bg-gray-200 hover:bg-gray-300 border shadow-sm sm:rounded-lg p-4 flex items-center justify-center">
+                            <div class="h-full w-full mx-auto bg-gray-200 hover:bg-gray-300 border shadow-sm sm:rounded-lg px-4 py-40 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -72,11 +74,15 @@
                                     {{event.department.name}}
                                 </Link>
                             </div>
-                            <Link :href="route('event.profile', event.slug)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400">
+                            <Link :href="route('event.profile', event.slug)" class="block mb-3 text-lg font-bold leading-none text-gray-500 hover:text-gray-400">
                                 {{event.title}}
                             </Link>
-                            <p class="mt-2 text-slate-500">
-                                Date: {{jsonParser(event.schedule)[0].startDate}}
+                            <template v-for="schedule in jsonParser(event.schedule)">
+                                <p class="mt-2 text-slate-500 text-sm leading-none">Date: {{moment(schedule.startDate).format('LL')}} </p>
+                                <p class="mt-2 text-slate-500 text-sm leading-none">Time: {{schedule.startTime}} - {{schedule.endTime}} </p>
+                            </template>
+                            <p class="mt-2 text-slate-500 text-sm leading-none">
+                                Venue: {{jsonParser(event.venue).location}} {{jsonParser(event.venue).city}} {{jsonParser(event.venue).postalCode}}
                             </p>
                         </div>
                     </div>
