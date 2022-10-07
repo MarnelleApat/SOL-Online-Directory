@@ -5,10 +5,12 @@
     import BreezeButton from '@/Components/Button.vue';
     import BreezeInput from '@/Components/Input.vue';
 
+    import categories from '@/Utilities/Categories.vue'
+
     import moment from 'moment';
 
     defineProps({
-        events: Array
+        events: Object
     });
 
     const form = useForm({
@@ -64,12 +66,13 @@
                             </div>
                         </div>
                     </Link>
+
                     <div v-for="event in events.data" class="min-h-[200px] w-full bg-white border shadow-sm sm:rounded-lg">
                         <div class="md:shrink-0">
                             <img class="object-cover h-full w-full" :src="event.thumbnail" alt="Modern building architecture">
                         </div>
                         <div class="p-6">
-                            <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold">
+                            <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold leading-7">
                                 <Link :href="route('partner.profile', event.department.slug)">
                                     {{event.department.name}}
                                 </Link>
@@ -78,12 +81,27 @@
                                 {{event.title}}
                             </Link>
                             <template v-for="schedule in jsonParser(event.schedule)">
-                                <p class="mt-2 text-slate-500 text-sm leading-none">Date: {{moment(schedule.startDate).format('LL')}} </p>
-                                <p class="mt-2 text-slate-500 text-sm leading-none">Time: {{schedule.startTime}} - {{schedule.endTime}} </p>
+                                <div class="flex mt-2">
+                                    <p class="text-slate-500 text-sm leading-none font-bold">Date:</p>
+                                    <p class="pl-1 text-slate-500 text-sm leading-none">{{moment(schedule.startDate).format('LL')}}</p>
+                                </div>
+                                <div class="flex mt-2">
+                                    <p class="text-slate-500 text-sm leading-none font-bold">Time:</p>
+                                    <p class="pl-1 text-slate-500 text-sm leading-none">{{schedule.startTime}} - {{schedule.endTime}}</p>
+                                </div>
                             </template>
-                            <p class="mt-2 text-slate-500 text-sm leading-none">
-                                Venue: {{jsonParser(event.venue).location}} {{jsonParser(event.venue).city}} {{jsonParser(event.venue).postalCode}}
-                            </p>
+                            <div class="flex mt-2">
+                                <p class="text-slate-500 text-sm leading-none font-bold">Venue:</p>
+                                <p class=" pl-1 text-slate-500 text-sm leading-tight">
+                                    {{jsonParser(event.venue).location}} {{jsonParser(event.venue).city}} {{jsonParser(event.venue).postalCode}}
+                                </p>
+                            </div>
+
+                            <!-- show categories of the event in encaptulated -->
+                            <div class="mt-6">
+                                <categories v-if="event.categories.length" :categories="event.categories" />
+                            </div>
+
                         </div>
                     </div>
 

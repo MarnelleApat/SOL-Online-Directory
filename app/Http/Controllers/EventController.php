@@ -14,6 +14,7 @@ class EventController extends Controller
             ->where('isActive', true)
             ->where('isPublic', true)
             ->with('department')
+            ->with('categories')
             ->paginate();
 
         return Inertia::render('Events/index', [

@@ -10,10 +10,6 @@ const props = defineProps({
     },
     contentClasses: {
         default: () => ['']
-    },
-    isSearchForm: {
-        type: Boolean,
-        default: false
     }
 });
 
@@ -65,8 +61,7 @@ const open = ref(false);
             <div v-show="open"
                     class="absolute z-50 mt-2 rounded-md shadow-lg"
                     :class="[widthClass, alignmentClasses]"
-                    style="display: none;"
-                    @click="isSearchForm ? '' : (open = false)">
+                    style="display: none;">
                 <div class="rounded-0 ring-1 ring-black ring-opacity-5" :class="contentClasses">
                     <slot name="content" />
                 </div>

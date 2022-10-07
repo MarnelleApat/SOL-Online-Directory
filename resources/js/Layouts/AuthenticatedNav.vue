@@ -53,8 +53,10 @@
                             <template #trigger>
                                 <span class="inline-flex rounded-md">
                                     <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        {{ $page.props.auth.user.name }}
-
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        {{ $page.props.auth.user.niceName }}
                                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                         </svg>
@@ -63,9 +65,8 @@
                             </template>
 
                             <template #content>
-                                <BreezeDropdownLink :href="route('logout')" method="post" as="button">
-                                    Log Out
-                                </BreezeDropdownLink>
+                                <BreezeDropdownLink :href="route('logout')" method="post" as="button" class="hover:bg-gray-100">My Profile</BreezeDropdownLink>
+                                <BreezeDropdownLink :href="route('logout')" method="post" as="button" class="border-t hover:bg-gray-100 border-gray-200">Log Out</BreezeDropdownLink>
                             </template>
                         </BreezeDropdown>
                     </div>
@@ -86,22 +87,24 @@
         <!-- Responsive Navigation Menu -->
         <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
-                <BreezeResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                    Dashboard
-                </BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('partners.index')" :active="route().current('partners.index')">Partners</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('events.index')" :active="route().current('events.index') || route().current('events.create')">Events</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('registrants.index')" :active="route().current('registrants.index')">Registrations</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('users.index')" :active="route().current('users.index')">Users</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('settings')" :active="route().current('settings')">Settings</BreezeResponsiveNavLink>
             </div>
 
             <!-- Responsive Settings Options -->
             <div class="pt-4 pb-1 border-t border-gray-200">
                 <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ $page.props.auth.user.name }}</div>
+                    <div class="font-medium text-base text-gray-800">{{ $page.props.auth.user.niceName }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <BreezeResponsiveNavLink :href="route('logout')" method="post" as="button">
-                        Log Out
-                    </BreezeResponsiveNavLink>
+                    <BreezeResponsiveNavLink :href="route('logout')" method="post" as="button">My Profile</BreezeResponsiveNavLink>
+                    <BreezeResponsiveNavLink :href="route('logout')" method="post" as="button">Log Out</BreezeResponsiveNavLink>
                 </div>
             </div>
         </div>
