@@ -27,6 +27,9 @@ Route::get('/partner/{slug}', [\App\Http\Controllers\DashboardController::class,
 Route::get('/registrants', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('registrants.index');
 Route::get('/users', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('users.index');
 Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('settings');
+Route::get('/partners', [\App\Http\Controllers\DepartmentController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
+Route::get('/partners/create', [\App\Http\Controllers\DepartmentController::class, 'create' ])->middleware(['auth', 'verified'])->name('partners.create');
+
 
 
 require __DIR__.'/auth.php';
