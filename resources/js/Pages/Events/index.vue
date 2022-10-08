@@ -1,14 +1,16 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-
     import BreezeButton from '@/Components/Button.vue';
     import BreezeInput from '@/Components/Input.vue';
 
+    // Utilities
     import categories from '@/Utilities/Categories.vue'
     import paginator from '@/Utilities/Paginator.vue'
 
-    import moment from 'moment';
+    // Helpers
+    import toJSON from '@/Helpers/StringToJson'
+    import toDate from '@/Helpers/StringToDate'
 
     defineProps({
         events: Object
@@ -23,10 +25,6 @@
             // onFinish: () => form.reset('password', 'password_confirmation'),
         });
     };
-
-    const jsonParser = (stringData) => {
-        return JSON.parse(stringData);
-    }
 
 </script>
 
@@ -78,10 +76,10 @@
                             <Link :href="route('event.profile', event.slug)" class="block mb-3 text-lg font-bold leading-none text-gray-500 hover:text-gray-400">
                                 {{event.title}}
                             </Link>
-                            <template v-for="schedule in jsonParser(event.schedule)">
+                            <template v-for="schedule in toJSON(event.schedule)">
                                 <div class="flex mt-2">
                                     <p class="text-slate-500 text-sm leading-none font-bold">Date:</p>
-                                    <p class="pl-1 text-slate-500 text-sm leading-none">{{moment(schedule.startDate).format('LL')}}</p>
+                                    <p class="pl-1 text-slate-500 text-sm leading-none">{{toDate(schedule.startDate, 'LL')}}</p>
                                 </div>
                                 <div class="flex mt-2">
                                     <p class="text-slate-500 text-sm leading-none font-bold">Time:</p>
@@ -91,7 +89,7 @@
                             <div class="flex mt-2">
                                 <p class="text-slate-500 text-sm leading-none font-bold">Venue:</p>
                                 <p class=" pl-1 text-slate-500 text-sm leading-tight">
-                                    {{jsonParser(event.venue).location}} {{jsonParser(event.venue).city}} {{jsonParser(event.venue).postalCode}}
+                                    {{toJSON(event.venue).location}} {{toJSON(event.venue).city}} {{toJSON(event.venue).postalCode}}
                                 </p>
                             </div>
 

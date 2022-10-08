@@ -24,7 +24,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                <!-- <pre>{{event}}</pre> -->
+                <pre>{{event}}</pre>
 
                 <div class="flex flex-row gap-4">
                     <div class="w-1/4">

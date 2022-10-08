@@ -19,10 +19,6 @@
         });
     };
 
-    const jsonParser = (stringData) => {
-        return JSON.parse(stringData);
-    }
-
 </script>
 
 <template>
@@ -71,7 +67,7 @@
                                 </Link>
                             </div>
                             <Link :href="route('event.profile', partner.slug)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400">
-                                
+
                                 {{partner.description}}
                             </Link>
                             <br>
