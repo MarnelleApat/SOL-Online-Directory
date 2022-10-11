@@ -2,11 +2,8 @@
     import Multiselect from '@vueform/multiselect'
     import { ref } from 'vue';
 
-    defineProps({
-        categories: Object
-    })
-
-    const options = ref(null);
+    const props = defineProps(['categories'])
+    const options = props.categories
     let value = ref(null);
 
 </script>
@@ -15,16 +12,17 @@
         <div class="flex flex-col p-5">
             <p class="text-gray-400 font-bold my-3">Categories:</p>
 
-<Multiselect
-v-model="value"
-mode="tags"
-label="name"
-track-by="name"
-:options="categories"
-/>
-<pre>{{categories}}</pre>
-<!--
-            <Multiselect v-model="value" mode="tags" placeholder="Select category" track-by="name" label="name" :close-on-select="false" :search="true" :options="options">
+            <Multiselect
+                v-model="value"
+                mode="tags"
+                :objects=true
+                valueProp="id"
+                :close-on-select="false"
+                placeholder="Select category"
+                track-by="name"
+                label="name"
+                :options="options"
+                >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
                     {{ option.name }}
@@ -34,8 +32,6 @@ track-by="name"
                     </div>
                 </template>
             </Multiselect>
-            <pre>{{options}}</pre>
--->
         </div>
     </div>
 </template>
