@@ -30,8 +30,7 @@ Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'inde
 Route::get('/partners', [\App\Http\Controllers\DepartmentController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
 Route::get('/partners/create', [\App\Http\Controllers\DepartmentController::class, 'create' ])->middleware(['auth', 'verified'])->name('partners.create');
 Route::post('/partners/store', [\App\Http\Controllers\DepartmentController::class, 'store' ])->middleware(['auth', 'verified'])->name('partners.store');
-Route::get('/partners/view', [\App\Http\Controllers\DepartmentController::class, 'view' ])->middleware(['auth', 'verified'])->name('partners.view');
-Route::get('/partners/edit', [\App\Http\Controllers\DepartmentController::class, 'edit' ])->middleware(['auth', 'verified'])->name('partners.edit');
-Route::post('/partners/delete', [\App\Http\Controllers\DepartmentController::class, 'delete' ])->middleware(['auth', 'verified'])->name('partners.delete');
+
+
 
 require __DIR__.'/auth.php';

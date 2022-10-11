@@ -20,7 +20,6 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
-        "@headlessui/vue": "^1.7.3",
         "moment": "^2.29.4",
         "vue3-youtube": "^0.1.9"
     }
