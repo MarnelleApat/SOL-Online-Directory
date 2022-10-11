@@ -40,4 +40,24 @@ class DepartmentController extends Controller
             'partners' => $partners
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        Department::find($request->id)->delete();
+        
+        $partners = Department::with('users')->paginate();
+
+        return Inertia::render('Partners/index', [
+            'partners' => $partners
+        ]);
+    }
+
+    public function view(Request $request)
+    {
+        $partners = Department::find($request->id);
+        
+        return Inertia::render('Partners/view', [
+            'partners' => $partners
+        ]); 
+    }
 }
