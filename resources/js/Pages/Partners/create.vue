@@ -23,7 +23,31 @@
 
 </script>
 
-
+<script>
+export default {
+    data() {
+        return {
+            isOpen:false,
+            }
+    },
+    created() {
+    },
+    methods: {    
+        openModal(e) {
+            this.isOpen=true;
+        },
+        closeModal(e){
+            this.isOpen=false;
+        },
+        createPartner(e){
+            this.form.post(route('partners.store'), {
+            });
+            this.isOpen=false;
+            location.reload();
+        }
+    }
+}
+</script>
 
 <template>
     <Head title="Create Partner"/>
