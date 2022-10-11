@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Inertia\Inertia;
 use App\Models\Event;
 use Illuminate\Http\Request;
@@ -10,12 +11,15 @@ class EventController extends Controller
 {
     public function index()
     {
+
         $events = Event::where('status', true)
             ->where('isActive', true)
             ->where('isPublic', true)
             ->with('department')
             ->with('categories')
+            ->with('user')
             ->paginate(7);
+
 
         return Inertia::render('Events/index', [
             'events' => $events
@@ -24,7 +28,11 @@ class EventController extends Controller
 
     public function create()
     {
-        return Inertia::render('Events/create');
+        $categories = Category::all();
+
+        return Inertia::render('Events/create',[
+            'categories' => $categories
+        ]);
     }
 
     public function profile( $slug )
@@ -32,6 +40,7 @@ class EventController extends Controller
         $event = Event::where('slug', $slug)
             ->with('department')
             ->with('categories')
+            ->with('user')
             ->first();
 
         return Inertia::render('Events/profile', [

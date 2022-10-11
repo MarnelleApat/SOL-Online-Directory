@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('hasPromo')->nullable();
             $table->integer('totalRegistrants')->default(0);
             $table->string('thumbnail')->default('https://via.placeholder.com/450x300?text=Sower+Institute');
+            $table->string('banner')->default('https://via.placeholder.com/650x250?text=Sower+Institute');
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });

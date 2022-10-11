@@ -59,19 +59,50 @@
                             </div>
                             <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75p-4">
                                 <div class="flex flex-col px-6 py-12">
+
                                     <div class="flex flex-col gap-2">
+                                        <BreezeLabel for="programCode" value="Program Code" class="flex items-center" />
+                                        <h5 class="font-bold text-xl">{{event.programCode}}</h5>
+                                    </div>
+
+                                    <div class="flex flex-col gap-2 mt-6">
                                         <BreezeLabel for="title" value="Title" class="flex items-center" />
                                         <BreezeInput id="title" type="text" v-model="event.title" class="mt-1 block w-full rounded-none" required autocomplete="title" />
                                         <BreezeInputError class="mt-2" />
                                     </div>
 
-                                    <div class="flex flex-col gap-2 mt-10">
+                                    <div class="flex flex-col gap-2 mt-6">
                                         <BreezeLabel for="desc" value="Description" class="flex items-center" />
                                         <BreezeTextarea id="desc" rows="6" v-model="event.description" class="mt-1 block w-full rounded-none" required autocomplete="desc" />
                                         <BreezeInputError class="mt-2" />
                                     </div>
+
+                                    <div class="flex flex-col gap-2 mt-6">
+                                        <BreezeLabel for="eventIncharge" value="Event Incharge" class="flex items-center" />
+                                        <BreezeInput id="eventIncharge" type="text" v-model="event.eventIncharge" class="mt-1 block w-full rounded-none" required autocomplete="eventIncharge" />
+                                        <BreezeInputError class="mt-2" />
+                                    </div>
+
+                                    <div class="flex flex-col gap-2 mt-6">
+                                        <BreezeLabel for="email" value="Email Incharge" class="flex items-center" />
+                                        <BreezeInput id="email" type="email" v-model="event.email" class="mt-1 block w-full rounded-none" required autocomplete="email" />
+                                        <BreezeInputError class="mt-2" />
+                                    </div>
+
                                 </div>
                             </div>
+
+                            <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75p-4">
+                                <div class="flex flex-col px-6 py-12">
+                                    <div class="flex flex-col gap-2">
+                                        <h5 class="font-bold text-xl">Schedule Details</h5>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <pre>{{schedules}}</pre>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

@@ -31,6 +31,8 @@ Route::get('/partners', [\App\Http\Controllers\DepartmentController::class, 'ind
 Route::get('/partners/create', [\App\Http\Controllers\DepartmentController::class, 'create' ])->middleware(['auth', 'verified'])->name('partners.create');
 Route::post('/partners/store', [\App\Http\Controllers\DepartmentController::class, 'store' ])->middleware(['auth', 'verified'])->name('partners.store');
 
+Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index' ])->middleware(['auth', 'verified'])->name('categories.index');
+
 
 
 require __DIR__.'/auth.php';
