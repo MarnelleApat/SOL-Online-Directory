@@ -20,11 +20,8 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
-<<<<<<< HEAD
-        "@vueform/multiselect": "^2.5.6",
-=======
         "@headlessui/vue": "^1.7.3",
->>>>>>> 59b204214933d6694ebb28de21436dc0641146b7
+        "@vueform/multiselect": "^2.5.6",
         "moment": "^2.29.4",
         "vue3-youtube": "^0.1.9"
     }
