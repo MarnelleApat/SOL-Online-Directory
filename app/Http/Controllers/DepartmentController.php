@@ -7,13 +7,15 @@ use App\Models\Department;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Redirect;
-use App\Http\Requests\DepartmentRequest;
+use App\Http\Requests\{ StoreDepartmentRequest,UpdateDepartmentRequest };
 
 class DepartmentController extends Controller
 {
     public function index()
     {
-        $partners = Department::with('users')->orderBy('id','desc')->paginate(7);
+        $partners = Department::with('users')
+        ->where('status',1)
+        ->orderBy('id','desc')->paginate(7);
 
         return Inertia::render('Partners/index', [
             'partners' => $partners,
@@ -26,9 +28,8 @@ class DepartmentController extends Controller
         return Inertia::render('Partners/create');
     }
 
-    public function store(DepartmentRequest $request)
+    public function store(StoreDepartmentRequest $request)
     {
-
         $partners = Department::create([
             'name' => $request->name,
             'slug' => $this->createSlug($request->name),
@@ -39,26 +40,27 @@ class DepartmentController extends Controller
 
         if($partners)
             return Redirect::route('partners.index');
-
     }
 
-    public function delete(Request $request)
+    public function update(UpdateDepartmentRequest $request)
     {
-        Department::find($request->id)->delete();
-        
-        $partners = Department::with('users')->paginate();
-
-        return Inertia::render('Partners/index', [
-            'partners' => $partners
+        $partners = Department::where('slug',$request->slug)->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'websiteUrl' => $request->websiteUrl,
+            'status' => $request->status,
         ]);
+
+        return Redirect::route('partners.view', ['slug' => $request->slug]);
     }
 
-    public function view(Request $request)
+    public function view($slug)
     {
-        $partners = Department::find($request->id);
+        $partners = Department::where('slug',$slug)->first();
         
         return Inertia::render('Partners/view', [
-            'partners' => $partners
+            'partners' => $partners,
+            'status' => $partners->status
         ]); 
     }
 

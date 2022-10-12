@@ -126,7 +126,7 @@
                                     {{partner.name}}
                                 </Link> . 
                             </div>
-                            <Link :href="route('partners.view', partner.id)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400">
+                            <Link :href="route('partners.view', partner.slug)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400">
                                 
                                 {{partner.description}}
                             </Link>
