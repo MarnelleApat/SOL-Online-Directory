@@ -64,4 +64,14 @@
         border-radius: 50%;
         height: 22px;
     }
+    .multiselect-clear {
+        position: absolute !important;
+        right: 7px !important;
+        top: 10px;
+    }
+    .multiselect-caret {
+        position: absolute !important;
+        right: -10px !important;
+        top: 10px;
+    }
 </style>

@@ -82,7 +82,7 @@
                                     <h5 class="font-bold text-xl text-gray-600 mb-6">Event Details</h5>
                                     <div class="flex flex-col gap-2">
                                         <BreezeLabel for="programCode" value="Program Code" class="flex items-center font-bold" />
-                                        <BreezeInput id="programCode" type="text" class="mt-1 block w-full rounded-none" required />
+                                        <BreezeInput id="programCode" type="text" class="mt-1 block w-full rounded-none" placeholder="Unique Reference Code" required />
                                         <BreezeInputError class="mt-2" />
                                     </div>
 
