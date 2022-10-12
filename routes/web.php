@@ -36,5 +36,6 @@ Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'ind
 Route::get('/partners/view', [\App\Http\Controllers\DepartmentController::class, 'view' ])->middleware(['auth', 'verified'])->name('partners.view');
 Route::get('/partners/edit', [\App\Http\Controllers\DepartmentController::class, 'edit' ])->middleware(['auth', 'verified'])->name('partners.edit');
 Route::post('/partners/delete', [\App\Http\Controllers\DepartmentController::class, 'delete' ])->middleware(['auth', 'verified'])->name('partners.delete');
+Route::get('/partners/search', [\App\Http\Controllers\DepartmentController::class, 'search' ])->middleware(['auth', 'verified'])->name('partners.search');
 
 require __DIR__.'/auth.php';

@@ -62,6 +62,15 @@ class DepartmentController extends Controller
         ]); 
     }
 
+    public function search(Request $request)
+    {
+        $partners = Department::where('name','LIKE',$request->keyword)->get();
+
+        return Inertia::render('Partners/index', [
+            'partners' => $partners
+        ]);
+    }
+
     private function createSlug($title, $id = 0)
     {
         $slug = Str::slug($title);
@@ -81,7 +90,7 @@ class DepartmentController extends Controller
             $i++;
         } while ($is_contain);
     }
-    
+
     private function getRelatedSlugs($slug, $id = 0)
     {
         return Department::select('slug')->where('slug', 'like', $slug.'%')

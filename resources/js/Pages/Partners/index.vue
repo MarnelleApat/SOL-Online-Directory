@@ -1,7 +1,6 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-
     import BreezeButton from '@/Components/Button.vue';
     import BreezeInput from '@/Components/Input.vue';
     import BreezeTextarea from '@/Components/Textarea.vue';
@@ -10,7 +9,7 @@
     import paginator from '@/Utilities/Paginator.vue'
     import { reactive, ref } from 'vue';
     import { Inertia } from '@inertiajs/inertia'
-   import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+    import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 
     defineProps({
         partners: Object,
@@ -23,15 +22,25 @@
         websiteUrl: null,
     });
 
+    const formSearch = useForm({
+        keyword: null,
+    });
+
     const submit = (isOpen) => {
         Inertia.post('/partners/store', form)
         form.reset('name','description','websiteUrl');
     };
 
+    const submitSearch = (isOpen) => {
+        formSearch.get(route('/'), {
+            // onFinish: () => form.reset('password', 'password_confirmation'),
+        });
+    };
+
 </script>
 
 <template>
-    <Head title="Events" />
+    <Head title="Partners" />
 
     <BreezeAuthenticatedLayout>
 
@@ -87,6 +96,12 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- searching feature -->
+                <form @submit.prevent="submitSearch" class="mb-8">
+                    <div class="flex flex-cols">
+                        <BreezeInput id="keyword" type="text" class="block w-full rounded-none" placeholder="Search Partners" v-model="formSearch.keyword" required autofocus autocomplete="keyword" />
+                        <BreezeButton class="ml-4 py-1 rounded-none" :class="{ 'opacity-25': formSearch.processing }" :disabled="formSearch.processing">Search</BreezeButton>
+                    </div>
+                </form>
                 <div class="grid grid-cols-4 gap-10">
                     <!-- card for ADD NEW -->
                     <a href="#" @click="isOpen=true">
@@ -110,7 +125,7 @@
                                 <Link :href="route('partners.view', partner.slug)">
                                     {{partner.name}}
                                 </Link> . 
-                        </div>
+                            </div>
                             <Link :href="route('partners.view', partner.id)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400">
                                 
                                 {{partner.description}}
