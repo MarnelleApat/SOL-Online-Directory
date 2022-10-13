@@ -69,7 +69,7 @@
                         </div>
                         <div class="px-6 py-4">
                             <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold leading-7">
-                                <Link :href="route('partner.profile', event.department.slug)">
+                                <Link :href="route('partners.view', event.department.slug)">
                                     {{event.department.name}}
                                 </Link>
                             </div>

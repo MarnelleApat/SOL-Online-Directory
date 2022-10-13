@@ -8,12 +8,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/partners', [DepartmentController::class, 'index' ])
         ->name('partners.index');
 
-    Route::get('/partner/{slug}', [DepartmentController::class, 'profile' ])
-        ->name('partner.profile');
-
-    Route::get('/partners', [DepartmentController::class, 'index' ])
-        ->name('partners.index');
-
     Route::get('/partners/create', [DepartmentController::class, 'create' ])
         ->name('partners.create');
 

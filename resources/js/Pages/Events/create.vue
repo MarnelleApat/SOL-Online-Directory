@@ -289,8 +289,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col mt-4">
-                                <BreezeButton class="rounded-none text-xl font-bold py-3 px-4" :class="{ 'opacity-25': eventSubmitForm.processing }" :disabled="eventSubmitForm.processing">SUBMIT</BreezeButton>
+                            <div class="flex justify-end mt-4">
+                                <BreezeButton class="w-1/4 inline-block rounded-none text-lg font-semiblod py-3 px-4" :class="{ 'opacity-25': eventSubmitForm.processing }" :disabled="eventSubmitForm.processing">SUBMIT</BreezeButton>
                             </div>
                         </div>
                     </div>
