@@ -31,11 +31,13 @@ Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'inde
 Route::get('/partners', [\App\Http\Controllers\DepartmentController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
 Route::get('/partners/create', [\App\Http\Controllers\DepartmentController::class, 'create' ])->middleware(['auth', 'verified'])->name('partners.create');
 Route::post('/partners/store', [\App\Http\Controllers\DepartmentController::class, 'store' ])->middleware(['auth', 'verified'])->name('partners.store');
+Route::post('/partners/update', [\App\Http\Controllers\DepartmentController::class, 'update' ])->middleware(['auth', 'verified'])->name('partners.update');
 
 Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index' ])->middleware(['auth', 'verified'])->name('categories.index');
 
-Route::get('/partners/view', [\App\Http\Controllers\DepartmentController::class, 'view' ])->middleware(['auth', 'verified'])->name('partners.view');
+Route::get('/partners/view/{slug}', [\App\Http\Controllers\DepartmentController::class, 'view' ])->middleware(['auth', 'verified'])->name('partners.view');
 Route::get('/partners/edit', [\App\Http\Controllers\DepartmentController::class, 'edit' ])->middleware(['auth', 'verified'])->name('partners.edit');
 Route::post('/partners/delete', [\App\Http\Controllers\DepartmentController::class, 'delete' ])->middleware(['auth', 'verified'])->name('partners.delete');
+Route::get('/partners/search', [\App\Http\Controllers\DepartmentController::class, 'search' ])->middleware(['auth', 'verified'])->name('partners.search');
 
 require __DIR__.'/auth.php';
