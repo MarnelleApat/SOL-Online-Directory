@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventRequest;
 use App\Models\Category;
+use App\Models\Department;
 use Inertia\Inertia;
 use App\Models\Event;
 use Illuminate\Http\Request;
@@ -26,12 +28,19 @@ class EventController extends Controller
         ]);
     }
 
+    public function store(EventRequest $request)
+    {
+        dd($request->all());
+    }
+
     public function create()
     {
         $categories = Category::all();
+        $departments= Department::all();
 
         return Inertia::render('Events/create',[
-            'categories' => $categories
+            'categories' => $categories,
+            'departments'=> $departments
         ]);
     }
 

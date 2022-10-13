@@ -1,10 +1,30 @@
 <script setup>
     import Multiselect from '@vueform/multiselect'
-    import { ref } from 'vue';
 
-    const props = defineProps(['categories'])
-    const options = props.categories
-    let value = ref(null);
+    // init for vuex and assign to store variable
+    import { useStore } from 'vuex'
+    const store = useStore()
+
+    // init for multiselect model
+    const value = []
+
+    // declare loading state
+    let isLoading = false
+
+    // component is required to accept the categories masterlist via props
+    defineProps({
+        categories: {
+            type: Object,
+            required: true
+        }
+    })
+
+    // dispatch the vuex action 'storeSelectedCat' to get the final category selected and passed to the parent component
+    const onSelect = async (value) => {
+        isLoading = true
+        await store.dispatch('storeSelectedCat', value)
+        isLoading = false
+    }
 
 </script>
 <template>
@@ -15,23 +35,25 @@
             <Multiselect
                 v-model="value"
                 mode="tags"
-                :objects=true
-                valueProp="id"
+                @input="onSelect"
+                :object=true
+                :loading="isLoading"
+                value-prop="slug"
                 :close-on-select="false"
                 placeholder="Select category"
                 track-by="name"
                 label="name"
-                :options="options"
-                >
+                :options="categories">
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
-                    {{ option.name }}
-                    <span v-if="!disabled" class="multiselect-tag-remove" @mousedown.prevent="handleTagRemove(option, $event)">
-                        <span class="multiselect-tag-remove-icon"></span>
-                    </span>
+                        {{ option.name }}
+                        <span v-if="!disabled" class="multiselect-tag-remove" @mousedown.prevent="handleTagRemove(option, $event)">
+                            <span class="multiselect-tag-remove-icon"></span>
+                        </span>
                     </div>
                 </template>
             </Multiselect>
+
         </div>
     </div>
 </template>

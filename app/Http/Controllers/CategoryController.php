@@ -16,11 +16,4 @@ class CategoryController extends Controller
             'categories' => $categories
         ]);
     }
-
-    public function getAll()
-    {
-        $categories = Category::all();
-
-        return response()->json('categories');
-    }
 }

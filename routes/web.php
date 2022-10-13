@@ -22,6 +22,7 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'ind
 Route::get('/events', [\App\Http\Controllers\EventController::class, 'index' ])->middleware(['auth', 'verified'])->name('events.index');
 Route::get('/event/create', [\App\Http\Controllers\EventController::class, 'create' ])->middleware(['auth', 'verified'])->name('events.create');
 Route::get('/event/{slug}', [\App\Http\Controllers\EventController::class, 'profile' ])->middleware(['auth', 'verified'])->name('event.profile');
+Route::post('/event/store', [\App\Http\Controllers\EventController::class, 'store' ])->middleware(['auth', 'verified'])->name('event.store');
 Route::get('/partners', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('partners.index');
 Route::get('/partner/{slug}', [\App\Http\Controllers\DashboardController::class, 'profile' ])->middleware(['auth', 'verified'])->name('partner.profile');
 Route::get('/registrants', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('registrants.index');
