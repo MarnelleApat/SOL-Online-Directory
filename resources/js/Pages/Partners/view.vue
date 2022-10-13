@@ -8,11 +8,11 @@
     import BreezeButton from '@/Components/Button.vue';
     import { reactive, ref } from 'vue';
     import { Inertia } from '@inertiajs/inertia'
-   import { Switch } from '@headlessui/vue'
+    import { Switch } from '@headlessui/vue'
 
    const props =  defineProps({
         partners: Object,
-        status: Boolean
+        status: null
     });
 
     const form = reactive({
@@ -24,7 +24,7 @@
     });
 
     const submit = () => {
-        Inertia.post('/partners/update', form)
+        Inertia.put('/partners/update', form)
     };
 
 
