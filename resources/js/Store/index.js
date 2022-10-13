@@ -20,7 +20,6 @@ const store = createStore({
         },
         actions: {
             storeSelectedCat({ commit }, payload) {
-                console.log(payload);
                 commit('GET_SELECTED_CATEGORIES', payload)
             }
         }

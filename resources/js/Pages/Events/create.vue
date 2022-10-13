@@ -84,7 +84,8 @@
         venue: venue,
         schedules: schedules,
         categories: getCat,
-        banner: null
+        banner: null,
+        photoImg: null
     })
 
     // Process for submission of Event to the backend
@@ -108,8 +109,6 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-                <pre>{{events}}</pre>
 
                 <form @submit.prevent="eventSubmitForm">
                     <div class="flex flex-row gap-4">
@@ -135,7 +134,7 @@
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group">
-                                    <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300" @click="$refs.banner.click()">
+                                    <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -146,8 +145,8 @@
                                         </svg>
                                         <span class="group-hover:text-gray-100">Upload Banner</span>
                                     </div>
-                                    <input type="file" @input="eventForm.banner" class="hidden" ref="banner" />
                                 </div>
+
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
                                     <div class="flex flex-col p-6">
                                         <h5 class="font-bold text-xl text-gray-600 mb-6">Event Details</h5>
@@ -159,7 +158,7 @@
                                                 v-model="selectedDepartment"
                                                 value-prop="slug"
                                                 placeholder="Select Partner"
-                                                :close-on-select="false"
+                                                :close-on-select="true"
                                                 :object="true"
                                                 :options="departments"
                                                 track-by="name"

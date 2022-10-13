@@ -32,9 +32,11 @@ class EventController extends Controller
     {
         $event = $request->all();
 
-        return Inertia::render('Events/create',[
-            'events' => $event,
-        ]);
+        dd($event);
+
+        // return Inertia::render('Events/create',[
+        //     'events' => $event,
+        // ]);
 
     }
 
