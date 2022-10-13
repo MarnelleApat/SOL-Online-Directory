@@ -9,6 +9,7 @@
     import { reactive, ref } from 'vue';
     import SelectCategories from '@/Utilities/SelectCategories.vue'
     import Multiselect from '@vueform/multiselect'
+    import MediaDialog from '@/Utilities/MediaDialog.vue'
     import { useStore } from 'vuex'
     import { computed } from '@vue/reactivity';
     const store = useStore()
@@ -133,18 +134,22 @@
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
-                                <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group">
-                                    <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        <span class="group-hover:text-gray-100">Upload Banner</span>
-                                    </div>
+                                <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group">
+                                    <MediaDialog>
+                                        <template #button>
+                                            <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                                <span class="group-hover:text-gray-100">Upload Banner</span>
+                                            </div>
+                                        </template>
+                                    </MediaDialog>
                                 </div>
 
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
