@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/partners', [DashboardController::class, 'index' ])
+    Route::get('/partners', [DepartmentController::class, 'index' ])
         ->name('partners.index');
 
-    Route::get('/partner/{slug}', [DashboardController::class, 'profile' ])
+    Route::get('/partner/{slug}', [DepartmentController::class, 'profile' ])
         ->name('partner.profile');
 
     Route::get('/partners', [DepartmentController::class, 'index' ])
