@@ -72,11 +72,15 @@ class DepartmentController extends Controller
 
     public function search(Request $request)
     {
-        $partners = Department::where('name','LIKE',$request->keyword)->get();
-
-        return Inertia::render('Partners/index', [
-            'partners' => $partners
-        ]);
+        if($request->keyword!='null'){
+            $model = Department::with('users');
+            $model->where('name', 'like', '%' . $request->keyword . '%');
+            $partners = $model->where('status',1)->orderBy('id','desc')->paginate(7);
+            return Inertia::render('Partners/index', [
+                'partners' => $partners,
+                'isOpen' => false
+            ]);
+        }else return Redirect::route('partners.index');   
     }
 
     private function createSlug($title, $id = 0)

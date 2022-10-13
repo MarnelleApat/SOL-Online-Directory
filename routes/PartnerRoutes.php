@@ -20,7 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/partners/{slug}', [DepartmentController::class, 'view' ])
         ->name('partners.view');
 
-    Route::get('/partners/search', [DepartmentController::class, 'search' ])
+    Route::get('/partners/search/{keyword}', [DepartmentController::class, 'search' ])
         ->name('partners.search');
 
 });

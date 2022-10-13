@@ -35,7 +35,7 @@
         websiteUrl: null,
     });
 
-    const formSearch = useForm({
+    const formSearch = reactive({
         keyword: null,
     });
 
@@ -52,8 +52,15 @@
     };
 
     const submitSearch = () => {
-        formSearch.get(route('/'), {
-        });
+        Inertia.visit('/partners/search/'+formSearch.keyword, formSearch,{
+            method: 'get',
+            onSuccess:res => {
+                formSearch.defaults('keyword', formSearch.keyword)
+            },
+            onError: errors => {
+                
+            },
+        })
     };
 
     setTimeout(()=>{
@@ -148,7 +155,7 @@
                 <!-- searching feature -->
                 <form @submit.prevent="submitSearch" class="mb-8">
                     <div class="flex flex-cols">
-                        <BreezeInput id="keyword" type="text" class="block w-full rounded-none" placeholder="Search Partners" v-model="formSearch.keyword" required autofocus autocomplete="keyword" />
+                        <BreezeInput id="keyword" type="text" class="block w-full rounded-none" placeholder="Search Partners" v-model="formSearch.keyword" autofocus autocomplete="keyword" />
                         <BreezeButton class="ml-4 py-1 rounded-none" :class="{ 'opacity-25': formSearch.processing }" :disabled="formSearch.processing">Search</BreezeButton>
                     </div>
                 </form>
