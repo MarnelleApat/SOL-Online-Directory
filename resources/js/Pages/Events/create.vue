@@ -8,14 +8,23 @@
     import BreezeLabel from '@/Components/Label.vue';
     import { reactive, ref } from 'vue';
     import SelectCategories from '@/Utilities/SelectCategories.vue'
+    import Multiselect from '@vueform/multiselect'
     import { useStore } from 'vuex'
     import { computed } from '@vue/reactivity';
     const store = useStore()
 
+    // Get the selected categories via computer property
     const getCat = computed(() => store.getters.getSelectedCategories)
 
     // init the required props
     defineProps({
+        errors: {
+            type: Object
+        },
+        events: {
+            type: Object,
+            default: []
+        },
         categories: {
             type: Object,
             required: true
@@ -26,11 +35,27 @@
         }
     })
 
+    // multiselect model
+    const selectedDepartment = ref('')
+
     // Manually set the 2 types of event
-    const eventType = ref(["Physical", "Online"]);
+    const eventType = ref([
+        {value: "Physical", label: "Phyical"},
+        {value: "Online", label: "Online"}
+    ]);
 
     // separate declaration for event schedule
     let schedules = reactive([{startDate:'', startTime:'', endTime:''}]);
+
+    //composition for physical event
+    const venue = reactive({
+        location: null,
+        city: null,
+        postalcode: null,
+        url: null,
+        meetingID: null,
+        passcode: null
+    })
 
     // add schedule function
     const addSchedule = () => {
@@ -43,23 +68,9 @@
         schedules.splice(selectedIdx,1)
     }
 
-    //composition for physical event
-    const venue = reactive({
-        location: null,
-        city: null,
-        postalcode: null
-    })
-
-    //composition for online event
-    const online = reactive({
-        url: null,
-        meetingID: null,
-        passcode: null
-    })
-
     // the whole form models
     const eventForm = useForm({
-        department: '',
+        department: selectedDepartment,
         programCode: null,
         title: null,
         description: null,
@@ -67,12 +78,13 @@
         emailIncharge: null,
         registrationFee: null,
         validity: null,
-        limitRegistration: null,
+        limitReg: null,
         checkHandler: null,
-        eventType: '',
-        schedules: null,
-        venue: null,
-        categories: getCat
+        eventType: null,
+        venue: venue,
+        schedules: schedules,
+        categories: getCat,
+        banner: null
     })
 
     // Process for submission of Event to the backend
@@ -96,6 +108,9 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+                <pre>{{events}}</pre>
+
                 <form @submit.prevent="eventSubmitForm">
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
@@ -120,7 +135,7 @@
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group">
-                                    <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                    <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300" @click="$refs.banner.click()">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -131,52 +146,69 @@
                                         </svg>
                                         <span class="group-hover:text-gray-100">Upload Banner</span>
                                     </div>
+                                    <input type="file" @input="eventForm.banner" class="hidden" ref="banner" />
                                 </div>
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
                                     <div class="flex flex-col p-6">
                                         <h5 class="font-bold text-xl text-gray-600 mb-6">Event Details</h5>
 
-                                        <div class="flex flex-col gap-2">
-                                            <BreezeLabel for="Department" value="Select Partners" class="flex items-center font-bold" />
-                                            <select v-model="eventForm.department" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-none shadow-sm">
-                                                <option value="" selected>Select Department</option>
-                                                <option v-for="department in departments" :value="department.id">{{department.name}}</option>
-                                            </select>
+                                        <div class="flex flex-col">
+                                            <BreezeLabel for="Department" value="Partners" class="flex items-center font-bold" />
+                                            <Multiselect
+                                                style="justify-content: flex-start;"
+                                                v-model="selectedDepartment"
+                                                value-prop="slug"
+                                                placeholder="Select Partner"
+                                                :close-on-select="false"
+                                                :object="true"
+                                                :options="departments"
+                                                track-by="name"
+                                                label="name"
+                                                :class="{ 'multiselect_validation_err':errors.department }"
+                                                >
+
+                                                <template v-slot:singlelabel="label">
+                                                    <div class="multiselect-singleLabel">
+                                                        {{ label.value.name }}
+                                                    </div>
+                                                </template>
+                                            </Multiselect>
+                                            <BreezeInputError :message="errors.department" />
                                         </div>
 
-                                        <div class="flex flex-col gap-2 mt-6">
+                                        <div class="flex flex-col mt-6">
                                             <BreezeLabel for="programCode" value="Program Code" class="flex items-center font-bold" />
-                                            <BreezeInput id="programCode" v-model="eventForm.programCode" type="text" class="mt-1 block w-full rounded-none" placeholder="Unique Reference Code" />
-                                            <BreezeInputError class="mt-2" />
+                                            <BreezeInput required id="programCode" :class="{ 'border-red-600':errors.programCode }" v-model="eventForm.programCode" type="text" class="mt-1 block w-full rounded-none" placeholder="Unique Reference Code" />
+                                            <BreezeInputError :message="errors.programCode" />
                                         </div>
 
-                                        <div class="flex flex-col gap-2 mt-6">
+                                        <div class="flex flex-col mt-6">
                                             <BreezeLabel for="title" value="Title" class="flex items-center font-bold" />
-                                            <BreezeInput id="title" type="text" class="mt-1 block w-full rounded-none" v-model="eventForm.title" placeholder="Title" />
-                                            <BreezeInputError class="mt-2" />
+                                            <BreezeInput required id="title" type="text" :class="{ 'border-red-600':errors.title }" class="mt-1 block w-full rounded-none" v-model="eventForm.title" placeholder="Title" />
+                                            <BreezeInputError :message="errors.title" />
                                         </div>
 
-                                        <div class="flex flex-col gap-2 mt-6">
+                                        <div class="flex flex-col mt-6">
                                             <BreezeLabel for="desc" value="Description" class="flex items-center font-bold" />
-                                            <BreezeTextarea id="desc" rows="6" class="mt-1 block w-full rounded-none" v-model="eventForm.description" placeholder="About the event" />
-                                            <BreezeInputError class="mt-2" />
+                                            <BreezeTextarea id="desc" rows="6" :class="{ 'border-red-600':errors.description }" class="mt-1 block w-full rounded-none" v-model="eventForm.description" placeholder="About the event" />
+                                            <BreezeInputError :message="errors.description" />
                                         </div>
 
                                         <div class="flex gap-2 mt-6">
                                             <div class="w-5/12">
                                                 <BreezeLabel for="eventIncharge" value="Person Incharge" class="flex items-center font-bold" />
-                                                <BreezeInput id="eventIncharge" type="text" class="mt-1 block w-full rounded-none" v-model="eventForm.eventIncharge" placeholder="Contact Person" />
-                                                <BreezeInputError class="mt-2" />
+                                                <BreezeInput required id="eventIncharge" :class="{ 'border-red-600':errors.personIncharge }" type="text" class="mt-1 block w-full rounded-none" v-model="eventForm.personIncharge" placeholder="Contact Person" />
+                                                <BreezeInputError :message="errors.personIncharge" />
                                             </div>
                                             <div class="w-5/12">
                                                 <BreezeLabel for="email" value="Email Incharge" class="flex items-center font-bold" />
-                                                <BreezeInput id="email" type="email" class="mt-1 block w-full rounded-none" v-model="eventForm.email" placeholder="Event contact email" />
-                                                <BreezeInputError class="mt-2" />
+                                                <BreezeInput required id="email" :class="{ 'border-red-600':errors.emailIncharge }" type="email" class="mt-1 block w-full rounded-none" v-model="eventForm.emailIncharge" placeholder="Event contact email" />
+                                                <BreezeInputError :message="errors.emailIncharge" />
                                             </div>
                                             <div class="w-1/6">
                                                 <BreezeLabel for="price" value="Price (in SGD)" class="flex items-center font-bold" />
-                                                <BreezeInput id="price" type="number" step="0.01" class="mt-1 block w-full rounded-none" v-model="eventForm.price" placeholder="00.00" />
-                                                <BreezeInputError class="mt-2" />
+                                                <BreezeInput required id="price" :class="{ 'border-red-600':errors.registrationFee }" type="number" step="0.01" class="mt-1 block w-full rounded-none" v-model="eventForm.registrationFee" placeholder="00.00" />
+                                                <BreezeInputError :message="errors.registrationFee" />
                                             </div>
                                         </div>
 
@@ -188,8 +220,8 @@
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                             <div class="w-1/4">
-                                                <BreezeLabel for="limit" value="Limit Regiration" class="flex items-center font-bold" />
-                                                <BreezeInput id="limit" v-model="eventForm.limitRegistration" type="number" class="mt-1 block w-full rounded-none" min="0" placeholder="0 for no registration" />
+                                                <BreezeLabel for="limit" value="Limit Registration" class="flex items-center font-bold" />
+                                                <BreezeInput id="limit" v-model="eventForm.limitReg" type="number" class="mt-1 block w-full rounded-none" min="0" placeholder="0 for unlimited" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
 
@@ -203,39 +235,46 @@
                                     </div>
                                 </div>
 
-                                <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
+                                <div class="bg-white shadow-sm border ring-opacity-75 p-4">
                                     <div class="flex flex-col p-6">
                                         <div class="flex flex-col gap-2">
                                             <BreezeLabel for="type" value="Type of Event" class="flex items-center font-bold" />
-                                            <select v-model="eventForm.eventType" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-none shadow-sm">
+                                            <!-- <select v-model="eventForm.eventType" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-none shadow-sm">
                                                 <option value="" selected>Online/Physical</option>
                                                 <option v-for="event_type in eventType" :value="event_type">{{event_type}}</option>
-                                            </select>
+                                            </select> -->
+                                            <Multiselect
+                                                v-model="eventForm.eventType"
+                                                placeholder="Online or Physical Event"
+                                                :close-on-select="true"
+                                                :options="eventType"
+                                                :class="{ 'multiselect_validation_err':errors.eventType }" />
+                                            <BreezeInputError :message="errors.eventType" />
                                         </div>
                                         <template v-if="eventForm.eventType=='Physical'">
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="venue" value="Event Venue or Location" class="flex items-center font-bold" />
-                                                <BreezeInput id="venue" v-model="venue.location" type="text" class="mt-1 block w-full rounded-none" placeholder="Street / Block / Bldg Address" />
+                                                <BreezeInput required id="venue" v-model="venue.location" type="text" class="mt-1 block w-full rounded-none" placeholder="Street / Block / Bldg Address" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
 
                                             <div class="flex gap-2 mt-2">
-                                                <BreezeInput v-model="venue.city" ty pe="text" class="mt-1 block w-full rounded-none" placeholder="City" />
+                                                <BreezeInput required v-model="venue.city" type="text" class="mt-1 block w-full rounded-none" placeholder="City" />
                                                 <BreezeInputError class="mt-2" />
-                                                <BreezeInput v-model="venue.postalcode" type="text" class="mt-1 block w-full rounded-none" min="0" placeholder="Postal Code" />
+                                                <BreezeInput required v-model="venue.postalcode" type="text" class="mt-1 block w-full rounded-none" min="0" placeholder="Postal Code" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                         </template>
                                         <template v-if="eventForm.eventType=='Online'">
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="meetingLink" value="Online Event Details" class="flex items-center font-bold" />
-                                                <BreezeInput id="meetingLink" v-model="online.url" type="text" class="mt-1 block w-full rounded-none" placeholder="Meeting URL (ex.https://zoom.sg)" />
+                                                <BreezeInput required id="meetingLink" v-model="venue.url" type="text" class="mt-1 block w-full rounded-none" placeholder="Meeting URL (ex.https://zoom.sg)" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                             <div class="flex gap-2 mt-2">
-                                                <BreezeInput v-model="online.meetingID" type="text" class="mt-1 block w-full rounded-none" placeholder="Meeting ID" />
+                                                <BreezeInput required v-model="venue.meetingID" type="text" class="mt-1 block w-full rounded-none" placeholder="Meeting ID" />
                                                 <BreezeInputError class="mt-2" />
-                                                <BreezeInput v-model="online.passcode" type="text" class="mt-1 block w-full rounded-none" min="0" placeholder="Meeting Password" />
+                                                <BreezeInput required v-model="venue.passcode" type="text" class="mt-1 block w-full rounded-none" min="0" placeholder="Meeting Password" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                         </template>
@@ -262,15 +301,15 @@
                                             <div class="w-full">
                                                 <p v-if="schedules.length > 1">Session {{indx+1}}:</p>
                                                 <p>Start Date</p>
-                                                <BreezeInput type="date" class="w-full rounded-none" placeholder="Start Date" v-model="schedule.startDate" />
+                                                <BreezeInput required type="date" class="w-full rounded-none" placeholder="Start Date" v-model="schedule.startDate" />
                                             </div>
                                             <div class="w-full">
                                                 <p>Start Time</p>
-                                                <BreezeInput type="time" class="w-full rounded-none" v-model="schedule.startTime" />
+                                                <BreezeInput required type="time" class="w-full rounded-none" v-model="schedule.startTime" />
                                             </div>
                                             <div class="w-full">
                                                 <p>End Time</p>
-                                                <BreezeInput type="time" class="w-full rounded-none" v-model="schedule.endTime" />
+                                                <BreezeInput required type="time" class="w-full rounded-none" v-model="schedule.endTime" />
                                             </div>
                                             <div class="pb-3">
                                                 <svg v-if="indx > 0"
@@ -290,7 +329,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-end mt-4">
-                                <BreezeButton class="w-1/4 inline-block rounded-none text-lg font-semiblod py-3 px-4" :class="{ 'opacity-25': eventSubmitForm.processing }" :disabled="eventSubmitForm.processing">SUBMIT</BreezeButton>
+                                <BreezeButton class="w-1/4 inline-block rounded-none text-[15px] font-semibold py-3 px-4" :class="{ 'opacity-25': eventSubmitForm.processing }" :disabled="eventSubmitForm.processing">SUBMIT</BreezeButton>
                             </div>
                         </div>
                     </div>
@@ -300,3 +339,19 @@
         </div>
     </BreezeAuthenticatedLayout>
 </template>
+
+<style>
+    .multiselect-singleLabel {
+        padding-block: 5px;
+        padding-inline: 10px;
+        border-radius: 22px;
+        text-align: center;
+        background: #35495e;
+        color: #fff;
+    }
+
+    .multiselect_validation_err {
+        border: 1px solid #dd4c4c !important;
+    }
+
+</style>

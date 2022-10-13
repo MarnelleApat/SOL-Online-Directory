@@ -30,7 +30,12 @@ class EventController extends Controller
 
     public function store(EventRequest $request)
     {
-        dd($request->all());
+        $event = $request->all();
+
+        return Inertia::render('Events/create',[
+            'events' => $event,
+        ]);
+
     }
 
     public function create()

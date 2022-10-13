@@ -81,11 +81,6 @@
         border-radius: 50%;;
     }
 
-    .user-image {
-        margin: 0 6px 0 0;
-        border-radius: 50%;
-        height: 22px;
-    }
     .multiselect-clear {
         position: absolute !important;
         right: 7px !important;
