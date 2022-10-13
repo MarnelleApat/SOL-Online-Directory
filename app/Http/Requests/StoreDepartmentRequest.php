@@ -24,7 +24,19 @@ class StoreDepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|min:5',
+            'description' => 'required',
+            'websiteUrl' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Name field is required',
+            'name.min' => 'Name field must be atleast 5 characters',
+            'description.required' => 'Description field is required',
+            'websiteUrl.required' => 'Website Url field is required'
         ];
     }
 }

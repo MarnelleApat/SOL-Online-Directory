@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Department;
+use App\Models\{ Department, DepartmentUser };
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Redirect;
-use App\Http\Requests\{ StoreDepartmentRequest,UpdateDepartmentRequest };
+use App\Http\Requests\{ StoreDepartmentRequest, UpdateDepartmentRequest };
+use Auth;
 
 class DepartmentController extends Controller
 {
@@ -36,6 +37,11 @@ class DepartmentController extends Controller
             'description' => $request->description,
             'websiteUrl' => $request->websiteUrl,
             'status' => 1,
+        ]);
+
+        DepartmentUser::create([
+            'department_id' => $partners->id,
+            'user_id' => Auth::user()->id
         ]);
 
         if($partners)
