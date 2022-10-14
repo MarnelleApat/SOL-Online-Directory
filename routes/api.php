@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
+
+    // api for Media request
+    Route::get('/media/all', [\App\Http\Controllers\MediaController::class, 'all' ])
+        ->name('allMedia.api');
+
 });
-
-
-Route::get('allCategories', [\App\Http\Controllers\CategoryController::class, 'getAll']);

@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref } from 'vue'
+    import { onMounted, reactive, ref } from 'vue'
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle, } from '@headlessui/vue'
 
     const isOpen = ref(false)
@@ -26,18 +26,27 @@
         { id: 10, oneWordTxt: 'HelloNeptune', txtColor: '543210', bgColor: '000000'},
     ])
 
+    // all media variable holder
+    const allMedia = ref([])
+
+    // get all the media items
+    const getAllMedia = axios.get(route('allMedia.api'))
+        .then((response) => {
+            allMedia.value = response.data.data
+        })
+
     const checkSelected = ref(false)
     const setSelected = (selectedImg) => {
 
         // check if there's a previous selected item
-        const getPreviousSelected = dummyImg.filter((element) => element.isSelected)
+        const getPreviousSelected = allMedia.value.filter((element) => element.isSelected)
 
         //if there is/are. Get those object array and remove the key in the object
         if(getPreviousSelected.length > 0)
             getPreviousSelected.forEach((element) => { delete element.isSelected })
 
         // set the new selected to the clicked item
-        const selected = dummyImg.find((element) => { return element.id === selectedImg.id })
+        const selected = allMedia.value.find((element) => { return element.id === selectedImg.id })
         selected.isSelected = true
     }
 
@@ -67,14 +76,16 @@
                             </div>
 
                             <div class="border my-10 max-h-[550px] overflow-y-auto">
+
                                 <div class="grid grid-cols-5 gap-5 p-5">
-                                    <div v-for="img in dummyImg" @click="setSelected(img)" :class="{ 'ring-offset-purple-800/[.50] ring-4':img.isSelected }" class="w-full bg-white border shadow-sm cursor-pointer hover:ring-offset-purple-800/[.50] hover:ring-4">
-                                        <span v-if="img.isSelected" class="mx-auto absolute z-50">
+                                    <div v-for="media in allMedia" @click="setSelected(media)" :class="{ 'ring-offset-purple-800/[.50] ring-4':media.isSelected }" class="w-full bg-white border shadow-sm cursor-pointer hover:ring-offset-purple-800/[.50] hover:ring-4">
+                                        <span v-if="media.isSelected" class="mx-auto absolute z-50">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-green-300">
                                                 <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
                                             </svg>
                                         </span>
-                                        <img :src="`https://via.placeholder.com/150/${img.bgColor}/${img.txtColor}/?text=${img.oneWordTxt}`" />
+                                        <!-- <img :src="`https://via.placeholder.com/150/${img.bgColor}/${img.txtColor}/?text=${img.oneWordTxt}`" /> -->
+                                        {{media}}
                                     </div>
                                 </div>
                             </div>

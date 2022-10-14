@@ -141,7 +141,7 @@
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group">
                                     <MediaDialog>
-                                        <template #title>Select Banner Photo</template>
+                                        <template #title>Select Profile Photo</template>
                                         <template #button>
                                             <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg"

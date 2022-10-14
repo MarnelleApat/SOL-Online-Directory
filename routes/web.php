@@ -22,7 +22,6 @@ Route::get('/users', [\App\Http\Controllers\DashboardController::class, 'index' 
 Route::get('/settings', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('settings');
 Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index' ])->middleware(['auth', 'verified'])->name('categories.index');
 
-
 require __DIR__.'/EventRoutes.php';
 
 require __DIR__.'/PartnerRoutes.php';
