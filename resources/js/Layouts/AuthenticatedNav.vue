@@ -28,7 +28,7 @@
                         <BreezeNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </BreezeNavLink>
-                        <BreezeNavLink :href="route('partners.index')" :active="route().current('partners.index') || route().current('partners.create')">
+                        <BreezeNavLink :href="route('partners.index')" :active="route().current('partners.index') || route().current('partners.create') || route().current('partners.view') || route().current('partners.search')">
                             Partners
                         </BreezeNavLink>
                         <BreezeNavLink :href="route('events.index')" :active="route().current('events.*') || route().current('event.*') || route().current('event.profile')">

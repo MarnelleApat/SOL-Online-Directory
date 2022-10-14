@@ -26,17 +26,18 @@ class UpdateDepartmentRequest extends FormRequest
         return [
             'name' => 'required|min:5',
             'description' => 'required',
-            'websiteUrl' => 'required'
+            'websiteUrl' => 'required|url'
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Name field is required',
-            'name.min' => 'Name field must be atleast 5 characters',
-            'description.required' => 'Description field is required',
-            'websiteUrl.required' => 'Website Url field is required'
+            'name.required' => 'Name field is required!',
+            'name.min' => 'Name field must be atleast 5 characters!',
+            'description.required' => 'Description field is required!',
+            'websiteUrl.required' => 'Website url field is required!',
+            'websiteUrl.url' => 'Website url field should be a valid url!'
         ];
     }
 }

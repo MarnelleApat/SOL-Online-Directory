@@ -3,18 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{ Department, DepartmentUser };
+use App\Models\Department;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
-use Redirect;
 use App\Http\Requests\{ StoreDepartmentRequest, UpdateDepartmentRequest };
 use Auth;
+use App\Service\Slug;
 
 class DepartmentController extends Controller
 {
+    public function __construct(Slug $slug,Department $department)
+    {   
+        $this->slug = $slug;
+        $this->deparment_model = $department;
+    }
+
     public function index()
     {
-        $partners = Department::with('users')
+        $partners = $this->deparment_model->with('users')
         ->where('status',1)
         ->orderBy('id','desc')->paginate(7);
 
@@ -31,82 +37,57 @@ class DepartmentController extends Controller
 
     public function store(StoreDepartmentRequest $request)
     {
-        $partners = Department::create([
+        $user = Auth::user();
+        
+        $partners = $this->deparment_model->create([
             'name' => $request->name,
-            'slug' => $this->createSlug($request->name),
+            'slug' => $this->slug->createSlug($request->name,$this->deparment_model),
             'description' => $request->description,
             'websiteUrl' => $request->websiteUrl,
             'status' => 1,
         ]);
 
-        DepartmentUser::create([
-            'department_id' => $partners->id,
-            'user_id' => Auth::user()->id
-        ]);
+        $user->departments()->attach($partners->id);
 
         if($partners)
-            return Redirect::route('partners.index');
+            return redirect()->route('partners.index');
     }
 
     public function update(UpdateDepartmentRequest $request)
     {
-        $partners = Department::where('slug',$request->slug)->update([
+        $partners = $this->deparment_model->where('slug',$request->slug)->update([
             'name' => $request->name,
             'description' => $request->description,
             'websiteUrl' => $request->websiteUrl,
             'status' => $request->status,
         ]);
 
-        return Redirect::route('partners.view', ['slug' => $request->slug]);
+        return redirect()->route('partners.view', ['slug' => $request->slug]);
     }
 
     public function view($slug)
     {
-        $partners = Department::where('slug',$slug)->first();
-        
-        return Inertia::render('Partners/view', [
-            'partners' => $partners,
-            'status' => $partners->status
-        ]); 
+        if($slug!='search'){
+            $partners = $this->deparment_model->where('slug',$slug)->first();
+            
+            return Inertia::render('Partners/view', [
+                'partners' => $partners,
+                'status' => $partners->status
+            ]);
+        }else return redirect()->route('partners.index'); 
+
     }
 
     public function search(Request $request)
     {
         if($request->keyword!='null'){
-            $model = Department::with('users');
+            $model = $this->deparment_model->with('users');
             $model->where('name', 'like', '%' . $request->keyword . '%');
             $partners = $model->where('status',1)->orderBy('id','desc')->paginate(7);
             return Inertia::render('Partners/index', [
                 'partners' => $partners,
                 'isOpen' => false
             ]);
-        }else return Redirect::route('partners.index');   
-    }
-
-    private function createSlug($title, $id = 0)
-    {
-        $slug = Str::slug($title);
-        $allSlugs = $this->getRelatedSlugs($slug, $id);
-        if (! $allSlugs->contains('slug', $slug)){
-            return $slug;
-        }
-
-        $i = 1;
-        $is_contain = true;
-        do {
-            $newSlug = $slug . '-' . $i;
-            if (!$allSlugs->contains('slug', $newSlug)) {
-                $is_contain = false;
-                return $newSlug;
-            }
-            $i++;
-        } while ($is_contain);
-    }
-
-    private function getRelatedSlugs($slug, $id = 0)
-    {
-        return Department::select('slug')->where('slug', 'like', $slug.'%')
-        ->where('id', '<>', $id)
-        ->get();
+        }else return redirect()->route('partners.index');   
     }
 }
