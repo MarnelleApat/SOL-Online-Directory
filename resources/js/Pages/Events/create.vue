@@ -115,17 +115,22 @@
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
                             <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5">
-                                <div class="flex justify-center px-4 py-32 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    <span class="group-hover:text-gray-100">Upload Photo</span>
-                                </div>
+                                <MediaDialog>
+                                    <template #title>Select Profile Photo</template>
+                                    <template #button>
+                                        <div class="flex justify-center px-4 py-32 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                            <span class="group-hover:text-gray-100">Upload Photo</span>
+                                        </div>
+                                    </template>
+                                </MediaDialog>
                             </div>
 
                             <!-- Select Category Component -->
@@ -136,6 +141,7 @@
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group">
                                     <MediaDialog>
+                                        <template #title>Select Banner Photo</template>
                                         <template #button>
                                             <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -159,6 +165,7 @@
                                         <div class="flex flex-col">
                                             <BreezeLabel for="Department" value="Partners" class="flex items-center font-bold" />
                                             <Multiselect
+                                                required
                                                 style="justify-content: flex-start;"
                                                 v-model="selectedDepartment"
                                                 value-prop="slug"
@@ -248,6 +255,7 @@
                                                 <option v-for="event_type in eventType" :value="event_type">{{event_type}}</option>
                                             </select> -->
                                             <Multiselect
+                                                required
                                                 v-model="eventForm.eventType"
                                                 placeholder="Online or Physical Event"
                                                 :close-on-select="true"
