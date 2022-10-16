@@ -1,6 +1,10 @@
 <script setup>
-    import { onMounted, reactive, ref } from 'vue'
+    import { reactive, ref } from 'vue'
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle, } from '@headlessui/vue'
+
+    // init for vuex and assign to store variable
+    import { useStore } from 'vuex'
+    const store = useStore()
 
     const isOpen = ref(false)
 
@@ -8,46 +12,53 @@
         isOpen.value = false
     }
 
-    const openModal = () => {
+    const openModal = async () => {
+        await getAllMedia()
         isOpen.value = true
     }
 
-    // dummy data
-    const dummyImg = reactive([
-        { id: 1, oneWordTxt: 'HelloWorld', txtColor: 'FFFFFF', bgColor: '000000'},
-        { id: 2, oneWordTxt: 'SteamsOfLife', txtColor: 'DDDDDD', bgColor: '000000'},
-        { id: 3, oneWordTxt: 'Apple14Pro', txtColor: '123452', bgColor: '000000'},
-        { id: 4, oneWordTxt: 'VecoBill', txtColor: 'ABCDEF', bgColor: '000000'},
-        { id: 5, oneWordTxt: 'PLDTBill', txtColor: 'EFEFEFE', bgColor: '000000'},
-        { id: 6, oneWordTxt: 'GlobeBill', txtColor: 'BBBBBB', bgColor: '000000'},
-        { id: 7, oneWordTxt: 'Condo', txtColor: 'AAAAAA', bgColor: '000000'},
-        { id: 8, oneWordTxt: 'FilipinoHomes', txtColor: 'EEEEEE', bgColor: '000000'},
-        { id: 9, oneWordTxt: 'TestBird', txtColor: '123123', bgColor: '000000'},
-        { id: 10, oneWordTxt: 'HelloNeptune', txtColor: '543210', bgColor: '000000'},
-    ])
+    const props = defineProps({
+            imgType: {
+                type: String,
+                required: true
+            }
+        })
 
     // all media variable holder
     const allMedia = ref([])
 
     // get all the media items
-    const getAllMedia = axios.get(route('allMedia.api'))
-        .then((response) => {
-            allMedia.value = response.data.data
-        })
+    const getAllMedia = () => axios.get(route('allMedia.api'))
+            .then((response) => {
+                 allMedia.value = response.data.data
+            })
 
-    const checkSelected = ref(false)
-    const setSelected = (selectedImg) => {
+    let selectedPhoto = reactive([])
+    const setSelected = async (selectedImg) => {
 
         // check if there's a previous selected item
         const getPreviousSelected = allMedia.value.filter((element) => element.isSelected)
+
+        // set the new selected to the clicked item
+        const selected = allMedia.value.find((element) => { return element.id === selectedImg.id })
 
         //if there is/are. Get those object array and remove the key in the object
         if(getPreviousSelected.length > 0)
             getPreviousSelected.forEach((element) => { delete element.isSelected })
 
-        // set the new selected to the clicked item
-        const selected = allMedia.value.find((element) => { return element.id === selectedImg.id })
+        // create new key 'isSelected' as flag to the selected item
         selected.isSelected = true
+        selectedPhoto = selected
+
+    }
+
+    const selectImage = async () => {
+
+        const img_type = props.imgType
+
+        // pass the selected image data to the store state for global use
+        store.dispatch('storeSelectedImage', {selectedPhoto, img_type})
+        isOpen.value = await false
     }
 
 </script>
@@ -75,8 +86,7 @@
                                 <p class="text-sm text-gray-500"> Select image for your banner or profile photo. Or you can upload image. </p>
                             </div>
 
-                            <div class="border my-10 max-h-[550px] overflow-y-auto">
-
+                            <div v-if="allMedia.length" class="border my-10 max-h-[550px] overflow-y-auto">
                                 <div class="grid grid-cols-5 gap-5 p-5">
                                     <div v-for="media in allMedia" @click="setSelected(media)" :class="{ 'ring-offset-purple-800/[.50] ring-4':media.isSelected }" class="w-full bg-white border shadow-sm cursor-pointer hover:ring-offset-purple-800/[.50] hover:ring-4">
                                         <span v-if="media.isSelected" class="mx-auto absolute z-50">
@@ -84,10 +94,16 @@
                                                 <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
                                             </svg>
                                         </span>
-                                        <!-- <img :src="`https://via.placeholder.com/150/${img.bgColor}/${img.txtColor}/?text=${img.oneWordTxt}`" /> -->
-                                        {{media}}
+                                        <img :src="media.file_name+media.slug" />
                                     </div>
                                 </div>
+                            </div>
+                            <div v-else role="status" class="flex justify-center items-center my-10">
+                                <svg class="inline mr-2 w-12 h-12 text-gray-200 animate-spin dark:text-gray-500 dark:opacity-70 fill-gray-200 dark:fill-gray-300" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                                </svg>
+                                <span class="sr-only">Loading...</span>
                             </div>
 
                             <div class="mt-4 absolute flex w-full justify-between gap-3 right-0 px-10 bottom-8">
@@ -105,7 +121,7 @@
                                     </button>
                                     <button type="button"
                                         class="inline-flex justify-center uppercase rounded-sm border border-transparent bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200"
-                                        @click="closeModal">Select Image
+                                        @click="selectImage">Select Image
                                     </button>
                                 </div>
                             </div>

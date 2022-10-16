@@ -16,6 +16,8 @@
 
     // Get the selected categories via computer property
     const getCat = computed(() => store.getters.getSelectedCategories)
+    const getBanner = computed(() => store.state.selectedBannerImg)
+    const getPhoto = computed(() => store.state.selectedPhotoImg)
 
     // init the required props
     defineProps({
@@ -114,11 +116,12 @@
                 <form @submit.prevent="eventSubmitForm">
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
-                            <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5">
-                                <MediaDialog>
+                            <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5 relative h-56">
+                                <MediaDialog imgType="photo">
                                     <template #title>Select Profile Photo</template>
                                     <template #button>
-                                        <div class="flex justify-center px-4 py-32 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                        <img v-if="getPhoto.file_name" :src="getPhoto.file_name+getPhoto.slug" class="h-56 w-full absolute" />
+                                        <div v-else class="absolute w-full flex justify-center h-56 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
@@ -139,11 +142,12 @@
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
-                                <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group">
-                                    <MediaDialog>
-                                        <template #title>Select Profile Photo</template>
+                                <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group relative h-40">
+                                    <MediaDialog imgType="banner">
+                                        <template #title>Select Banner Photo</template>
                                         <template #button>
-                                            <div class="flex justify-center px-4 py-20 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                            <img v-if="getBanner.file_name" :src="getBanner.file_name+getBanner.slug" class="h-40 w-full absolute" />
+                                            <div v-else class="absolute flex justify-center w-full h-40 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
