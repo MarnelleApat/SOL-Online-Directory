@@ -45,7 +45,7 @@
 </script>
 
 <template>
-    <Head title="View Partner"/>
+    <Head title="Partners" />
 
     <BreezeAuthenticatedLayout>
 
@@ -80,26 +80,20 @@
 
                                             <div class="flex flex-col gap-2">
                                                 <BreezeLabel for="name" value="Name" class="flex items-center font-bold" />
-                                                <BreezeInput id="name" type="text" class="mt-1 block w-full rounded-none" placeholder="Name" v-model="form.name" required/>
+                                                <BreezeInput id="name" type="text" class="mt-1 block w-full rounded-none" placeholder="Name" v-model="form.name" autofocus autocomplete="name" required/>
                                                 <BreezeInputError class="mt-2" v-if="errors.name" :message="errors.name"/>
                                             </div>
 
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="websiteUrl" value="Website Url" class="flex items-center font-bold" />
-                                                <BreezeInput id="websiteUrl" type="text" class="mt-1 block w-full rounded-none" placeholder="Website Url" v-model="form.websiteUrl" required />
+                                                <BreezeInput id="websiteUrl" type="text" class="mt-1 block w-full rounded-none" placeholder="Website Url" v-model="form.websiteUrl" autofocus autocomplete="websiteUrl" required />
                                                 <BreezeInputError class="mt-2" v-if="errors.websiteUrl" :message="errors.websiteUrl" />
                                             </div>
 
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="desc" value="Description" class="flex items-center font-bold" />
-                                                <BreezeTextarea id="desc" rows="6" class="mt-1 block w-full rounded-none" placeholder="Description" v-model="form.description" required />
+                                                <BreezeTextarea id="desc" rows="6" class="mt-1 block w-full rounded-none" placeholder="Description" v-model="form.description" autofocus autocomplete="description" required />
                                                 <BreezeInputError class="mt-2" v-if="errors.description" :message="errors.description"/>
-                                            </div>
-
-                                            <div class="flex flex-col gap-2 mt-6">
-                                                <BreezeLabel for="slug" value="Slug" class="flex items-center font-bold" />
-                                                <BreezeInput id="slug" type="text" class="mt-1 block w-full rounded-none" placeholder="Website Url" v-model="form.slug" readonly />
-                                                <BreezeInputError class="mt-2" />
                                             </div>
 
                                             <div class="flex flex-col gap-2 mt-6">
@@ -107,19 +101,19 @@
                                                 <Switch
                                                     id="status"
                                                     v-model="form.status"
-                                                    :class="form.status ? 'bg-blue-600' : 'bg-gray-200'"
+                                                    :class="form.status ? 'bg-orange-500' : 'bg-gray-400'"
                                                     class="relative inline-flex h-6 w-11 items-center rounded-full"
                                                 >
-                                                    <span
+                                                    <span 
                                                     :class="form.status ? 'translate-x-6' : 'translate-x-1'"
                                                     class="inline-block h-4 w-4 transform rounded-full bg-white transition"
                                                     />
                                                 </Switch>
                                                 <BreezeInputError class="mt-2" />
+                                                
                                             </div>
-
-                                            <div class="flex flex-col gap-2 mt-6">
-                                                <BreezeButton class="inline-flex w-full justify-center border border-transparent sm:text-sm rounded-none" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Update</BreezeButton>
+                                            <div class="flex flex-col gap-2 mt-10">
+                                                <BreezeButton class="inline-flex w-1/4 justify-center border border-transparent sm:text-sm rounded-none" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Update</BreezeButton>
                                             </div>
                                         </div>
                                     </div>
