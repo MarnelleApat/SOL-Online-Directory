@@ -1,29 +1,29 @@
 <script setup>
     import Multiselect from '@vueform/multiselect'
-
-    // init for vuex and assign to store variable
-    import { useStore } from 'vuex'
-    const store = useStore()
+    import { ref } from 'vue';
 
     // init for multiselect model
     const value = []
 
-    // declare loading state
-    let isLoading = false
+    const finalCategories = ref([])
 
     // component is required to accept the categories masterlist via props
-    defineProps({
-        categories: {
-            type: Object,
-            required: true
-        }
-    })
+    const props = defineProps({
+            categories: {
+                type: Object,
+                required: true
+            }
+        })
 
-    // dispatch the vuex action 'storeSelectedCat' to get the final category selected and passed to the parent component
+    const categoryData = async () => {
+        return await props.categories
+    }
+
+    const emit = defineEmits(['selectedCategories'])
+
     const onSelect = async (value) => {
-        isLoading = true
-        await store.dispatch('storeSelectedCat', value)
-        isLoading = false
+        finalCategories.value = value
+        await emit('selectedCategories', value)
     }
 
 </script>
@@ -37,13 +37,12 @@
                 mode="tags"
                 @input="onSelect"
                 :object=true
-                :loading="isLoading"
                 value-prop="slug"
                 :close-on-select="false"
                 placeholder="Select category"
                 track-by="name"
                 label="name"
-                :options="categories">
+                :options="categoryData">
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
                         {{ option.name }}

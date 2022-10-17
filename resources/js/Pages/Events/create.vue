@@ -11,12 +11,6 @@
     import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
     import Multiselect from '@vueform/multiselect'
     import MediaDialog from '@/Utilities/MediaDialog.vue'
-    import { useStore } from 'vuex'
-    import { computed } from '@vue/reactivity';
-    const store = useStore()
-
-    // Get the selected categories via computer property
-    const getCat = computed(() => store.getters.getSelectedCategories)
 
     // init the required props
     defineProps({
@@ -48,6 +42,7 @@
     const getPhoto = ref('')
     const getBanner = ref('')
     const getSpeakers = ref('')
+    const getCategories = ref('')
 
     // Manually set the 2 types of event
     const eventType = ref([
@@ -94,7 +89,7 @@
         eventType: null,
         venue: venue,
         schedules: schedules,
-        categories: getCat,
+        categories: getCategories,
         banner: getBanner,
         photoImg: getPhoto,
         speakers: getSpeakers
@@ -119,6 +114,11 @@
     // Emit (event) for Speakers
     const getSelectedSpeakers = (emitedSpeakers) => {
         getSpeakers.value = emitedSpeakers
+    }
+
+    // Emit (event) for Categories
+    const getSelectedCategories = (emitedCategories) => {
+        getCategories.value = emitedCategories
     }
 
 
@@ -160,7 +160,8 @@
                             </div>
 
                             <!-- Select Category Component -->
-                            <SelectCategories :categories="categories" />
+                            <SelectCategories :categories="categories" @selected-categories="getSelectedCategories" />
+
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">

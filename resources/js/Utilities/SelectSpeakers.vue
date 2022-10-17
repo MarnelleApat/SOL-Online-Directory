@@ -12,18 +12,18 @@
 
     // component is required to accept the categories masterlist via props
     const props = defineProps({
-        speakers: {
-            type: Object,
-            required: true
-        }
-    })
+            speakers: {
+                type: Object,
+                required: true
+            }
+        })
 
     const speakersData = async () => {
         return await props.speakers
     }
 
     const onSelect = async (value) => {
-        previewSpeaker.value = await value
+        previewSpeaker.value = value
         await emit('selectedSpeakers', value)
     }
 
