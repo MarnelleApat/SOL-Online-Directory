@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Department;
 use Inertia\Inertia;
 use App\Models\Event;
+use App\Models\Speaker;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -43,11 +44,13 @@ class EventController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $departments= Department::all();
+        $departments = Department::all();
+        $speakers = Speaker::all();
 
         return Inertia::render('Events/create',[
             'categories' => $categories,
-            'departments'=> $departments
+            'departments'=> $departments,
+            'speakers'=> $speakers
         ]);
     }
 

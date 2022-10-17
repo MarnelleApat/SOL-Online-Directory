@@ -41,6 +41,12 @@ class Event extends Model
         return $this->belongsToMany(Category::class, 'category_event', 'event_id', 'category_id');
     }
 
+    public function speakers()
+    {
+        return $this->belongsToMany(Category::class, 'event_speaker', 'event_id', 'speaker_id');
+    }
+
+
     public function department()
     {
         return $this->belongsTo(Department::class);

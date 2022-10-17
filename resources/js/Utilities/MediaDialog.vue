@@ -2,10 +2,6 @@
     import { reactive, ref } from 'vue'
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle, } from '@headlessui/vue'
 
-    // init for vuex and assign to store variable
-    import { useStore } from 'vuex'
-    const store = useStore()
-
     const isOpen = ref(false)
 
     const closeModal = () => {
@@ -52,13 +48,12 @@
 
     }
 
-    const selectImage = async () => {
+    // create emit event
+    const emit = defineEmits(['selectedImage'])
 
-        const img_type = props.imgType
-
-        // pass the selected image data to the store state for global use
-        store.dispatch('storeSelectedImage', {selectedPhoto, img_type})
-        isOpen.value = await false
+    const selectImage = () => {
+        emit('selectedImage', selectedPhoto)
+        isOpen.value = false
     }
 
 </script>

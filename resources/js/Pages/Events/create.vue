@@ -8,6 +8,7 @@
     import BreezeLabel from '@/Components/Label.vue';
     import { reactive, ref } from 'vue';
     import SelectCategories from '@/Utilities/SelectCategories.vue'
+    import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
     import Multiselect from '@vueform/multiselect'
     import MediaDialog from '@/Utilities/MediaDialog.vue'
     import { useStore } from 'vuex'
@@ -16,8 +17,6 @@
 
     // Get the selected categories via computer property
     const getCat = computed(() => store.getters.getSelectedCategories)
-    const getBanner = computed(() => store.state.selectedBannerImg)
-    const getPhoto = computed(() => store.state.selectedPhotoImg)
 
     // init the required props
     defineProps({
@@ -35,11 +34,20 @@
         departments: {
             type: Object,
             required: true
+        },
+        speakers: {
+            type: Object,
+            required: true
         }
     })
 
     // multiselect model
     const selectedDepartment = ref('')
+
+    // holders of the emitted data from another components
+    const getPhoto = ref('')
+    const getBanner = ref('')
+    const getSpeakers = ref('')
 
     // Manually set the 2 types of event
     const eventType = ref([
@@ -87,18 +95,33 @@
         venue: venue,
         schedules: schedules,
         categories: getCat,
-        banner: null,
-        photoImg: null
+        banner: getBanner,
+        photoImg: getPhoto,
+        speakers: getSpeakers
     })
 
     // Process for submission of Event to the backend
     const eventSubmitForm = () => {
         // console.log(eventForm.data)
-        // console.log(venue)
-        // console.log(online)
-
         eventForm.post(route('event.store'));
     }
+
+    // Emit (event) for Photo Image
+    const getSeletedImage = (emitedImage) => {
+        getPhoto.value = emitedImage
+    }
+
+    // Emit (event) for Banner
+    const getSeletedBanner = (emitedBanner) => {
+        getBanner.value = emitedBanner
+    }
+
+    // Emit (event) for Speakers
+    const getSelectedSpeakers = (emitedSpeakers) => {
+        getSpeakers.value = emitedSpeakers
+    }
+
+
 
 </script>
 
@@ -117,7 +140,7 @@
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
                             <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5 relative h-56">
-                                <MediaDialog imgType="photo">
+                                <MediaDialog imgType="photo" @selected-image="getSeletedImage">
                                     <template #title>Select Profile Photo</template>
                                     <template #button>
                                         <img v-if="getPhoto.file_name" :src="getPhoto.file_name+getPhoto.slug" class="h-56 w-full absolute" />
@@ -138,12 +161,11 @@
 
                             <!-- Select Category Component -->
                             <SelectCategories :categories="categories" />
-
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group relative h-40">
-                                    <MediaDialog imgType="banner">
+                                    <MediaDialog imgType="banner" @selected-image="getSeletedBanner">
                                         <template #title>Select Banner Photo</template>
                                         <template #button>
                                             <img v-if="getBanner.file_name" :src="getBanner.file_name+getBanner.slug" class="h-40 w-full absolute" />
@@ -341,6 +363,14 @@
                                             </div>
                                         </div>
 
+                                    </div>
+                                </div>
+
+                                <div class="bg-white shadow-sm border ring-opacity-75 p-4">
+                                    <div class="flex flex-col p-6">
+                                        <h5 class="font-bold text-xl text-gray-600 mb-4">Speaker/s</h5>
+                                        <!-- load speakers masterlist -->
+                                        <SelectSpeakers :speakers="speakers" @selected-speakers="getSelectedSpeakers" />
                                     </div>
                                 </div>
                             </div>

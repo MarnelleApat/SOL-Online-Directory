@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Speaker extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'speakers';
 
@@ -20,5 +20,9 @@ class Speaker extends Model
         'phoneNumber',
         'description',
     ];
+
+    public function events() {
+        return $this->belongsToMany(Event::class, 'event_speaker', 'event_id', 'speaker_id');
+    }
 
 }
