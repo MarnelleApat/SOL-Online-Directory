@@ -375,7 +375,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex justify-end mt-4">
+                            <div class="flex justify-between mt-4">
+                                <BreezeButton type="reset" class="text-gray-100 bg-gray-500 hover:bg-gray-400 inline-block rounded-none text-[15px] font-semibold py-3 px-4">RESET</BreezeButton>
                                 <BreezeButton class="w-1/4 inline-block rounded-none text-[15px] font-semibold py-3 px-4" :class="{ 'opacity-25': eventSubmitForm.processing }" :disabled="eventSubmitForm.processing">SUBMIT</BreezeButton>
                             </div>
                         </div>
