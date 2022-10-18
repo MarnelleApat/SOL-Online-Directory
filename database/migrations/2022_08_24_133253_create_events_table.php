@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('department_id');
-            $table->unsignedInteger('tenant_id');
-            $table->string('programCode');
+            $table->string('programCode')->unique();
             $table->string('title')->nullable();
             $table->string('slug')->unique();
             $table->text('description')->nullable();

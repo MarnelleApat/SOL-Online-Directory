@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Service;
+namespace App\Services;
 
 use Illuminate\Support\Str;
 
 class Slug
 {
-    public function createSlug($title,$model, $id = 0)
+    public function createSlug($title='',$model, $id = 0)
     {
+
         $slug = Str::slug($title);
         $allSlugs = $this->getRelatedSlugs($slug,$model, $id);
         if (! $allSlugs->contains('slug', $slug)){
@@ -28,7 +29,9 @@ class Slug
 
     public function getRelatedSlugs($slug,$model, $id = 0)
     {
-        return $model->select('slug')->where('slug', 'like', $slug.'%')
+        $m = $model::class;
+
+        return $m::select('slug')->where('slug', 'like', $slug.'%')
         ->where('id', '<>', $id)
         ->get();
     }

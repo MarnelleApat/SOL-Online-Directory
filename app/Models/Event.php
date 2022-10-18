@@ -32,6 +32,8 @@ class Event extends Model
         'hasPromo',
         'totalRegistrants',
         'thumbnail',
+        'banner',
+        'user_id',
         'created_at',
         'updated_at'
     ];
@@ -43,7 +45,7 @@ class Event extends Model
 
     public function speakers()
     {
-        return $this->belongsToMany(Category::class, 'event_speaker', 'event_id', 'speaker_id');
+        return $this->belongsToMany(Speaker::class, 'event_speaker', 'event_id', 'speaker_id');
     }
 
 

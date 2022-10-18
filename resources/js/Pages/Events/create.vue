@@ -161,7 +161,6 @@
 
                             <!-- Select Category Component -->
                             <SelectCategories :categories="categories" @selected-categories="getSelectedCategories" />
-
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">

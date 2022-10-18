@@ -8,12 +8,12 @@ use Inertia\Inertia;
 use Illuminate\Support\Str;
 use App\Http\Requests\{ StoreDepartmentRequest, UpdateDepartmentRequest };
 use Auth;
-use App\Service\Slug;
+use App\Services\Slug;
 
 class DepartmentController extends Controller
 {
     public function __construct(Slug $slug,Department $department)
-    {   
+    {
         $this->slug = $slug;
         $this->deparment_model = $department;
     }
@@ -38,7 +38,7 @@ class DepartmentController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         $user = Auth::user();
-        
+
         $partners = $this->deparment_model->create([
             'name' => $request->name,
             'slug' => $this->slug->createSlug($request->name,$this->deparment_model),
@@ -69,12 +69,12 @@ class DepartmentController extends Controller
     {
         if($slug!='search'){
             $partners = $this->deparment_model->where('slug',$slug)->first();
-            
+
             return Inertia::render('Partners/view', [
                 'partners' => $partners,
                 'status' => $partners->status
             ]);
-        }else return redirect()->route('partners.index'); 
+        }else return redirect()->route('partners.index');
 
     }
 
@@ -88,6 +88,6 @@ class DepartmentController extends Controller
                 'partners' => $partners,
                 'isOpen' => false
             ]);
-        }else return redirect()->route('partners.index');   
+        }else return redirect()->route('partners.index');
     }
 }

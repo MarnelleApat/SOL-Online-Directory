@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('event_id');
             $table->unsignedBigInteger('speaker_id');
 
-            $table->foreign('event_id')->references('id')->on('event_courses')->onDelete('cascade');
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('speaker_id')->references('id')->on('speakers')->onDelete('cascade');
         });
     }
