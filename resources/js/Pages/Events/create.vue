@@ -97,7 +97,6 @@
 
     // Process for submission of Event to the backend
     const eventSubmitForm = () => {
-        // console.log(eventForm.data)
         eventForm.post(route('event.store'));
     }
 
@@ -161,6 +160,7 @@
 
                             <!-- Select Category Component -->
                             <SelectCategories :categories="categories" @selected-categories="getSelectedCategories" />
+                            <BreezeInputError :message="errors.categories" />
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
@@ -370,6 +370,7 @@
                                     <div class="flex flex-col p-6">
                                         <h5 class="font-bold text-xl text-gray-600 mb-4">Speaker/s</h5>
                                         <!-- load speakers masterlist -->
+                                        <BreezeInputError :message="errors.speakers" />
                                         <SelectSpeakers :speakers="speakers" @selected-speakers="getSelectedSpeakers" />
                                     </div>
                                 </div>

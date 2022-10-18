@@ -30,7 +30,9 @@ class EventRequest extends FormRequest
             'description'    => 'required',
             'personIncharge' => 'required',
             'emailIncharge'  => 'required|email',
-            'schedules'       => 'required',
+            'schedules'      => 'required',
+            'categories'     => 'required',
+            'speakers'       => 'required',
             'registrationFee'=> 'required|numeric|min:0',
             'venue'          => 'required',
             'limitReg'       => 'numeric|min:0',
@@ -51,9 +53,11 @@ class EventRequest extends FormRequest
             'emailIncharge.required'    => 'Contact email address is required',
             'emailIncharge.email'       => 'Contact email address is not valid',
             'registrationFee.required'  => 'Price is required',
-            'schedules.required'         => 'Event must have schedule date',
+            'schedules.required'        => 'Event must have schedule date',
             'limitReg.numeric'          => 'Must be a valid number',
             'eventType.required'        => 'Event type is required',
+            'categories.required'       => 'Select atleast 1 category',
+            'speakers.required'         => 'Select at least 1 speaker',
         ];
     }
 }

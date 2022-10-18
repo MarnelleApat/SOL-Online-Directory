@@ -33,8 +33,6 @@ class EventController extends Controller
     public function store(EventRequest $request, Slug $slug, Event $event)
     {
 
-        // dd($request->speakers);
-
         // proceed to insertion once all passed the validation
         $eventData = Event::create([
             'title' => $request->title,
@@ -58,28 +56,25 @@ class EventController extends Controller
 
         if($eventData)
         {
-            // categories => storing the categories to the pivor table
-            foreach($request->categories as $category) {
-                $eventData->categories()->attach($category['id']);
+            // categories => check and store the categories to the pivor table
+            if($request->categories)
+            {
+                foreach($request->categories as $category) {
+                    $eventData->categories()->attach($category['id']);
+                }
             }
 
-            // speakers => storing the speakers to the pivor table
-            foreach($request->speakers as $speaker) {
-                $eventData->speakers()->attach($speaker['id']);
+            // speakers => check and store the speakers to the pivor table
+            if(count($request->speakers))
+            {
+                foreach($request->speakers as $speaker) {
+                    $eventData->speakers()->attach($speaker['id']);
+                }
             }
         }
 
-
-        dd(Event::find($eventData->id));
-
-
-        // speakers
-
-        // redirect to specific page after the insertion
-
-        // return Inertia::render('Events/create',[
-        //     'events' => $event,
-        // ]);
+        // redirect to Event Profile after the insertion
+        return redirect()->route('event.profile', $eventData->slug);
 
     }
 
@@ -101,6 +96,7 @@ class EventController extends Controller
         $event = Event::where('slug', $slug)
             ->with('department')
             ->with('categories')
+            ->with('speakers')
             ->with('user')
             ->first();
 
