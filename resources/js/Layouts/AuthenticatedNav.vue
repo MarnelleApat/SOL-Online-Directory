@@ -40,6 +40,9 @@
                         <BreezeNavLink :href="route('users.index')" :active="route().current('users.index')">
                             Users
                         </BreezeNavLink>
+                        <BreezeNavLink :href="route('category.index')" :active="route().current('category.index')">
+                            Categories
+                        </BreezeNavLink>
                         <BreezeNavLink :href="route('settings')" :active="route().current('settings')">
                             Settings
                         </BreezeNavLink>
@@ -92,6 +95,7 @@
                 <BreezeResponsiveNavLink :href="route('events.index')" :active="route().current('events.index') || route().current('events.create')">Events</BreezeResponsiveNavLink>
                 <BreezeResponsiveNavLink :href="route('registrants.index')" :active="route().current('registrants.index')">Registrations</BreezeResponsiveNavLink>
                 <BreezeResponsiveNavLink :href="route('users.index')" :active="route().current('users.index')">Users</BreezeResponsiveNavLink>
+                <BreezeResponsiveNavLink :href="route('category.index')" :active="route().current('category.index')">Category</BreezeResponsiveNavLink>
                 <BreezeResponsiveNavLink :href="route('settings')" :active="route().current('settings')">Settings</BreezeResponsiveNavLink>
             </div>
 

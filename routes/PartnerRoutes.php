@@ -8,9 +8,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/partners', [DepartmentController::class, 'index' ])
         ->name('partners.index');
 
-    Route::get('/partners/create', [DepartmentController::class, 'create' ])
-        ->name('partners.create');
-
     Route::post('/partners/store', [DepartmentController::class, 'store' ])
         ->name('partners.store');
 
