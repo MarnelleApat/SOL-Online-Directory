@@ -25,4 +25,6 @@ require __DIR__.'/EventRoutes.php';
 
 require __DIR__.'/PartnerRoutes.php';
 
+require __DIR__.'/CategoryRoutes.php';
+
 require __DIR__.'/auth.php';
