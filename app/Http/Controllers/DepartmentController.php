@@ -12,15 +12,9 @@ use App\Services\Slug;
 
 class DepartmentController extends Controller
 {
-    public function __construct(Slug $slug,Department $department)
-    {
-        $this->slug = $slug;
-        $this->deparment_model = $department;
-    }
-
     public function index()
     {
-        $partners = $this->deparment_model->with('users')
+        $partners = Department::with('users')
         ->where('status',1)
         ->orderBy('id','desc')->paginate(7);
 
@@ -35,13 +29,13 @@ class DepartmentController extends Controller
         return Inertia::render('Partners/create');
     }
 
-    public function store(StoreDepartmentRequest $request)
+    public function store(StoreDepartmentRequest $request,Slug $slug,Department $department)
     {
         $user = Auth::user();
 
-        $partners = $this->deparment_model->create([
+        $partners = Department::create([
             'name' => $request->name,
-            'slug' => $this->slug->createSlug($request->name,$this->deparment_model),
+            'slug' => $slug->createSlug($request->name,$department),
             'description' => $request->description,
             'websiteUrl' => $request->websiteUrl,
             'status' => 1,
@@ -55,7 +49,7 @@ class DepartmentController extends Controller
 
     public function update(UpdateDepartmentRequest $request)
     {
-        $partners = $this->deparment_model->where('slug',$request->slug)->update([
+        $partners = Department::where('slug',$request->slug)->update([
             'name' => $request->name,
             'description' => $request->description,
             'websiteUrl' => $request->websiteUrl,
@@ -68,7 +62,7 @@ class DepartmentController extends Controller
     public function view($slug)
     {
         if($slug!='search'){
-            $partners = $this->deparment_model->where('slug',$slug)->first();
+            $partners = Department::where('slug',$slug)->first();
 
             return Inertia::render('Partners/view', [
                 'partners' => $partners,
@@ -81,7 +75,7 @@ class DepartmentController extends Controller
     public function search(Request $request)
     {
         if($request->keyword!='null'){
-            $model = $this->deparment_model->with('users');
+            $model = Department::with('users');
             $model->where('name', 'like', '%' . $request->keyword . '%');
             $partners = $model->where('status',1)->orderBy('id','desc')->paginate(7);
             return Inertia::render('Partners/index', [
