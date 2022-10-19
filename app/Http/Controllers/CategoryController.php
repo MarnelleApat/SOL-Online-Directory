@@ -19,7 +19,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        return 1;
+        return;
     }
 
     public function view($slug)
