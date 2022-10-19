@@ -139,7 +139,7 @@
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
                             <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5 relative h-56">
-                                <MediaDialog imgType="photo" @selected-image="getSeletedImage">
+                                <MediaDialog @selected-image="getSeletedImage">
                                     <template #title>Select Profile Photo</template>
                                     <template #button>
                                         <img v-if="getPhoto.file_name" :src="getPhoto.file_name+getPhoto.slug" class="h-56 w-full absolute" />
@@ -165,7 +165,7 @@
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
                                 <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group relative h-40">
-                                    <MediaDialog imgType="banner" @selected-image="getSeletedBanner">
+                                    <MediaDialog @selected-image="getSeletedBanner">
                                         <template #title>Select Banner Photo</template>
                                         <template #button>
                                             <img v-if="getBanner.file_name" :src="getBanner.file_name+getBanner.slug" class="h-40 w-full absolute" />

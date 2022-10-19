@@ -13,13 +13,6 @@
         isOpen.value = true
     }
 
-    const props = defineProps({
-            imgType: {
-                type: String,
-                required: true
-            }
-        })
-
     // all media variable holder
     const allMedia = ref([])
 
