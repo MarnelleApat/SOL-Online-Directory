@@ -44,7 +44,6 @@ class EventController extends Controller
             'description' => $request->description,
             'checkHandler' => $request->checkHandler,
             'eventIncharge' => $request->personIncharge,
-            'schedule' => json_encode($request->schedules),
             'activeUntil' => $request->validity,
             'price' => $request->registrationFee,
             'venue' => json_encode($request->venue),
@@ -113,6 +112,7 @@ class EventController extends Controller
             ->with('department')
             ->with('categories')
             ->with('speakers')
+            ->with('schedules')
             ->with('user')
             ->first();
 
