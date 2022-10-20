@@ -9,6 +9,7 @@
     import { reactive, ref } from 'vue';
     import SelectCategories from '@/Utilities/SelectCategories.vue'
     import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
+    import Scheduler from '@/Utilities/Scheduler.vue'
     import Multiselect from '@vueform/multiselect'
     import MediaDialog from '@/Utilities/MediaDialog.vue'
 
@@ -51,7 +52,7 @@
     ]);
 
     // separate declaration for event schedule
-    let schedules = reactive([{startDate:'', startTime:'', endTime:''}]);
+    const schedules = ref([]);
 
     //composition for physical event
     const venue = reactive({
@@ -62,17 +63,6 @@
         meetingID: null,
         passcode: null
     })
-
-    // add schedule function
-    const addSchedule = () => {
-        schedules.push({startDate:'', startTime:'', endTime:''})
-    }
-
-    //remove schedule function
-    const removeSchedule = (selected) => {
-        let selectedIdx = schedules.indexOf(selected,0)
-        schedules.splice(selectedIdx,1)
-    }
 
     // the whole form models
     const eventForm = useForm({
@@ -118,6 +108,11 @@
     // Emit (event) for Categories
     const getSelectedCategories = (emitedCategories) => {
         getCategories.value = emitedCategories
+    }
+
+    // Emit (event) for Schedules
+    const getFinalSchedules = (emitedSchedules) => {
+        schedules.value = emitedSchedules
     }
 
 
@@ -321,49 +316,8 @@
                                 </div>
 
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
-                                    <div class="flex flex-col p-6">
-                                        <div class="flex gap-2 justify-between mb-4">
-                                            <h5 class="font-bold text-xl text-gray-600">Schedule Details</h5>
-                                            <svg
-                                                @click="addSchedule()"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill="currentColor"
-                                                class="w-8 h-8 text-blue-500 hover:text-blue-400 cursor-pointer">
-                                                <path fill-rule="evenodd"
-                                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                                                clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div v-for="(schedule, indx) in schedules" class="flex gap-3 my-3 items-end justify-between">
-                                            <div class="w-full">
-                                                <p v-if="schedules.length > 1">Session {{indx+1}}:</p>
-                                                <p>Start Date</p>
-                                                <BreezeInput required type="date" class="w-full rounded-none" placeholder="Start Date" v-model="schedule.startDate" />
-                                            </div>
-                                            <div class="w-full">
-                                                <p>Start Time</p>
-                                                <BreezeInput required type="time" class="w-full rounded-none" v-model="schedule.startTime" />
-                                            </div>
-                                            <div class="w-full">
-                                                <p>End Time</p>
-                                                <BreezeInput required type="time" class="w-full rounded-none" v-model="schedule.endTime" />
-                                            </div>
-                                            <div class="pb-3">
-                                                <svg v-if="indx > 0"
-                                                    @click="removeSchedule(schedule)"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="currentColor"
-                                                    class="w-6 h-6 text-red-400 hover:text-red-600 cursor-pointer">
-                                                    <path fill-rule="evenodd"
-                                                    d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
-                                                    clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                    <BreezeInputError :message="errors.schedules" />
+                                    <Scheduler @get-schedules="getFinalSchedules" />
                                 </div>
 
                                 <div class="bg-white shadow-sm border ring-opacity-75 p-4">

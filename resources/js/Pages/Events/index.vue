@@ -38,6 +38,7 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
                 <!-- searching feature -->
                 <form @submit.prevent="submit" class="mb-8">
                     <div class="flex flex-cols">
@@ -46,7 +47,7 @@
                     </div>
                 </form>
                 <!-- <pre>{{ events.data[0] }}</pre> -->
-                <div class="grid grid-cols-4 gap-10 mb-12">
+                <div class="grid grid-cols-4 gap-8 mb-12">
                     <!-- card for ADD NEW -->
                     <Link :href="route('events.create')">
                         <div class="group">
@@ -65,7 +66,7 @@
 
                     <div v-for="event in events.data" class="w-full bg-white border shadow-sm sm:rounded-lg">
                         <div class="md:shrink-0">
-                            <img class="object-cover h-full w-full" :src="event.thumbnail" alt="Modern building architecture">
+                            <img class="object-cover h-48 w-full" :src="event.thumbnail" alt="Modern building architecture">
                         </div>
                         <div class="px-6 py-4">
                             <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold leading-7">

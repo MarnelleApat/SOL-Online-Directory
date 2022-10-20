@@ -48,6 +48,11 @@ class Event extends Model
         return $this->belongsToMany(Speaker::class, 'event_speaker', 'event_id', 'speaker_id');
     }
 
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
 
     public function department()
     {

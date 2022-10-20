@@ -9,6 +9,7 @@ use App\Models\Speaker;
 use App\Models\Category;
 use App\Models\Department;
 use App\Http\Requests\EventRequest;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
@@ -19,8 +20,10 @@ class EventController extends Controller
         $events = Event::where('status', true)
             ->where('isActive', true)
             ->where('isPublic', true)
+            ->orderBy('id', 'DESC')
             ->with('department')
             ->with('categories')
+            ->with('schedules')
             ->with('user')
             ->paginate(7);
 
@@ -32,7 +35,6 @@ class EventController extends Controller
 
     public function store(EventRequest $request, Slug $slug, Event $event)
     {
-
         // proceed to insertion once all passed the validation
         $eventData = Event::create([
             'title' => $request->title,
@@ -54,9 +56,23 @@ class EventController extends Controller
             'banner' => $request->banner['file_name'],
         ]);
 
+        // after storing the Event record
         if($eventData)
         {
-            // categories => check and store the categories to the pivor table
+            // insert schedule check and store the schedule to the schedule table
+            if($request->schedules)
+            {
+                foreach($request->schedules as $schedule) {
+                    Schedule::create([
+                        'event_id' => $eventData->id,
+                        'date' => $schedule['startDate'],
+                        'startTime' => $schedule['startTime'],
+                        'endTime' => $schedule['endTime'],
+                    ]);
+                }
+            }
+
+            // inser categories => check and store the categories to the pivor table
             if($request->categories)
             {
                 foreach($request->categories as $category) {
@@ -64,7 +80,7 @@ class EventController extends Controller
                 }
             }
 
-            // speakers => check and store the speakers to the pivor table
+            // insert speakers => check and store the speakers to the pivor table
             if(count($request->speakers))
             {
                 foreach($request->speakers as $speaker) {
