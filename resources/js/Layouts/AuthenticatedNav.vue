@@ -40,7 +40,7 @@
                         <BreezeNavLink :href="route('users.index')" :active="route().current('users.index')">
                             Users
                         </BreezeNavLink>
-                        <BreezeNavLink :href="route('category.index')" :active="route().current('category.index')">
+                        <BreezeNavLink :href="route('category.index')" :active="route().current('category.index') || route().current('category.view') || route().current('category.search')">
                             Categories
                         </BreezeNavLink>
                         <BreezeNavLink :href="route('settings')" :active="route().current('settings')">
