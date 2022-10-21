@@ -20,4 +20,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
     Route::get('/media/all', [\App\Http\Controllers\MediaController::class, 'all' ])
         ->name('allMedia.api');
 
+    // api for updating the specific record of the event
+    Route::post('/event/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])
+        ->name('updateEventRecord.api');
+
 });

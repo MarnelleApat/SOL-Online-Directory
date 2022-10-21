@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Http\Requests\EventRequest;
 use App\Models\Schedule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
@@ -120,5 +121,27 @@ class EventController extends Controller
         return Inertia::render('Events/profile', [
             'event' => $event
         ]);
+    }
+
+
+    // API Method => Update specific column in the event located at the Profile View
+    public function updateRecord(Request $request, Event $event)
+    {
+        // validate and terminate process once failed
+        if(!$request->newData) {
+            return response()->json(false, 302);
+        }
+
+        // find the Event and continue the updating
+        $event = Event::find($request->event_id);
+
+        if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
+            $newData = $request->newData['file_name'];
+        else
+            $newData = $request->newData;
+
+        $event->update([$request->columnName => $newData]);
+
+        return response()->json($event, 200);
     }
 }

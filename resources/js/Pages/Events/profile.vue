@@ -1,38 +1,62 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head } from '@inertiajs/inertia-vue3';
-    import { ref } from 'vue';
+    import { reactive, ref } from 'vue';
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
     import categories from '@/Utilities/Categories.vue'
-
-    import moment from 'moment'
-
     import MediaDialog from '@/Utilities/MediaDialog.vue'
+    import EditRecordModal from '@/Utilities/EditRecordDialog.vue'
+    import moment from 'moment'
+    import { createToaster } from '@meforma/vue-toaster'
 
+    const toaster = createToaster({
+            dismissible: true
+        })
 
     const props = defineProps({
         event: Object
     })
 
+    let event = reactive(props.event)
+
     const getBanner = ref('')
         // Emit (event) for Banner
-    const getSeletedBanner = (emitedBanner) => {
+    const getSeletedBanner = async (emitedBanner) => {
         getBanner.value = emitedBanner
+        await updateImage('banner', emitedBanner)
     }
 
     const getPhoto = ref('')
     // Emit (event) for Photo Image
-    const getSeletedImage = (emitedImage) => {
+    const getSeletedImage = async (emitedImage) => {
         getPhoto.value = emitedImage
+        await updateImage('thumbnail', emitedImage)
+
     }
 
-    const v =  toJSON(props.event.venue);
+    const v = toJSON(event.venue);
 
+    // Update Banner/Photo Image
+    function updateImage(colName, newImage) {
+        axios.post(route('updateEventRecord.api'), { event_id: event['id'], columnName: colName, newData: newImage })
+            .then(() => {
+                toaster.success('Image updated successfully.')
+            })
+            .catch((error) => {
+                toaster.error(error.message+'. Please contact administrator')
+            })
+    }
+
+    const updateRecord = (value) => {
+        // return route('event.profile', value.slug)
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000)
+    }
 
 </script>
-
 <template>
     <Head title="Event Profile" />
 
@@ -47,20 +71,20 @@
                     <div class="w-1/4">
                         <div class="flex flex-col justify-center gap-10">
                             <div class="flex flex-col">
-                                <MediaDialog @selected-image="getSeletedImage">
-                                    <template #title>Change Image Photo</template>
-                                    <template #button>
-                                        <div class="flex mb-2 cursor-pointer relative">
-                                            <div class="w-56 h-12 bg-gray-100 opacity-75 absolute bottom-0 z-10 flex justify-center font-bold text-xs pt-2 text-gray-600">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                                </svg>
-                                                Change Photo
-                                            </div>
-                                            <img :src="getPhoto.file_name ? getPhoto.file_name : props.event.thumbnail" class="rounded-full h-56 w-56 hover:opacity-75" />
-                                        </div>
-                                    </template>
-                                </MediaDialog>
+                                <div class="flex mb-2 relative">
+                                    <div class="w-56 h-12 bg-gray-100 opacity-75 absolute bottom-0 z-10 flex justify-center font-bold text-xs pt-2 text-gray-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                        Change Photo
+                                    </div>
+                                    <MediaDialog @selected-image="getSeletedImage">
+                                        <template #title>Change Image Photo</template>
+                                        <template #button>
+                                            <img :src="getPhoto.file_name ? getPhoto.file_name : event.thumbnail" class="rounded-full h-56 w-56 hover:opacity-75 cursor-pointer" />
+                                        </template>
+                                    </MediaDialog>
+                                </div>
                             </div>
 
                             <div class="flex flex-col">
@@ -71,7 +95,7 @@
                                     </svg>
                                 </div>
                                 <p class="hover:text-orange-400 uppercase tracking-tight text-2xl text-orange-500 font-bold">
-                                    {{props.event.price > 0 ? currency(props.event.price) : 'FREE'}}
+                                    {{event.price > 0 ? currency(event.price) : 'FREE'}}
                                 </p>
                             </div>
                             <div class="flex flex-col bg-white p-5 border gap-10 h-screen relative">
@@ -82,12 +106,12 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </div>
-                                    <categories :categories="props.event.categories" />
+                                    <categories :categories="event.categories" />
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="text-gray-400 leading-0 text-md">Registered participants:</span>
                                     <p class="hover:text-orange-400 uppercase tracking-tight text-2xl text-orange-500 font-bold">
-                                        {{props.event.totalRegistrants}}
+                                        {{event.totalRegistrants}}
                                     </p>
                                 </div>
                                 <div class="flex flex-col gap-3 absolute bottom-4">
@@ -95,7 +119,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                                         </svg>&nbsp;
-                                        Add Promo
+                                        Promo Offers
                                     </button>
                                     <button class="w-full text-white bg-blue-600 hover:bg-blue-500 py-3 px-4 font-semibold flex justify-start items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -127,24 +151,29 @@
                                             </svg>
                                             Change Banner
                                         </div>
-                                        <img :src="getBanner.file_name ? getBanner.file_name : props.event.banner" class="w-full h-56 hover:opacity-75 rounded-xl" />
+                                        <img :src="getBanner.file_name ? getBanner.file_name : event.banner" class="w-full h-56 hover:opacity-75 rounded-xl" />
                                     </div>
                                 </template>
                             </MediaDialog>
 
                             <div class="uppercase tracking-wide text-sm text-orange-500 font-bold my-5">
-                                Code: <span class="hover:text-orange-300">{{props.event.programCode}}</span>
+                                Code: <span class="hover:text-orange-300">{{event.programCode}}</span>
                             </div>
 
                             <h2 class="text-4xl font-bold leading-0 flex items-baseline gap-3">
-                                {{props.event.title}}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                </svg>
+                                {{event.title}}
+                                <EditRecordModal :recordValue="event.title" colName="title" :event_id="event.id" @success-update="updateRecord">
+                                    <template #title>Update Event Title</template>
+                                    <template #button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                    </template>
+                                </EditRecordModal>
                             </h2>
-                            <p class="text-sm italic text-gray-400">Published last {{toDate(props.event.created_at, 'LL')}}</p>
-                            <p v-if="props.event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
-                                Event registration active until {{toDate(props.event.activeUntil, 'LL')}}
+                            <p class="text-sm italic text-gray-400">Published last {{toDate(event.created_at, 'LL')}}</p>
+                            <p v-if="event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
+                                Event registration active until {{toDate(event.activeUntil, 'LL')}}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                 </svg>
@@ -159,7 +188,7 @@
                                         </svg>
                                     </p>
                                     <p class="p-3">
-                                        {{props.event.description}}
+                                        {{event.description}}
                                     </p>
                                 </div>
                                 <div class="mt-14">
@@ -169,20 +198,20 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </p>
-                                    <p v-for="(sched, idx) in props.event.schedules" class="leading-relaxed px-3">
-                                        <span v-if="props.event.schedules.length > 1">Session {{idx+1}}:</span>
+                                    <p v-for="(sched, idx) in event.schedules" class="leading-relaxed px-3">
+                                        <span v-if="event.schedules.length > 1">Session {{idx+1}}:</span>
                                         {{toDate(sched.date, 'LL')}} @ {{moment(sched.date+' '+sched.startTime).format('hh:mm A')}} - {{moment(sched.date+' '+sched.endTime).format('hh:mm A')}}
                                     </p>
                                 </div>
 
                                 <div class="mt-14">
                                     <p class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
-                                        {{ props.event.type=='Online' ? 'Online Event Platform' : 'Venue' }}
+                                        {{ event.type=='Online' ? 'Online Event Platform' : 'Venue' }}
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </p>
-                                    <p v-if="props.event.type=='Online'" class="leading-relaxed px-3">
+                                    <p v-if="event.type=='Online'" class="leading-relaxed px-3">
                                         <p v-if="v.url">Link: {{v.url}}, </p>
                                         <p v-if="v.meetingID">Meeting ID: {{v.meetingID}}, </p>
                                         <p v-if="v.passcode">Pass Code: {{v.passcode}}</p>
@@ -199,37 +228,37 @@
                                     <p class="text-gray-400 leading-0 text-md">Additional Details:</p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Contact Email:
-                                        <span class="font-bold">{{props.event.email}}</span>
+                                        <span class="font-bold">{{event.email}}</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Event Incharge:
-                                        <span class="capitalize font-bold">{{props.event.eventIncharge}}</span>
+                                        <span class="capitalize font-bold">{{event.eventIncharge}}</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Cheque name to<i>(for check payment)</i>:
-                                        <span class="capitalize font-bold">{{props.event.checkHandler}}</span>
+                                        <span class="capitalize font-bold">{{event.checkHandler}}</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </p>
                                 </div>
 
-                                <div v-if="props.event.speakers.length" class="mt-14">
+                                <div v-if="event.speakers.length" class="mt-14">
                                     <h3 class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
-                                        {{props.event.speakers.length > 1 ? 'Speakers:' : 'Speaker:'}}
+                                        {{event.speakers.length > 1 ? 'Speakers:' : 'Speaker:'}}
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </h3>
 
                                     <div class="grid grid-cols-5 gap-3 my-4">
-                                        <div class="flex flex-col justify-center items-center" v-for="speaker in props.event.speakers">
+                                        <div class="flex flex-col justify-center items-center" v-for="speaker in event.speakers">
                                             <img :src="speaker.profileImg" class="rounded-full h-28 mb-2" />
                                             <p class="font-bold text-gray-500 text-md">{{ speaker.name }}</p>
                                         </div>
@@ -240,8 +269,8 @@
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-300 leading-0 text-sm">Event created by: {{props.event.user.niceName}}</span>
-                    <!-- <pre>{{props.event}}</pre> -->
+                    <span class="text-gray-300 leading-0 text-sm">Event created by: {{event.user.niceName}}</span>
+                    <!-- <pre>{{event}}</pre> -->
                 </div>
             </div>
         </div>
