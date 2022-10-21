@@ -127,7 +127,7 @@
                                             </svg>
                                             Change Banner
                                         </div>
-                                        <img :src="getBanner.file_name ? getBanner.file_name : props.event.banner" class="w-full h-48 hover:opacity-75 rounded-xl" />
+                                        <img :src="getBanner.file_name ? getBanner.file_name : props.event.banner" class="w-full h-56 hover:opacity-75 rounded-xl" />
                                     </div>
                                 </template>
                             </MediaDialog>

@@ -1,21 +1,18 @@
 <script setup>
-    import { reactive, ref } from 'vue';
+    import { reactive, watch } from 'vue';
     import BreezeInput from '@/Components/Input.vue';
 
     // default event schedule
     let schedules = reactive([{startDate:'', startTime:'', endTime:''}]);
 
-    const finalSchedule = ref([])
-
     // init custom events
     const emit = defineEmits(['getSchedules'])
 
     // Default schedule set
-    const addSchedule = async() => {
-        finalSchedule.value = schedules
+    const addSchedule = () => {
         schedules.push({startDate:'', startTime:'', endTime:''})
-        await emit('getSchedules', schedules)
     }
+
 
     //remove schedule function
     const removeSchedule = (selected) => {
@@ -23,6 +20,8 @@
         schedules.splice(selectedIdx,1)
     }
 
+    // Trigger emit event if any changes in the schedule
+    watch(schedules, (newValue) => emit('getSchedules', newValue), { immediate: true })
 
 </script>
 

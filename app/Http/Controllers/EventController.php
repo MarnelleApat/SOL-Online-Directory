@@ -35,6 +35,7 @@ class EventController extends Controller
 
     public function store(EventRequest $request, Slug $slug, Event $event)
     {
+
         // proceed to insertion once all passed the validation
         $eventData = Event::create([
             'title' => $request->title,

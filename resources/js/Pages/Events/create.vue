@@ -115,8 +115,6 @@
         schedules.value = emitedSchedules
     }
 
-
-
 </script>
 
 <template>
@@ -133,7 +131,7 @@
                 <form @submit.prevent="eventSubmitForm">
                     <div class="flex flex-row gap-4">
                         <div class="w-1/4">
-                            <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 cursor-pointer group mb-5 relative h-56">
+                            <div class="bg-white overflow-hidden shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group mb-5 relative h-56">
                                 <MediaDialog @selected-image="getSeletedImage">
                                     <template #title>Select Profile Photo</template>
                                     <template #button>
@@ -159,12 +157,12 @@
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
-                                <div class="bg-white shadow-sm border ring-opacity-75 cursor-pointer group relative h-40">
+                                <div class="bg-white shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group relative h-56">
                                     <MediaDialog @selected-image="getSeletedBanner">
                                         <template #title>Select Banner Photo</template>
                                         <template #button>
-                                            <img v-if="getBanner.file_name" :src="getBanner.file_name+getBanner.slug" class="h-40 w-full absolute" />
-                                            <div v-else class="absolute flex justify-center w-full h-40 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                            <img v-if="getBanner.file_name" :src="getBanner.file_name+getBanner.slug" class="h-56 w-full absolute" />
+                                            <div v-else class="absolute flex justify-center w-full h-56 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
