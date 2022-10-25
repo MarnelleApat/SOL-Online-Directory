@@ -48,7 +48,8 @@
     // Manually set the 2 types of event
     const eventType = ref([
         {value: "Physical", label: "Phyical"},
-        {value: "Online", label: "Online"}
+        {value: "Online", label: "Online"},
+        {value: "Hybrid", label: "Hybrid"},
     ]);
 
     // separate declaration for event schedule
@@ -245,7 +246,7 @@
 
                                         <div class="flex gap-2 mt-6">
                                             <div class="w-1/4">
-                                                <BreezeLabel for="validity" value="Validity" class="flex items-center font-bold" />
+                                                <BreezeLabel for="validity" value="Active Until" class="flex items-center font-bold" />
                                                 <BreezeInput id="validity" v-model="eventForm.validity" type="date" class="mt-1 block w-full rounded-none" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
@@ -256,7 +257,7 @@
                                             </div>
 
                                             <div class="w-1/2">
-                                                <BreezeLabel for="checkHandler" value="Check Handler" class="flex items-center font-bold" />
+                                                <BreezeLabel for="checkHandler" value="Payee Name (For cheque payment)" class="flex items-center font-bold" />
                                                 <BreezeInput id="checkHandler" v-model="eventForm.checkHandler" type="text" class="mt-1 block w-full rounded-none" min="0" placeholder="Name for check payment" />
                                                 <BreezeInputError class="mt-2" />
                                             </div>
@@ -269,10 +270,6 @@
                                     <div class="flex flex-col p-6">
                                         <div class="flex flex-col gap-2">
                                             <BreezeLabel for="type" value="Type of Event" class="flex items-center font-bold" />
-                                            <!-- <select v-model="eventForm.eventType" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-none shadow-sm">
-                                                <option value="" selected>Online/Physical</option>
-                                                <option v-for="event_type in eventType" :value="event_type">{{event_type}}</option>
-                                            </select> -->
                                             <Multiselect
                                                 required
                                                 v-model="eventForm.eventType"
@@ -282,7 +279,7 @@
                                                 :class="{ 'multiselect_validation_err':errors.eventType }" />
                                             <BreezeInputError :message="errors.eventType" />
                                         </div>
-                                        <template v-if="eventForm.eventType=='Physical'">
+                                        <template v-if="eventForm.eventType=='Physical' || eventForm.eventType=='Hybrid'">
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="venue" value="Event Venue or Location" class="flex items-center font-bold" />
                                                 <BreezeInput required id="venue" v-model="venue.location" type="text" class="mt-1 block w-full rounded-none" placeholder="Street / Block / Bldg Address" />
@@ -296,7 +293,7 @@
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                         </template>
-                                        <template v-if="eventForm.eventType=='Online'">
+                                        <template v-if="eventForm.eventType=='Online' || eventForm.eventType=='Hybrid'">
                                             <div class="flex flex-col gap-2 mt-6">
                                                 <BreezeLabel for="meetingLink" value="Online Event Details" class="flex items-center font-bold" />
                                                 <BreezeInput required id="meetingLink" v-model="venue.url" type="text" class="mt-1 block w-full rounded-none" placeholder="Meeting URL (ex.https://zoom.sg)" />

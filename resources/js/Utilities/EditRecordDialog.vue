@@ -1,10 +1,11 @@
 <script setup>
-    import { onMounted, ref, useSlots } from 'vue'
+    import { onMounted, ref, useSlots, watch } from 'vue'
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle, } from '@headlessui/vue'
     import BreezeInput from '@/Components/Input.vue';
     import { createToaster } from '@meforma/vue-toaster'
     import BreezeTextarea from '@/Components/Textarea.vue';
     import BreezeLabel from '@/Components/Label.vue';
+    import BreezeInputError from '@/Components/InputError.vue';
 
     const toaster = createToaster({
             dismissible: true
@@ -14,6 +15,8 @@
 
     const isOpen = ref(false)
     const newData = ref('')
+    const isEmpty = ref(false)
+    const validationMsg = ref("")
 
     const props = defineProps({
         recordValue: {
@@ -30,18 +33,44 @@
         }
     })
 
+    const isEmail       = ref(false);
+    const isText        = ref(false);
+    const isDate        = ref(false);
+    const isTextArea    = ref(false);
+    const isOption      = ref(false);
+
     onMounted(() => {
         newData.value = props.recordValue
+
+        if(props.colName=='activeUntil')
+            isDate.value = true
+        else if(props.colName=='email')
+            isEmail.value = true
+        else if(props.colName=='description')
+            isTextArea.value = true
+        else
+            isText.value = true
+
+
+
     })
 
     const updateRecord = () => {
 
+        //check if empty
+        if(newData.value === "")
+        {
+            isEmpty.value = true
+            validationMsg.value = "Field must not be empty."
+            return false;
+        }
+
         // update only if not empty and the new data is not the same with the previous value
-        if(newData.value !== "" && newData.value !== props.recordValue)
+        if(newData.value !== props.recordValue)
         {
             axios.post(route('updateEventRecord.api'), { event_id: props.event_id, columnName: props.colName, newData: newData.value })
                 .then((response) => {
-                    emit('successUpdate',response.data)
+                    emit('successUpdate',[props.colName, newData.value])
                     isOpen.value = false
                 })
                 .catch((error) => {
@@ -57,6 +86,13 @@
     const openModal = () => {
         isOpen.value = true
     }
+
+    watch(isOpen, (newValue) => {
+        if(newData.value === "") {
+            newData.value = props.recordValue
+            isEmpty.value = false
+        }
+    })
 
 </script>
 
@@ -83,10 +119,12 @@
                             <div class="my-10">
                                 <div class="flex flex-col">
                                     <BreezeLabel for="desc" value="Updated information" class="flex items-center font-bold py-3" />
-                                    <BreezeInput v-if="props.colName=='activeUntil'" required type="date" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
-                                    <BreezeInput v-if="props.colName=='email'" required type="email" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
-                                    <BreezeTextarea v-else-if="props.colName=='description'" id="desc" rows="6" class="w-full rounded-none" v-model="newData" placeholder="About the event" />
-                                    <BreezeInput v-else required type="text" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+
+                                    <BreezeInput v-if="isDate" required type="date" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                                    <BreezeInput v-if="isEmail" required type="email" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                                    <BreezeTextarea v-if="isTextArea" id="desc" rows="6" class="w-full rounded-none" v-model="newData" placeholder="Update record" />
+                                    <BreezeInput v-if="isText" required type="text" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                                    <BreezeInputError v-if="isEmpty" :message="validationMsg" />
                                 </div>
                             </div>
 

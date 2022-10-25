@@ -92,7 +92,9 @@ class EventController extends Controller
         }
 
         // redirect to Event Profile after the insertion
-        return redirect()->route('event.profile', $eventData->slug);
+        return redirect()
+            ->route('event.profile', $eventData->slug)
+            ->with('message', 'Event created successfully. You can now add promos, additional settings and customize registration form');
 
     }
 
@@ -129,7 +131,7 @@ class EventController extends Controller
     public function updateRecord(Request $request, Event $event)
     {
         // validate and terminate process once failed
-        if(!$request->newData) {
+        if($request->newData == "") {
             return response()->json('Input cannot be empty.', 302);
         }
 

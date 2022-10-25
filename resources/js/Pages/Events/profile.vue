@@ -1,7 +1,7 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head } from '@inertiajs/inertia-vue3';
-    import { reactive, ref, watch } from 'vue';
+    import { reactive, ref } from 'vue';
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
@@ -9,6 +9,8 @@
     import MediaDialog from '@/Utilities/MediaDialog.vue'
     import EditRecordModal from '@/Utilities/EditRecordDialog.vue'
     import moment from 'moment'
+    import BreezeLabel from '@/Components/Label.vue';
+    import { Switch } from '@headlessui/vue'
     import { createToaster } from '@meforma/vue-toaster'
 
     const toaster = createToaster({
@@ -21,19 +23,22 @@
     })
 
     let event = reactive(props.event)
+    const isPublic = ref(props.event.isPublic ? true : false)
+    const isActive = ref(props.event.isActive ? true : false)
+    const isStatus = ref(props.event.status ? true : false)
 
     const getBanner = ref('')
         // Emit (event) for Banner
-    const getSeletedBanner = async (emitedBanner) => {
-        getBanner.value = emitedBanner
-        await updateImage('banner', emitedBanner)
+    const getSeletedBanner = async (emittedBanner) => {
+        getBanner.value = emittedBanner
+        await updateImage('banner', emittedBanner)
     }
 
     const getPhoto = ref('')
     // Emit (event) for Photo Image
-    const getSeletedImage = async (emitedImage) => {
-        getPhoto.value = emitedImage
-        await updateImage('thumbnail', emitedImage)
+    const getSeletedImage = async (emittedImage) => {
+        getPhoto.value = emittedImage
+        await updateImage('thumbnail', emittedImage)
 
     }
 
@@ -50,12 +55,27 @@
             })
     }
 
-    const updateRecord = (emitedRecord) => {
-        toaster.success('Record updated successfully.')
-        setTimeout(() => {
-            window.location.reload()
-        }, 2000)
+    const updateRecord = async (emittedRecord) => {
+        let colname = emittedRecord[0]
+        let updatedData = emittedRecord[1]
+        event[colname] = updatedData
+        await toaster.success('Record updated successfully.')
     }
+
+    // update Boolean status
+    const updateStatus = (colname, value) => {
+        let newValue = !value ? 1 : 0
+        axios.post(route('updateEventRecord.api'), { event_id: props.event.id, columnName:colname, newData:newValue })
+            .then((response) => {
+                if(newValue)
+                    toaster.success('Enabled successfully.')
+                else
+                    toaster.error('Disabled sucessfully.')
+            })
+            .catch((error) => {
+                toaster.error(error.message)
+            })
+    };
 
 </script>
 <template>
@@ -68,11 +88,20 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex bg-green-100 border-l-4 border-green-600 shadow-sm mb-10" v-if="$page.props.flash.message">
+                    <div class="text-green-700 p-3 mb-5 w-full" role="alert">
+                        <p class="font-bold mb-2">Success!</p>
+                        <p>{{ $page.props.flash.message }}</p>
+                    </div>
+                    <svg @click="$page.props.flash.message = false" class="fill-current h-6 w-6 text-green-700 hover:text-green-600 mt-2 mr-3" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title>
+                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                    </svg>
+                </div>
                 <div class="flex gap-6">
                     <div class="w-1/4">
-                        <div class="flex flex-col justify-center gap-10">
+                        <div class="flex flex-col justify-center gap-6">
                             <div class="flex flex-col">
-                                <div class="flex mb-2 relative">
+                                <div class="flex mb-2 relative justify-center">
                                     <div class="w-56 h-12 bg-gray-100 opacity-75 absolute bottom-0 z-10 flex justify-center font-bold text-xs pt-2 text-gray-600">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
@@ -87,34 +116,69 @@
                                     </MediaDialog>
                                 </div>
                             </div>
-
-                            <div class="flex flex-col">
+                            <div class="flex flex-col ">
                                 <div class="flex items-baseline space-x-2">
-                                    <span class="text-gray-400 leading-0 text-md">Registration Fee:</span>
+                                    <span class="te/150/000000/FFFFFF/ text-gray-400 leading-0 text-md">Categories:</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                     </svg>
                                 </div>
-                                <p class="hover:text-orange-400 uppercase tracking-tight text-2xl text-orange-500 font-bold">
-                                    {{event.price > 0 ? currency(event.price) : 'FREE'}}
-                                </p>
-                            </div>
-                            <div class="flex flex-col bg-white p-5 border gap-10 h-screen relative">
-                                <div class="flex flex-col">
-                                    <div class="flex items-baseline space-x-2 mb-3">
-                                        <span class="te/150/000000/FFFFFF/xt-gray-400 leading-0 text-md">Categories:</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
-                                    </div>
+                                <div class="flex flex-col bg-white p-5 border">
                                     <categories :categories="event.categories" />
                                 </div>
-                                <div class="flex flex-col">
-                                    <span class="text-gray-400 leading-0 text-md">Registered participants:</span>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <p class="text-md text-gray-500">Featured Poster</p>
+                                <div class="bg-white p-5 border">
+                                    <MediaDialog @selected-image="getSeletedBanner">
+                                        <template #title>Change Banner Photo</template>
+                                        <template #button>
+                                            <div class="flex mb-2 cursor-pointer relative justify-center">
+                                                <div class="w-full bg-gray-100 opacity-75 absolute bottom-0 z-10 flex justify-center items-center font-bold text-xs py-2 text-gray-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                    </svg>
+                                                    Change Featured Poster
+                                                </div>
+                                                <img :src="getBanner.file_name ? getBanner.file_name : event.banner" class="w-full h-80 hover:opacity-75" />
+                                            </div>
+                                        </template>
+                                    </MediaDialog>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col bg-white p-5 border gap-3">
+                                <div class="flex justify-between">
+                                    <BreezeLabel for="isPublic" value="Publish" class="font-bold" /> &nbsp;&nbsp;&nbsp;
+                                    <Switch @click="updateStatus('isPublic', isPublic)" id="isPublic" v-model="isPublic" :class="isPublic ? 'bg-orange-500' : 'bg-gray-400'" class="relative inline-flex h-6 w-11 items-center rounded-full">
+                                        <span :class="isPublic ? 'translate-x-6' : 'translate-x-1'" class="inline-block h-4 w-4 transform rounded-full bg-white transition" />
+                                    </Switch>
+                                </div>
+                                <div class="flex justify-between">
+                                    <BreezeLabel for="isActive" value="Enable/Disable" class="font-bold" /> &nbsp;&nbsp;&nbsp;
+                                    <Switch @click="updateStatus('isActive', isActive)" id="isActive" v-model="isActive" :class="isActive ? 'bg-orange-500' : 'bg-gray-400'" class="relative inline-flex h-6 w-11 items-center rounded-full">
+                                        <span :class="isActive ? 'translate-x-6' : 'translate-x-1'" class="inline-block h-4 w-4 transform rounded-full bg-white transition" />
+                                    </Switch>
+                                </div>
+                                <div class="flex justify-between">
+                                    <BreezeLabel for="isStatus" value="Status" class="font-bold" /> &nbsp;&nbsp;&nbsp;
+                                    <Switch @click="updateStatus('status', isStatus)" id="isStatus" v-model="isStatus" :class="isStatus ? 'bg-orange-500' : 'bg-gray-400'" class="relative inline-flex h-6 w-11 items-center rounded-full">
+                                        <span :class="isStatus ? 'translate-x-6' : 'translate-x-1'" class="inline-block h-4 w-4 transform rounded-full bg-white transition" />
+                                    </Switch>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <p class="text-gray-500 leading-0 text-md flex">Registered participants</p>
+                                <div class="bg-white p-5 border">
                                     <p class="hover:text-orange-400 uppercase tracking-tight text-2xl text-orange-500 font-bold">
                                         {{event.totalRegistrants}}
                                     </p>
                                 </div>
+                            </div>
+
+                            <div class="flex flex-col bg-white p-5 border gap-10 h-[200px] relative">
                                 <div class="flex flex-col gap-3 absolute bottom-4">
                                     <button class="w-full text-white bg-green-600 hover:bg-green-500 py-3 px-4 font-semibold flex justify-start items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -141,47 +205,49 @@
                     </div>
                     <div class="w-3/4">
                         <div class="flex flex-col">
-
-                            <MediaDialog @selected-image="getSeletedBanner">
-                                <template #title>Change Banner Photo</template>
-                                <template #button>
-                                    <div class="flex mb-2 cursor-pointer relative justify-center">
-                                        <div class="w-full bg-gray-100 opacity-75 absolute bottom-0 z-10 flex justify-center items-center font-bold text-xs py-2 text-gray-600">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                            </svg>
-                                            Change Banner
-                                        </div>
-                                        <img :src="getBanner.file_name ? getBanner.file_name : event.banner" class="w-full h-56 hover:opacity-75 rounded-xl" />
+                            <div class="flex flex-row justify-between items-end">
+                                <div>
+                                    <div class="uppercase tracking-wide text-sm text-orange-500 font-bold my-5">
+                                        Code: <span class="hover:text-orange-300">{{event.programCode}}</span>
                                     </div>
-                                </template>
-                            </MediaDialog>
 
-                            <div class="uppercase tracking-wide text-sm text-orange-500 font-bold my-5">
-                                Code: <span class="hover:text-orange-300">{{event.programCode}}</span>
+                                    <h2 class="text-4xl font-bold leading-0 flex items-baseline gap-3">
+                                        {{event.title}}
+                                        <EditRecordModal :recordValue="event.title" colName="title" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
+                                    </h2>
+                                    <p class="text-sm italic text-gray-400">Published last {{toDate(event.created_at, 'LL')}}</p>
+                                    <p v-if="event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
+                                        Event registration active until {{toDate(event.activeUntil, 'LL')}}
+                                        <EditRecordModal :recordValue="event.activeUntil" colName="activeUntil" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
+                                    </p>
+                                </div>
+
+                                <div class="flex flex-col pb-5">
+                                    <div class="flex items-baseline space-x-2">
+                                        <span class="text-gray-400 leading-0 text-md">Registration Fee:</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                    </div>
+                                    <p class="hover:text-orange-400 uppercase tracking-tight text-2xl text-orange-500 font-bold">
+                                        {{event.price > 0 ? currency(event.price) : 'FREE'}}
+                                    </p>
+                                </div>
                             </div>
 
-                            <h2 class="text-4xl font-bold leading-0 flex items-baseline gap-3">
-                                {{event.title}}
-                                <EditRecordModal :recordValue="event.title" colName="title" :event_id="event.id" @success-update="updateRecord">
-                                    <template #button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
-                                    </template>
-                                </EditRecordModal>
-                            </h2>
-                            <p class="text-sm italic text-gray-400">Published last {{toDate(event.created_at, 'LL')}}</p>
-                            <p v-if="event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
-                                Event registration active until {{toDate(event.activeUntil, 'LL')}}
-                                <EditRecordModal :recordValue="event.activeUntil" colName="activeUntil" :event_id="event.id" @success-update="updateRecord">
-                                    <template #button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
-                                    </template>
-                                </EditRecordModal>
-                            </p>
+
 
                             <div class="flex flex-col bg-white p-5 mt-3 border">
                                 <div class="">
@@ -220,15 +286,15 @@
                                         </svg>
                                     </p>
                                     <p v-if="event.type=='Online'" class="leading-relaxed px-3">
-                                        <p v-if="v.url">Link: {{v.url}}, </p>
-                                        <p v-if="v.meetingID">Meeting ID: {{v.meetingID}}, </p>
-                                        <p v-if="v.passcode">Pass Code: {{v.passcode}}</p>
+                                        <p>Link: <a :href="v.url" class="text-blue-600 hover:text-blue-500 font-semibold underline">{{v.url}}</a> </p>
+                                        <p>Meeting ID: {{v.meetingID}}</p>
+                                        <p>Pass Code: {{v.passcode}}</p>
                                     </p>
 
                                     <p v-else class="leading-relaxed px-3">
-                                        <span v-if="v.location">{{v.location}}, </span>
-                                        <span v-if="v.city">{{v.city}}, </span>
-                                        <span v-if="v.postalcode">{{v.postalcode}}</span>
+                                        <span>{{v.location}}, </span>
+                                        <span>{{v.city}}, </span>
+                                        <span>{{v.postalcode}}</span>
                                     </p>
                                 </div>
 
@@ -257,7 +323,7 @@
                                         </EditRecordModal>
                                     </p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
-                                        Cheque name to<i>(for check payment)</i>:
+                                        Payee Name<i>(for cheque payment)</i>:
                                         <span class="capitalize font-bold">{{event.checkHandler}}</span>
                                         <EditRecordModal :recordValue="event.checkHandler" colName="checkHandler" :event_id="event.id" @success-update="updateRecord">
                                             <template #button>
@@ -285,6 +351,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- <pre>{{event}}</pre> -->
                         </div>
                     </div>
                 </div>
