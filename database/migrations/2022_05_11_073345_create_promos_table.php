@@ -15,18 +15,20 @@ return new class extends Migration
     {
         Schema::create('promos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('event_course_id');
-            $table->string('name')->nullable();
-            $table->string('promoCode');
+            $table->integer('event_id');
+            $table->string('name');
+            $table->string('promoCode')->unique();
             $table->string('description')->nullable();
             $table->integer('quantity')->default(0);
             $table->date('validFrom')->nullable();
             $table->date('validTo')->nullable();
             $table->timestamps();
+
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
         });
     }
 
-    
+
     /**
      * Reverse the migrations.
      *

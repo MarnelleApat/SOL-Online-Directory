@@ -50,7 +50,7 @@
                 formSearch.defaults('keyword', formSearch.keyword)
             },
             onError: errors => {
-                
+
             },
         })
     };
@@ -122,7 +122,7 @@
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
                             </svg>
                         </span>
-                    </button> 
+                    </button>
                 </div>
 
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-3 relative mb-5" role="alert" v-if="successNotif">
@@ -134,7 +134,7 @@
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
                             </svg>
                         </span>
-                    </button> 
+                    </button>
                 </div>
 
                 <!-- searching feature -->
@@ -163,19 +163,19 @@
                     </a>
 
                     <div v-for="category in categories.data" class="min-h-[200px] w-full bg-white border shadow-sm sm:rounded-lg">
-                        
+
                         <div class="p-6 ">
                             <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold">
                                 <div class="uppercase tracking-wide text-xs text-orange-500 hover:text-orange-300 font-bold">
                                     <Link :href="route('category.view', category.slug)">
                                         {{category.name}}
-                                    </Link> . 
+                                    </Link> .
                                 </div>
                                 <Link :href="route('category.view', category.slug)" class="block mt-1 text-lg font-bold leading-tight text-gray-500 hover:text-gray-400 truncate ...">
                                     {{category.description}}
                                 </Link>
                             </div>
-                            
+
                         </div>
                     </div>
 
