@@ -1,9 +1,10 @@
 <script setup>
-    import { onMounted, ref } from 'vue'
+    import { onMounted, ref, useSlots } from 'vue'
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle, } from '@headlessui/vue'
     import BreezeInput from '@/Components/Input.vue';
     import { createToaster } from '@meforma/vue-toaster'
-    // import route  from 'vendor/tightenco/ziggy/src/js';
+    import BreezeTextarea from '@/Components/Textarea.vue';
+    import BreezeLabel from '@/Components/Label.vue';
 
     const toaster = createToaster({
             dismissible: true
@@ -40,12 +41,11 @@
         {
             axios.post(route('updateEventRecord.api'), { event_id: props.event_id, columnName: props.colName, newData: newData.value })
                 .then((response) => {
-                    toaster.success('Record updated successfully.')
                     emit('successUpdate',response.data)
                     isOpen.value = false
                 })
                 .catch((error) => {
-                    toaster.error(error.message+'. Please contact administrator')
+                    toaster.error(error.message)
                 })
         }
     }
@@ -76,16 +76,17 @@
                     <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
 
                         <DialogPanel class="w-full max-w-4xl transform overflow-hidden rounded-none bg-white p-10 text-left align-middle shadow-xl transition-all">
-                            <DialogTitle as="h3" class="text-xl font-bold leading-6 text-gray-600 flex flex-col">
-                                <slot name="title"></slot>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Modify the {{props.colName}} of the event</p>
-                                </div>
+                            <DialogTitle as="h3" class="text-xl font-bold leading-4 text-gray-600 flex flex-col">
+                                <h5>Modify Information</h5>
                             </DialogTitle>
 
-                            <div class="border my-10">
-                                <div class="flex">
-                                    <BreezeInput required type="text" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                            <div class="my-10">
+                                <div class="flex flex-col">
+                                    <BreezeLabel for="desc" value="Updated information" class="flex items-center font-bold py-3" />
+                                    <BreezeInput v-if="props.colName=='activeUntil'" required type="date" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                                    <BreezeInput v-if="props.colName=='email'" required type="email" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
+                                    <BreezeTextarea v-else-if="props.colName=='description'" id="desc" rows="6" class="w-full rounded-none" v-model="newData" placeholder="About the event" />
+                                    <BreezeInput v-else required type="text" class="w-full rounded-none" placeholder="Update record" v-model="newData" />
                                 </div>
                             </div>
 
@@ -94,7 +95,7 @@
                                     @click="closeModal">Cancel
                                 </button>
                                 <button type="button" class="inline-flex justify-center uppercase rounded-sm border border-gray-400 bg-gray-700 px-4 py-2 text-xs font-bold text-white hover:bg-gray-600"
-                                    @click="updateRecord">Save
+                                    @click="updateRecord">Save Changes
                                 </button>
 
                             </div>

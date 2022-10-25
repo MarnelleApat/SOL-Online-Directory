@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Http\Requests\EventRequest;
 use App\Models\Schedule;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -129,7 +130,7 @@ class EventController extends Controller
     {
         // validate and terminate process once failed
         if(!$request->newData) {
-            return response()->json(false, 302);
+            return response()->json('Input cannot be empty.', 302);
         }
 
         // find the Event and continue the updating

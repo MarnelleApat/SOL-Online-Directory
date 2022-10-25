@@ -1,7 +1,7 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head } from '@inertiajs/inertia-vue3';
-    import { reactive, ref } from 'vue';
+    import { reactive, ref, watch } from 'vue';
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
@@ -12,7 +12,8 @@
     import { createToaster } from '@meforma/vue-toaster'
 
     const toaster = createToaster({
-            dismissible: true
+            dismissible: true,
+            duration: 2000
         })
 
     const props = defineProps({
@@ -49,10 +50,10 @@
             })
     }
 
-    const updateRecord = (value) => {
-        // return route('event.profile', value.slug)
+    const updateRecord = (emitedRecord) => {
+        toaster.success('Record updated successfully.')
         setTimeout(() => {
-            window.location.reload();
+            window.location.reload()
         }, 2000)
     }
 
@@ -163,7 +164,6 @@
                             <h2 class="text-4xl font-bold leading-0 flex items-baseline gap-3">
                                 {{event.title}}
                                 <EditRecordModal :recordValue="event.title" colName="title" :event_id="event.id" @success-update="updateRecord">
-                                    <template #title>Update Event Title</template>
                                     <template #button>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
@@ -174,18 +174,26 @@
                             <p class="text-sm italic text-gray-400">Published last {{toDate(event.created_at, 'LL')}}</p>
                             <p v-if="event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
                                 Event registration active until {{toDate(event.activeUntil, 'LL')}}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                </svg>
+                                <EditRecordModal :recordValue="event.activeUntil" colName="activeUntil" :event_id="event.id" @success-update="updateRecord">
+                                    <template #button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                    </template>
+                                </EditRecordModal>
                             </p>
 
                             <div class="flex flex-col bg-white p-5 mt-3 border">
                                 <div class="">
                                     <p class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
                                         About:
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.description" colName="description" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </p>
                                     <p class="p-3">
                                         {{event.description}}
@@ -229,23 +237,35 @@
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Contact Email:
                                         <span class="font-bold">{{event.email}}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.email" colName="email" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Event Incharge:
                                         <span class="capitalize font-bold">{{event.eventIncharge}}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.eventIncharge" colName="eventIncharge" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </p>
                                     <p class="leading-relaxed px-3 flex items-baseline gap-2">
                                         Cheque name to<i>(for check payment)</i>:
                                         <span class="capitalize font-bold">{{event.checkHandler}}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.checkHandler" colName="checkHandler" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </p>
                                 </div>
 
