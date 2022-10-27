@@ -184,8 +184,7 @@
 
                                         <div class="flex flex-col">
                                             <BreezeLabel for="Department" value="Partners" class="flex items-center font-bold" />
-                                            <Multiselect
-                                                required
+                                            <Multiselect required
                                                 style="justify-content: flex-start;"
                                                 v-model="selectedDepartment"
                                                 value-prop="slug"
@@ -195,8 +194,7 @@
                                                 :options="departments"
                                                 track-by="name"
                                                 label="name"
-                                                :class="{ 'multiselect_validation_err':errors.department }"
-                                                >
+                                                :class="{ 'multiselect_validation_err':errors.department }">
 
                                                 <template v-slot:singlelabel="label">
                                                     <div class="multiselect-singleLabel">
@@ -306,7 +304,6 @@
                                                 <BreezeInputError class="mt-2" />
                                             </div>
                                         </template>
-
                                     </div>
                                 </div>
 

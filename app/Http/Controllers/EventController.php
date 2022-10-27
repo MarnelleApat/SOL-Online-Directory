@@ -140,6 +140,11 @@ class EventController extends Controller
 
         if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
             $newData = $request->newData['file_name'];
+        elseif($request->columnName == 'venue')
+        {
+            $event->update(['type' => $request->newData[0], $request->columnName => $request->newData[1]]);
+            return response()->json($event, 200);
+        }
         else
             $newData = $request->newData;
 
