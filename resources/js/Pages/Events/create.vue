@@ -153,8 +153,13 @@
                             </div>
 
                             <!-- Select Category Component -->
-                            <SelectCategories :categories="categories" @selected-categories="getSelectedCategories" />
-                            <BreezeInputError :message="errors.categories" />
+                            <div class="bg-white shadow-sm border ring-opacity-75">
+                                <div class="flex flex-col p-5">
+                                    <p class="text-gray-400 font-bold my-3">Categories:</p>
+                                    <SelectCategories @selected-categories="getSelectedCategories" />
+                                    <BreezeInputError :message="errors.categories" />
+                                </div>
+                            </div>
                         </div>
                         <div class="w-3/4">
                             <div class="flex flex-col gap-4">
@@ -309,7 +314,9 @@
 
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
                                     <BreezeInputError :message="errors.schedules" />
-                                    <Scheduler @get-schedules="getFinalSchedules" />
+                                    <div class="p-6">
+                                        <Scheduler @get-schedules="getFinalSchedules" />
+                                    </div>
                                 </div>
 
                                 <div class="bg-white shadow-sm border ring-opacity-75 p-4">

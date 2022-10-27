@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::orderBy('id','DESC')->paginate(7);
-        
+
         return Inertia::render('Category/index', [
             'categories' => $categories
         ]);
@@ -55,12 +55,19 @@ class CategoryController extends Controller
 
     public function search(Request $request)
     {
-        
         if($request->keyword!='null'){
             $categories = Category::where('name', 'like', '%' . $request->keyword . '%')->orderBy('id','desc')->paginate(7);
             return Inertia::render('Category/index', [
                 'categories' => $categories
             ]);
         }else return redirect()->route('category.index');
+    }
+
+    // API call use for fetching all the record for Modal Media Usecase
+    public function all()
+    {
+        $data = Category::all();
+        return response()->json($data, 200);
+
     }
 }

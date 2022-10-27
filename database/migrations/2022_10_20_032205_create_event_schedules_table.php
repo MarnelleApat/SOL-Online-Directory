@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('event_schedules', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('event_id');
             $table->date('date');
             $table->time('startTime');

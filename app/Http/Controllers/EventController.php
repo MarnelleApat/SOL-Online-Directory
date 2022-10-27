@@ -67,7 +67,7 @@ class EventController extends Controller
                 foreach($request->schedules as $schedule) {
                     Schedule::create([
                         'event_id' => $eventData->id,
-                        'date' => $schedule['startDate'],
+                        'date' => $schedule['date'],
                         'startTime' => $schedule['startTime'],
                         'endTime' => $schedule['endTime'],
                     ]);
@@ -143,6 +143,41 @@ class EventController extends Controller
         elseif($request->columnName == 'venue')
         {
             $event->update(['type' => $request->newData[0], $request->columnName => $request->newData[1]]);
+            return response()->json($event, 200);
+        }
+        elseif($request->columnName == 'schedules')
+        {
+            if($request->newData)
+            {
+                // destroy/delete all the existing schedule of the event
+                Schedule::where('event_id', $request->event_id)->delete();
+
+                // insert new schedule data of the event
+                foreach($request->newData as $schedule)
+                {
+                    Schedule::create([
+                        'event_id' => $request->event_id,
+                        'date' => $schedule['date'],
+                        'startTime' => $schedule['startTime'],
+                        'endTime' => $schedule['endTime'],
+                    ]);
+                }
+            }
+            return response()->json($event, 200);
+        }
+        elseif($request->columnName == 'categories')
+        {
+            if($request->newData)
+            {
+                $cat_ids = [];
+
+                foreach($request->newData as $category)
+                {
+                    array_push($cat_ids, $category['id']);
+                }
+
+                $event->categories()->sync($cat_ids);
+            }
             return response()->json($event, 200);
         }
         else

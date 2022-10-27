@@ -12,10 +12,13 @@ class Schedule extends Model
     protected $table = 'event_schedules';
 
     protected $fillable = [
+        'id',
         'event_id',
         'date',
         'startTime',
-        'endTime'
+        'endTime',
+        'created_at',
+        'updated_at'
     ];
 
 

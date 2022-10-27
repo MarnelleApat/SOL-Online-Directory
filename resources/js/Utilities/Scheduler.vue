@@ -1,18 +1,35 @@
 <script setup>
-    import { reactive, watch } from 'vue';
+    import { onMounted, reactive, watch } from 'vue';
     import BreezeInput from '@/Components/Input.vue';
 
-    // default event schedule
-    let schedules = reactive([{startDate:'', startTime:'', endTime:''}]);
+    const props = defineProps({
+        getSchedules: Array
+    })
+
+    // get the saved schedule
+    const getSched = props.getSchedules
+
+    // init schedule
+    let schedules = reactive([]);
+
+    onMounted(() => {
+        if(getSched)
+        {
+            getSched.forEach((value) => { schedules.push(value) })
+        }
+        else
+        {
+            schedules.push({date:'', startTime:'', endTime:''})
+        }
+    })
 
     // init custom events
     const emit = defineEmits(['getSchedules'])
 
     // Default schedule set
     const addSchedule = () => {
-        schedules.push({startDate:'', startTime:'', endTime:''})
+        schedules.push({date:'', startTime:'', endTime:''})
     }
-
 
     //remove schedule function
     const removeSchedule = (selected) => {
@@ -26,7 +43,8 @@
 </script>
 
 <template>
-    <div class="flex flex-col p-6">
+    <div class="flex flex-col">
+        <!-- {{getSched}} -->
         <div class="flex gap-2 justify-between mb-4">
             <h5 class="font-bold text-xl text-gray-600">Schedule Details</h5>
             <svg
@@ -44,7 +62,7 @@
             <div class="w-full">
                 <p v-if="schedules.length > 1">Session {{indx+1}}:</p>
                 <p>Start Date</p>
-                <BreezeInput required type="date" class="w-full rounded-none" placeholder="Start Date" v-model="schedule.startDate" />
+                <BreezeInput required type="date" class="w-full rounded-none" placeholder="Start Date" v-model="schedule.date" />
             </div>
             <div class="w-full">
                 <p>Start Time</p>

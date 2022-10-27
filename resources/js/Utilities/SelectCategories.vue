@@ -1,60 +1,63 @@
 <script setup>
     import Multiselect from '@vueform/multiselect'
-    import { ref } from 'vue';
+    import { onMounted, reactive, ref } from 'vue';
 
     // init for multiselect model
-    const value = []
-
-    const finalCategories = ref([])
+    let categoryModel = ref([])
+    let categoryData = ref([])
 
     // component is required to accept the categories masterlist via props
     const props = defineProps({
-            categories: {
-                type: Object,
-                required: true
+            existingCat: {
+                type: Object
             }
         })
 
-    const categoryData = async () => {
-        return await props.categories
-    }
+    onMounted(() => {
+        categoryModel.value = props.existingCat
+        getAllCategories()
+    })
 
     const emit = defineEmits(['selectedCategories'])
 
     const onSelect = async (value) => {
-        finalCategories.value = value
-        await emit('selectedCategories', value)
+        await emit('selectedCategories', categoryModel)
+    }
+
+    // get all the categories
+    function getAllCategories()
+    {
+        axios.get(route('allCategories.api'))
+            .then((response) => {
+                categoryData.value = response.data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
 </script>
 <template>
-    <div class="bg-white shadow-sm border ring-opacity-75">
-        <div class="flex flex-col p-5">
-            <p class="text-gray-400 font-bold my-3">Categories:</p>
-
-            <Multiselect
-                v-model="value"
-                mode="tags"
-                @input="onSelect"
-                :object=true
-                value-prop="slug"
-                :close-on-select="false"
-                placeholder="Select category"
-                track-by="name"
-                label="name"
-                :options="categoryData">
-                <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                    <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
-                        {{ option.name }}
-                        <span v-if="!disabled" class="multiselect-tag-remove" @mousedown.prevent="handleTagRemove(option, $event)">
-                            <span class="multiselect-tag-remove-icon"></span>
-                        </span>
-                    </div>
-                </template>
-            </Multiselect>
-
-        </div>
-    </div>
+    <Multiselect
+        v-model="categoryModel"
+        mode="tags"
+        @input="onSelect"
+        :object=true
+        value-prop="slug"
+        :close-on-select="false"
+        placeholder="Select category"
+        track-by="name"
+        label="name"
+        :options="categoryData">
+        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+            <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
+                {{ option.name }}
+                <span v-if="!disabled" class="multiselect-tag-remove" @mousedown.prevent="handleTagRemove(option, $event)">
+                    <span class="multiselect-tag-remove-icon"></span>
+                </span>
+            </div>
+        </template>
+    </Multiselect>
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

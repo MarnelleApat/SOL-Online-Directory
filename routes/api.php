@@ -16,9 +16,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
 
-    // api for Media request
+    // api for get all media
     Route::get('/media/all', [\App\Http\Controllers\MediaController::class, 'all' ])
         ->name('allMedia.api');
+
+    // api for Get all categories
+    Route::get('/categories/all', [\App\Http\Controllers\CategoryController::class, 'all' ])
+        ->name('allCategories.api');
+
+    // api for Get all Speakers
+    // Route::get('/speakers/all', [\App\Http\Controllers\SpeakerController, 'all' ])
+    //     ->name('allSpeakers.api');
 
     // api for updating the specific record of the event
     Route::post('/event/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])

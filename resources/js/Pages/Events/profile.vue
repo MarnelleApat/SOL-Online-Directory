@@ -70,6 +70,12 @@
             v.meetingID = __v.meetingID
             v.passcode = __v.passcode
         }
+        else if(colname === "schedules") {
+            event.schedules = updatedData
+        }
+        else if(colname === "categories") {
+            event.categories = updatedData
+        }
         else {
             event[colname] = updatedData
         }
@@ -153,9 +159,14 @@
                             <div class="flex flex-col ">
                                 <div class="flex items-baseline space-x-2">
                                     <span class="te/150/000000/FFFFFF/ text-gray-400 leading-0 text-md">Categories:</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                    </svg>
+                                    <EditRecordModal :recordValue="event.categories" colName="categories" :event_id="event.id" @success-update="updateRecord">
+                                        <template #title>Change event categories</template>
+                                        <template #button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                            </svg>
+                                        </template>
+                                    </EditRecordModal>
                                 </div>
                                 <div class="flex flex-col bg-white p-5 border">
                                     <categories :categories="event.categories" />
@@ -256,7 +267,7 @@
                                         Code: <span class="hover:text-orange-300">{{event.programCode}}</span>
                                     </div>
 
-                                    <h2 class="text-4xl font-bold leading-0 flex items-baseline gap-3">
+                                    <h2 class="text-3xl font-bold leading-0 flex items-baseline gap-3">
                                         {{event.title}}
                                         <EditRecordModal :recordValue="event.title" colName="title" :event_id="event.id" @success-update="updateRecord">
                                             <template #title>Change Event Title</template>
@@ -321,9 +332,13 @@
                                 <div class="mt-14">
                                     <p class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
                                         Date:
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.schedules" colName="schedules" :event_id="event.id" @success-update="updateRecord">
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </p>
                                     <p v-for="(sched, idx) in event.schedules" class="leading-relaxed px-3">
                                         <span v-if="event.schedules.length > 1">Session {{idx+1}}:</span>
@@ -420,7 +435,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <pre>{{event}}</pre>
+                            <!-- <pre>{{event}}</pre> -->
                         </div>
                     </div>
                 </div>
