@@ -22,15 +22,7 @@
             type: Object,
             default: []
         },
-        categories: {
-            type: Object,
-            required: true
-        },
         departments: {
-            type: Object,
-            required: true
-        },
-        speakers: {
             type: Object,
             required: true
         }

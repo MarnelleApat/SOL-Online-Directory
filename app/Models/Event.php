@@ -53,6 +53,10 @@ class Event extends Model
         return $this->hasMany(Schedule::class);
     }
 
+    public function promos()
+    {
+        return $this->hasMany(Promo::class);
+    }
 
     public function department()
     {

@@ -21,7 +21,6 @@ class Schedule extends Model
         'updated_at'
     ];
 
-
     public function event()
     {
         return $this->belongsTo(Event::class);

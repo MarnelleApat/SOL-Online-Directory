@@ -13,10 +13,20 @@ class Promo extends Model
 
     protected $fillable = [
         'id',
+        'event_id',
         'name',
-        'uniqueCode',
+        'promoCode',
         'description',
-        'limit',
+        'quantity',
+        'validFrom',
+        'validTo',
+        'created_at',
+        'updated_at'
     ];
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 
 }
