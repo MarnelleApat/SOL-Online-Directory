@@ -1,37 +1,48 @@
 <script setup>
     import Multiselect from '@vueform/multiselect'
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
 
     // init for multiselect model
-    const value = []
+    const speakerModel = ref(props.existingSpeakers)
 
-    let previewSpeaker = ref([])
+    let allSpeakers = ref([])
 
     // create custom event
     const emit = defineEmits(['selectedSpeakers'])
 
     // component is required to accept the categories masterlist via props
     const props = defineProps({
-            speakers: {
+            existingSpeakers: {
                 type: Object,
-                required: true
             }
         })
 
-    const speakersData = async () => {
-        return await props.speakers
+    onMounted(() => {
+        getAllSpeakers()
+    })
+
+    const onSelect = async (dataToEmit) => {
+        await emit('selectedSpeakers', dataToEmit)
     }
 
-    const onSelect = async (value) => {
-        previewSpeaker.value = value
-        await emit('selectedSpeakers', value)
+    // get all the speakers
+    function getAllSpeakers()
+    {
+        axios.get(route('allSpeakers.api'))
+            .then((response) => {
+                allSpeakers.value = response.data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
+
 
 </script>
 
 <template>
     <Multiselect
-        v-model="value"
+        v-model="speakerModel"
         mode="tags"
         @input="onSelect"
         :object=true
@@ -42,7 +53,7 @@
         track-by="name"
         label="name"
         class="ms-speaker"
-        :options="speakersData">
+        :options="allSpeakers">
         <template v-slot:tag="{ option, handleTagRemove, disabled }">
             <div class="multiselect-tag is-user" :class="{ 'is-disabled': disabled }">
                 <img :src="option.profileImg">{{ option.name }}
@@ -54,12 +65,11 @@
     </Multiselect>
     <br />
     <div class="grid grid-cols-5 gap-3">
-        <div class="flex flex-col justify-center items-center" v-for="speaker in previewSpeaker">
+        <div class="flex flex-col justify-center items-center" v-for="speaker in speakerModel">
             <img :src="speaker.profileImg" class="rounded-full h-20 mb-2" />
             <p class="font-bold text-gray-500 text-md">{{ speaker.name }}</p>
         </div>
     </div>
-    <!-- {{previewSpeaker[0]}} -->
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

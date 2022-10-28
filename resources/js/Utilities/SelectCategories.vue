@@ -3,7 +3,7 @@
     import { onMounted, reactive, ref } from 'vue';
 
     // init for multiselect model
-    let categoryModel = ref([])
+    let categoryModel = ref(props.existingCat)
     let categoryData = ref([])
 
     // component is required to accept the categories masterlist via props
@@ -14,14 +14,13 @@
         })
 
     onMounted(() => {
-        categoryModel.value = props.existingCat
         getAllCategories()
     })
 
     const emit = defineEmits(['selectedCategories'])
 
-    const onSelect = async (value) => {
-        await emit('selectedCategories', categoryModel)
+    const onSelect = async (dataToEmit) => {
+        await emit('selectedCategories', dataToEmit)
     }
 
     // get all the categories
@@ -58,6 +57,7 @@
             </div>
         </template>
     </Multiselect>
+    <!-- <pre>{{props.existingCat}}</pre> -->
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

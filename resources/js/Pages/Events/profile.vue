@@ -1,7 +1,7 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head } from '@inertiajs/inertia-vue3';
-    import { reactive, ref, watch } from 'vue';
+    import { onMounted, reactive, ref, watch } from 'vue';
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
@@ -23,26 +23,30 @@
     })
 
     let event = reactive(props.event)
+
     const isPublic = ref(props.event.isPublic ? true : false)
     const isActive = ref(props.event.isActive ? true : false)
     const isStatus = ref(props.event.status ? true : false)
 
     const getBanner = ref('')
-        // Emit (event) for Banner
-    const getSeletedBanner = async (emittedBanner) => {
-        getBanner.value = emittedBanner
-        await updateImage('banner', emittedBanner)
-    }
-
     const getPhoto = ref('')
+    let v = reactive(toJSON(event.venue));
+
+    onMounted( async () => {
+
+    })
+
     // Emit (event) for Photo Image
     const getSeletedImage = async (emittedImage) => {
         getPhoto.value = emittedImage
         await updateImage('thumbnail', emittedImage)
-
     }
 
-    let v = reactive(toJSON(event.venue));
+    // Emit (event) for Banner
+    const getSeletedBanner = async (emittedBanner) => {
+        getBanner.value = emittedBanner
+        await updateImage('banner', emittedBanner)
+    }
 
     // Update Banner/Photo Image
     function updateImage(colName, newImage) {
@@ -59,9 +63,10 @@
         let colname = emittedRecord[0]
         let updatedData = emittedRecord[1]
 
-        if(colname === "venue") {
-            event['type'] = updatedData[0]
-            let __v = toJSON(updatedData[1])
+        if(colname === "venue")
+        {
+            event['type'] = await updatedData[0]
+            let __v = await toJSON(updatedData[1])
 
             v.location = __v.location
             v.city = __v.city
@@ -70,14 +75,9 @@
             v.meetingID = __v.meetingID
             v.passcode = __v.passcode
         }
-        else if(colname === "schedules") {
-            event.schedules = updatedData
-        }
-        else if(colname === "categories") {
-            event.categories = updatedData
-        }
-        else {
-            event[colname] = updatedData
+        else
+        {
+            event[colname] = await updatedData
         }
 
         await toaster.success('Record updated successfully.')
@@ -422,9 +422,14 @@
                                 <div v-if="event.speakers.length" class="mt-14">
                                     <h3 class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
                                         {{event.speakers.length > 1 ? 'Speakers:' : 'Speaker:'}}
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                        </svg>
+                                        <EditRecordModal :recordValue="event.speakers" colName="speakers" :event_id="event.id" @success-update="updateRecord">
+                                            <template #title>Change Speaker(s)</template>
+                                            <template #button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </template>
+                                        </EditRecordModal>
                                     </h3>
 
                                     <div class="grid grid-cols-5 gap-3 my-4">

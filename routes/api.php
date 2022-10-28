@@ -25,8 +25,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
         ->name('allCategories.api');
 
     // api for Get all Speakers
-    // Route::get('/speakers/all', [\App\Http\Controllers\SpeakerController, 'all' ])
-    //     ->name('allSpeakers.api');
+    Route::get('/speakers/all', [\App\Http\Controllers\SpeakerController::class, 'all' ])
+        ->name('allSpeakers.api');
 
     // api for updating the specific record of the event
     Route::post('/event/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])

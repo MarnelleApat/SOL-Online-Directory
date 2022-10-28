@@ -8,17 +8,13 @@
     import BreezeInputError from '@/Components/InputError.vue';
     import Scheduler from '@/Utilities/Scheduler.vue'
     import SelectCategories from '@/Utilities/SelectCategories.vue'
+    import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
 
     const toaster = createToaster({
             dismissible: true
         })
 
     const emit = defineEmits(['successUpdate'])
-
-    const isOpen = ref(false)
-    const newData = ref('')
-    const isEmpty = ref(false)
-    const validationMsg = ref("")
 
     const props = defineProps({
         recordValue: {
@@ -34,6 +30,11 @@
         }
     })
 
+    const isOpen = ref(false)
+    let newData = ref(props.recordValue)
+    const isEmpty = ref(false)
+    const validationMsg = ref("")
+
     const isEmail    = ref(false);
     const isText     = ref(false);
     const isDate     = ref(false);
@@ -42,13 +43,15 @@
     const isVenue    = ref(false)
     const isSchedule = ref(false)
     const isCategory = ref(false)
+    const isSpeaker  = ref(false)
 
     let venueData = ref({})
     let updatedSchedule = reactive([])
     let updatedCategories = reactive([])
+    let updatedSpeakers = reactive([])
 
     onMounted(() => {
-        newData.value = props.recordValue
+        // newData = props.recordValue
 
         if(props.colName=='activeUntil')
             isDate.value = true
@@ -60,6 +63,8 @@
             isSchedule.value = true
         else if(props.colName=='categories')
             isCategory.value = true
+        else if(props.colName=='speakers')
+            isSpeaker.value = true
         else if(props.colName=='price' || props.colName=='limit')
             isNumber.value = true
         else if(props.colName=='venue')
@@ -82,24 +87,21 @@
             _newData = [newData.value[0], JSON.stringify(venueData.value)]
         }
         else if(props.colName==='schedules')
-        {
             _newData = updatedSchedule.value
-        }
         else if(props.colName==='categories')
-        {
             _newData = updatedCategories.value
-        }
-        else{
+        else if(props.colName==='speakers')
+            _newData = updatedSpeakers.value
+        else
             _newData = newData.value
-        }
 
         //check if empty
-        if(!_newData || _newData === "")
-        {
-            isEmpty.value = true
-            validationMsg.value = "Field must not be empty."
-            return false;
-        }
+        // if(!_newData || _newData === "")
+        // {
+        //     isEmpty.value = true
+        //     validationMsg.value = "Field must not be empty."
+        //     return false;
+        // }
 
         // send to backend after passing the validation
         let data = {
@@ -110,7 +112,6 @@
 
         axios.post(route('updateEventRecord.api'), data)
             .then((response) => {
-                console.log(_newData)
                 emit('successUpdate',[props.colName, _newData])
                 isOpen.value = false
             })
@@ -143,6 +144,10 @@
         updatedCategories.value = emitedCategories
     }
 
+    // Emit (event) for Speakers
+    const getSelectedSpeakers = (emitedSpeakers) => {
+        updatedSpeakers.value = emitedSpeakers
+    }
 
 </script>
 
@@ -223,6 +228,10 @@
                                     </template>
                                     <template v-if="isCategory">
                                         <SelectCategories :existingCat="newData" @selected-categories="getSelectedCategories" />
+                                        <!-- <pre>{{newData}}</pre> -->
+                                    </template>
+                                    <template v-if="isSpeaker">
+                                        <SelectSpeakers :existingSpeakers="newData" @selected-speakers="getSelectedSpeakers" />
                                     </template>
                                     <BreezeInputError v-if="isEmpty" :message="validationMsg" />
 

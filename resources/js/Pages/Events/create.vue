@@ -324,7 +324,7 @@
                                         <h5 class="font-bold text-xl text-gray-600 mb-4">Speaker/s</h5>
                                         <!-- load speakers masterlist -->
                                         <BreezeInputError :message="errors.speakers" />
-                                        <SelectSpeakers :speakers="speakers" @selected-speakers="getSelectedSpeakers" />
+                                        <SelectSpeakers @selected-speakers="getSelectedSpeakers" />
                                     </div>
                                 </div>
                             </div>

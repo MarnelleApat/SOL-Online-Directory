@@ -19,6 +19,9 @@ class Speaker extends Model
         'email',
         'phoneNumber',
         'description',
+        'profileImg',
+        'created_at',
+        'updated_at'
     ];
 
     public function events() {

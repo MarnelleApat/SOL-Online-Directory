@@ -180,6 +180,21 @@ class EventController extends Controller
             }
             return response()->json($event, 200);
         }
+        elseif($request->columnName == 'speakers')
+        {
+            if($request->newData)
+            {
+                $spkr_id = [];
+
+                foreach($request->newData as $speaker)
+                {
+                    array_push($spkr_id, $speaker['id']);
+                }
+
+                $event->speakers()->sync($spkr_id);
+            }
+            return response()->json($event, 200);
+        }
         else
             $newData = $request->newData;
 
