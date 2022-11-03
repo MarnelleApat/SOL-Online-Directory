@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
         ->name('allSpeakers.api');
 
     // api for updating the specific record of the event
-    Route::post('/event/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])
-        ->name('updateEventRecord.api');
+    // Route::post('/event/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])
+    //     ->name('updateEventRecord.api');
 
 });

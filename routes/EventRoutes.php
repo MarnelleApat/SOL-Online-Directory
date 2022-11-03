@@ -17,4 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/event/store', [EventController::class, 'store' ])
         ->name('event.store');
 
+    // Updating the specific record of the event
+    Route::put('/event/{event_id}/updateRecord', [\App\Http\Controllers\EventController::class, 'updateRecord'])
+        ->name('updateEventRecord');
+
 });

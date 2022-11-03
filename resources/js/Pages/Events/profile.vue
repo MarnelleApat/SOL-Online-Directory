@@ -1,7 +1,7 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-    import { Head } from '@inertiajs/inertia-vue3';
-    import { onMounted, reactive, ref, watch } from 'vue';
+    import { Head, useForm } from '@inertiajs/inertia-vue3';
+    import { reactive, ref } from 'vue';
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
@@ -13,6 +13,7 @@
     import BreezeLabel from '@/Components/Label.vue';
     import { Switch } from '@headlessui/vue'
     import { createToaster } from '@meforma/vue-toaster'
+    import { Inertia } from '@inertiajs/inertia';
 
     const toaster = createToaster({
             dismissible: true,
@@ -35,9 +36,10 @@
     const getPhoto = ref('')
     let v = reactive(toJSON(event.venue));
 
-    onMounted( async () => {
-
-    })
+    const imageForm = useForm({
+        columnName: null,
+        newData: null
+    });
 
     // Emit (event) for Photo Image
     const getSeletedImage = async (emittedImage) => {
@@ -53,13 +55,12 @@
 
     // Update Banner/Photo Image
     function updateImage(colName, newImage) {
-        axios.post(route('updateEventRecord.api'), { event_id: event['id'], columnName: colName, newData: newImage })
-            .then(() => {
-                toaster.success('Image updated successfully.')
-            })
-            .catch((error) => {
-                toaster.error(error.message+'. Please contact administrator')
-            })
+        imageForm.columnName = colName
+        imageForm.newData = newImage
+
+        Inertia.put(route('updateEventRecord', event['id']), imageForm, {
+            onSuccess:response => {}
+        })
     }
 
     const updateRecord = async (emittedRecord) => {
@@ -68,15 +69,13 @@
 
         if(colname === "venue")
         {
-            event['type'] = await updatedData[0]
-            let __v = await toJSON(updatedData[1])
-
-            v.location = __v.location
-            v.city = __v.city
-            v.postalcode = __v.postalcode
-            v.url = __v.url
-            v.meetingID = __v.meetingID
-            v.passcode = __v.passcode
+            event['type']= emittedRecord[1].type
+            v.location   = emittedRecord[1].location
+            v.city       = emittedRecord[1].city
+            v.postalcode = emittedRecord[1].postalcode
+            v.url        = emittedRecord[1].url
+            v.meetingID  = emittedRecord[1].meetingID
+            v.passcode   = emittedRecord[1].passcode
         }
         else
         {
@@ -89,9 +88,9 @@
     // update Boolean status
     const updateStatus = (colname, value) => {
         let newValue = !value ? 1 : 0
-        axios.post(route('updateEventRecord.api'), { event_id: props.event.id, columnName:colname, newData:newValue })
-            .then((response) => {
 
+        Inertia.put(route('updateEventRecord', event['id']), { columnName:colname, newData:newValue }, {
+            onSuccess:response => {
                 if(colname === 'isPublic')
                 {
                     if(newValue)
@@ -113,11 +112,13 @@
                     else
                         toaster.error("Event deactivated successfully")
                 }
+            },
+            onError: errors => {
+                toaster.error(errors.message)
+                console.log(errors)
+            },
+        })
 
-            })
-            .catch((error) => {
-                toaster.error(error.message)
-            })
     };
 
 </script>

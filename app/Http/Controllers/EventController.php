@@ -13,6 +13,7 @@ use App\Models\Schedule;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class EventController extends Controller
 {
@@ -128,21 +129,70 @@ class EventController extends Controller
 
 
     // API Method => Update specific column in the event located at the Profile View
-    public function updateRecord(Request $request, Event $event)
+    public function updateRecord($event_id, Request $request)
     {
-        // validate and terminate process once failed
-        if($request->newData == "") {
-            return response()->json('Input cannot be empty.', 302);
-        }
 
-        // find the Event and continue the updating
-        $event = Event::find($request->event_id);
+        // Check validation
+        $dynamicValidation = [];
 
-        if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
-            $newData = $request->newData['file_name'];
+        if($request->columnName == 'activeUntil')
+            $dynamicValidation = ['newData' => "required|date"];
+        elseif($request->columnName == 'email')
+            $dynamicValidation = ['newData' => "required|email"];
+        elseif($request->columnName == 'price' || $request->columnName == 'limit')
+            $dynamicValidation = ['newData' => "required|numeric|min:0"];
         elseif($request->columnName == 'venue')
         {
-            $event->update(['type' => $request->newData[0], $request->columnName => $request->newData[1]]);
+            $dynamicValidation = [
+                'type'       => "required",
+                'location'   => ($request->type == 'Physical' || $request->type == 'Hybrid') ? "required" : "",
+                'city'       => ($request->type == 'Physical' || $request->type == 'Hybrid') ? "required" : "",
+                "postalcode" => ($request->type == 'Physical' || $request->type == 'Hybrid') ? "required" : "",
+                'url'        => ($request->type == 'Online' || $request->type == 'Hybrid') ? "required|url" : "",
+                'meetingID'  => ($request->type == 'Online' || $request->type == 'Hybrid') ? "required" : "",
+                "passcode"   => ($request->type == 'Online' || $request->type == 'Hybrid') ? "required" : ""
+            ];
+        }
+
+        else
+            $dynamicValidation = ['newData' => "required"];
+
+        $request->validate($dynamicValidation);
+
+        // find the Event and continue the updating
+        $event = Event::find($event_id);
+
+        if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
+        {
+            $event->update([$request->columnName => $request->newData['file_name']]);
+            return redirect()->route('event.profile', $event->slug)
+                             ->with('message', 'Image updated successfully.');
+        }
+        elseif($request->columnName == 'venue')
+        {
+            $venue = [
+                'location'   => $request->location,
+                'city'       => $request->city,
+                "postalcode" => $request->postalcode,
+                'url'        => $request->url,
+                'meetingID'  => $request->meetingID,
+                "passcode"   => $request->passcode
+            ];
+
+            $event->update(['type' => $request->type, 'venue' => json_encode($venue)]);
+                return redirect()->route('event.profile', $event->slug);
+        }
+        else
+        {
+            $event->update([$request->columnName => $request->newData]);
+                return redirect()->back();
+        }
+
+
+        if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
+        {
+            $newData = $request->newData['file_name'];
+            $event->update([$request->columnName => $newData]);
             return response()->json($event, 200);
         }
         elseif($request->columnName == 'schedules')
@@ -199,7 +249,6 @@ class EventController extends Controller
             $newData = $request->newData;
 
         $event->update([$request->columnName => $newData]);
-
         return response()->json($event, 200);
     }
 }
