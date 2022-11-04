@@ -1,10 +1,8 @@
 <script setup>
-    import { onMounted, reactive, ref, toRef, watch } from 'vue'
+    import { onMounted, reactive, ref } from 'vue'
     import BreezeInput from '@/Components/Input.vue';
-    import BreezeLabel from '@/Components/Label.vue';
     import { createToaster } from '@meforma/vue-toaster'
     import BreezeTextarea from '@/Components/Textarea.vue';
-    import BreezeInputError from '@/Components/InputError.vue';
     import Scheduler from '@/Utilities/Scheduler.vue'
     import SelectCategories from '@/Utilities/SelectCategories.vue'
     import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
@@ -33,15 +31,8 @@
         }
     })
 
-    let newData = ref(props.recordValue)
-
     let validationErrors = ref([])
     let showError = ref(false)
-
-    const isSchedule = ref(false)
-    const isCategory = ref(false)
-    const isSpeaker  = ref(false)
-
     let updateVenueTypeDetails = reactive([])
     let updatedSchedule = reactive([])
     let updatedCategories = reactive([])
@@ -49,24 +40,11 @@
 
     onMounted(() => {
         updateForm.newData = props.recordValue
-
-        // if(props.colName=='venue') {
-        //     venueData.value = JSON.parse(props.recordValue[1])
-        // }
-
-        // else if(props.colName=='schedules')
-        //     isSchedule.value = true
-        // else if(props.colName=='categories')
-        //     isCategory.value = true
-        // else if(props.colName=='speakers')
-        //     isSpeaker.value = true
-
     })
     const updateForm = useForm({
         columnName: props.colName,
         newData: ''
     });
-
 
     const updateRecord = async () => {
 
@@ -80,12 +58,18 @@
             updateForm.meetingID  = updateVenueTypeDetails.value.venue.meetingID
             updateForm.passcode   = updateVenueTypeDetails.value.venue.passcode
         }
+        else if(updateForm.columnName == 'schedules')
+            updateForm.newData = updatedSchedule.value
+        else if(updateForm.columnName == 'categories')
+            updateForm.newData = updatedCategories.value
+        else if(updateForm.columnName == 'speakers')
+            updateForm.newData = updatedSpeakers.value
 
         await Inertia.put(route('updateEventRecord', props.event_id), updateForm,
             {
+                preserveScroll: true,
                 onSuccess: () => {
                     let __data = null
-
                     if(updateForm.columnName == 'venue')
                         __data = updateForm
                     else
@@ -99,7 +83,7 @@
                 onError: errors => {
                     validationErrors.value = errors
                     showError.value = true
-                },
+                }
             })
     };
 
@@ -123,7 +107,6 @@
     }
 
     const isOpen = ref(false)
-
     const openModal = (emittedValue) => {
         isOpen.value = emittedValue
     }
@@ -170,25 +153,21 @@
                         <template v-else-if="props.colName=='venue'">
                             <EventType :getEventType="props.recordValue" @get-event-type="getEventType" />
                         </template>
+                        <template v-else-if="props.colName=='schedules'">
+                            <Scheduler :getSchedules="props.recordValue" @get-schedules="getFinalSchedules" />
+                        </template>
+                        <template v-else-if="props.colName=='categories'">
+                            <SelectCategories :existingCat="props.recordValue" @selected-categories="getSelectedCategories" />
+                        </template>
+                        <template v-else-if="props.colName=='speakers'">
+                            <SelectSpeakers :existingSpeakers="props.recordValue" @selected-speakers="getSelectedSpeakers" />
+                        </template>
                         <BreezeInput v-else
                             :type="props.colName=='activeUntil' ? 'date' : 'text'"
                             class="w-full rounded-none"
                             placeholder="Update record"
                             v-model="updateForm.newData"
                         />
-                        <!--
-
-                        <template v-if="isSchedule">
-                            <Scheduler @get-schedules="getFinalSchedules" :getSchedules="newData" />
-                        </template>
-                        <template v-if="isCategory">
-                            <SelectCategories :existingCat="newData" @selected-categories="getSelectedCategories" />
-                        </template>
-                        <template v-if="isSpeaker">
-                            <SelectSpeakers :existingSpeakers="newData" @selected-speakers="getSelectedSpeakers" />
-                        </template> -->
-
-
                         <div class="mt-4 flex w-full justify-end gap-3">
                             <button @click="isOpen=false" type="button" class="inline-flex justify-center uppercase rounded-sm border bg-gray-400 px-4 py-2 text-xs font-bold text-white hover:bg-gray-500">
                                 Cancel

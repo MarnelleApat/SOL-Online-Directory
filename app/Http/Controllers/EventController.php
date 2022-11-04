@@ -10,10 +10,8 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Http\Requests\EventRequest;
 use App\Models\Schedule;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 
 class EventController extends Controller
 {
@@ -119,6 +117,7 @@ class EventController extends Controller
             ->with('categories')
             ->with('speakers')
             ->with('schedules')
+            ->with('promos')
             ->with('user')
             ->first();
 
@@ -180,75 +179,51 @@ class EventController extends Controller
             ];
 
             $event->update(['type' => $request->type, 'venue' => json_encode($venue)]);
-                return redirect()->route('event.profile', $event->slug);
+                return redirect()->back();
+        }
+        elseif($request->columnName == 'schedules')
+        {
+            if($request->newData)
+            {
+                //detach the existing schedule
+                $removeSched = Schedule::where('event_id', $event->id)->delete();
+
+                // insert the updated schedule data of the event
+                if($removeSched)
+                {
+                    foreach($request->newData as $schedule)
+                    {
+                        Schedule::create([
+                            'event_id' => $event->id,
+                            'date' => $schedule['date'],
+                            'startTime' => $schedule['startTime'],
+                            'endTime' => $schedule['endTime'],
+                        ]);
+                    }
+                }
+            }
+            return redirect()->back();
+        }
+        elseif($request->columnName == 'categories' || $request->columnName == 'speakers')
+        {
+            if($request->newData)
+            {
+                $data_ids = [];
+
+                foreach($request->newData as $record)
+                {
+                    array_push($data_ids, $record['id']);
+                }
+                $request->columnName == 'categories'
+                    ? $event->categories()->sync($data_ids)
+                    : $event->speakers()->sync($data_ids);
+            }
+            return redirect()->back();
         }
         else
         {
             $event->update([$request->columnName => $request->newData]);
                 return redirect()->back();
         }
-
-
-        if($request->columnName == 'thumbnail' || $request->columnName == 'banner' )
-        {
-            $newData = $request->newData['file_name'];
-            $event->update([$request->columnName => $newData]);
-            return response()->json($event, 200);
-        }
-        elseif($request->columnName == 'schedules')
-        {
-            if($request->newData)
-            {
-                // destroy/delete all the existing schedule of the event
-                Schedule::where('event_id', $request->event_id)->delete();
-
-                // insert new schedule data of the event
-                foreach($request->newData as $schedule)
-                {
-                    Schedule::create([
-                        'event_id' => $request->event_id,
-                        'date' => $schedule['date'],
-                        'startTime' => $schedule['startTime'],
-                        'endTime' => $schedule['endTime'],
-                    ]);
-                }
-            }
-            return response()->json($event, 200);
-        }
-        elseif($request->columnName == 'categories')
-        {
-            if($request->newData)
-            {
-                $cat_ids = [];
-
-                foreach($request->newData as $category)
-                {
-                    array_push($cat_ids, $category['id']);
-                }
-
-                $event->categories()->sync($cat_ids);
-            }
-            return response()->json($event, 200);
-        }
-        elseif($request->columnName == 'speakers')
-        {
-            if($request->newData)
-            {
-                $spkr_id = [];
-
-                foreach($request->newData as $speaker)
-                {
-                    array_push($spkr_id, $speaker['id']);
-                }
-
-                $event->speakers()->sync($spkr_id);
-            }
-            return response()->json($event, 200);
-        }
-        else
-            $newData = $request->newData;
-
-        $event->update([$request->columnName => $newData]);
-        return response()->json($event, 200);
     }
 }

@@ -8,7 +8,7 @@
     import categories from '@/Utilities/Categories.vue'
     import MediaDialog from '@/Utilities/MediaDialog.vue'
     import EditRecordModal from '@/Utilities/EditRecordDialog.vue'
-    import Promo from '@/Utilities/PromoDialog.vue'
+    import Promo from '@/Utilities/PromoForm.vue'
     import moment from 'moment'
     import BreezeLabel from '@/Components/Label.vue';
     import { Switch } from '@headlessui/vue'
@@ -77,6 +77,30 @@
             v.meetingID  = emittedRecord[1].meetingID
             v.passcode   = emittedRecord[1].passcode
         }
+        else if(colname === "schedules")
+        {
+            event.schedules = []
+
+            updatedData.forEach(element => {
+                event.schedules.push(element)
+            });
+        }
+        else if(colname === "categories")
+        {
+            event.categories = []
+
+            updatedData.forEach(element => {
+                event.categories.push(element)
+            });
+        }
+        else if(colname === "speakers")
+        {
+            event.speakers = []
+
+            updatedData.forEach(element => {
+                event.speakers.push(element)
+            });
+        }
         else
         {
             event[colname] = await updatedData
@@ -132,6 +156,7 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- <pre>{{event.promos}}</pre> -->
                 <div class="flex bg-green-100 border-l-4 border-green-600 shadow-sm mb-10" v-if="$page.props.flash.message">
                     <div class="text-green-700 p-3 mb-5 w-full" role="alert">
                         <p class="font-bold mb-2">Success!</p>
@@ -240,7 +265,7 @@
 
                             <div class="flex flex-col bg-white p-5 border gap-10 h-[200px] relative">
                                 <div class="flex flex-col gap-3 absolute bottom-4">
-                                    <Promo :event_id="event.id">
+                                    <Promo :event_id="event.id" :eventPromos="event.promos">
                                         <template #button>
                                             <button class="w-full text-white bg-green-600 hover:bg-green-500 py-3 px-4 font-semibold flex justify-start items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
