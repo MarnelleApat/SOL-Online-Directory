@@ -1,10 +1,10 @@
 <script setup>
     import { ref } from 'vue';
     import { useForm } from '@inertiajs/inertia-vue3';
+    import BreezeLabel from '@/Components/Label.vue';
     import BreezeInput from '@/Components/Input.vue';
     import BreezeTextarea from '@/Components/Textarea.vue';
     import BreezeButton from '@/Components/Button.vue';
-    import BreezeLabel from '@/Components/Label.vue';
     import { Inertia } from '@inertiajs/inertia';
     import toDate from '@/Helpers/StringToDate'
     import MainModal from '@/Utilities/MainModal.vue'
@@ -222,7 +222,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="promo in props.eventPromos" class="hover:bg-gray-100">
+                                                    <tr v-if="props.eventPromos.length" v-for="promo in props.eventPromos" class="hover:bg-gray-100">
                                                         <td class="p-2 text-sm border">{{promo.name}}</td>
                                                         <td class="p-2 text-sm border">{{promo.promoCode}}</td>
                                                         <td class="p-2 text-sm border">{{promo.description}}</td>
@@ -236,6 +236,9 @@
                                                                 EDIT
                                                             </button>
                                                         </td>
+                                                    </tr>
+                                                    <tr v-else>
+                                                        <td colspan="7" class="text-center text-gray-400 italic border p-5">No promo found</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

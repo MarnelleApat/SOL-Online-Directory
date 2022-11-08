@@ -29,4 +29,6 @@ require __DIR__.'/CategoryRoutes.php';
 
 require __DIR__.'/PromoRoutes.php';
 
+require __DIR__.'/RegistrationRoutes.php';
+
 require __DIR__.'/auth.php';

@@ -122,40 +122,40 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
                 <form @submit.prevent="eventSubmitForm">
-                    <div class="flex flex-row gap-4">
+                    <div class="flex gap-4">
                         <div class="w-1/4">
-                            <div class="bg-white overflow-hidden shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group mb-5 relative h-56">
-                                <MediaDialog @selected-image="getSeletedImage">
-                                    <template #title>Select Profile Photo</template>
-                                    <template #button>
-                                        <img v-if="getPhoto.file_name" :src="getPhoto.file_name+getPhoto.slug" class="h-56 w-full absolute" />
-                                        <div v-else class="absolute w-full flex justify-center h-56 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                            </svg>
-                                            <span class="group-hover:text-gray-100">Upload Photo</span>
-                                        </div>
-                                    </template>
-                                </MediaDialog>
-                            </div>
-
-                            <!-- Select Category Component -->
-                            <div class="bg-white shadow-sm border ring-opacity-75">
-                                <div class="flex flex-col p-5">
-                                    <p class="text-gray-400 font-bold my-3">Categories:</p>
-                                    <SelectCategories @selected-categories="getSelectedCategories" />
-                                    <BreezeInputError :message="errors.categories" />
+                            <div class="flex flex-col justify-center gap-6">
+                                <div class="bg-white shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group mb-5 relative h-56">
+                                    <MediaDialog @selected-image="getSeletedImage">
+                                        <template #title>Select Profile Photo</template>
+                                        <template #button>
+                                            <img v-if="getPhoto.file_name" :src="getPhoto.file_name+getPhoto.slug" class="h-56 w-full absolute" />
+                                            <div v-else class="absolute w-full flex justify-center h-56 items-center text-gray-400 uppercase text-lg font-bold group-hover:bg-gray-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="w-10 h-10 text-gray-400 group-hover:text-gray-200 font-black">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                                <span class="group-hover:text-gray-100">Upload Photo</span>
+                                            </div>
+                                        </template>
+                                    </MediaDialog>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="w-3/4">
-                            <div class="flex flex-col gap-4">
-                                <div class="bg-white shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group relative h-56">
+
+                                <!-- Select Category Component -->
+                                <div class="bg-white shadow-sm border ring-opacity-75">
+                                    <div class="flex flex-col p-5">
+                                        <p class="text-gray-400 font-bold my-3">Categories:</p>
+                                        <SelectCategories @selected-categories="getSelectedCategories" />
+                                        <BreezeInputError :message="errors.categories" />
+                                    </div>
+                                </div>
+
+                                <!-- Featured Poster -->
+                                <div class="bg-white shadow-sm border-2 border-dashed ring-opacity-75 cursor-pointer group relative h-80">
                                     <MediaDialog @selected-image="getSeletedBanner">
                                         <template #title>Select Banner Photo</template>
                                         <template #button>
@@ -174,7 +174,12 @@
                                         </template>
                                     </MediaDialog>
                                 </div>
+                            </div>
 
+
+                        </div>
+                        <div class="w-3/4">
+                            <div class="flex flex-col gap-4">
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
                                     <div class="flex flex-col p-6">
                                         <h5 class="font-bold text-xl text-gray-600 mb-6">Event Details</h5>
