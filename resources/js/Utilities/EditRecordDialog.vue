@@ -122,7 +122,7 @@
         </template>
 
         <template #title>
-            Update Information
+            <slot name="title" />
         </template>
 
         <template #content>
@@ -161,6 +161,12 @@
                         </template>
                         <template v-else-if="props.colName=='speakers'">
                             <SelectSpeakers :existingSpeakers="props.recordValue" @selected-speakers="getSelectedSpeakers" />
+                        </template>
+                        <template v-else-if="props.colName=='themeColor'">
+                            <div class="flex items-center">
+                                <BreezeInput type="color" class="focus:border-none focus:ring-0 w-1/4 h-10 rounded-none" placeholder="#123ABC" v-model="updateForm.newData" />
+                                <span class="text-xl font-bold border px-3" :style="{'color': updateForm.newData}">{{updateForm.newData}}</span>
+                            </div>
                         </template>
                         <BreezeInput v-else
                             :type="props.colName=='activeUntil' ? 'date' : 'text'"

@@ -22,7 +22,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('checkHandler')->nullable();
             $table->string('eventIncharge')->nullable();
-            $table->text('schedule')->nullable();
             $table->date('activeUntil')->nullable();
             $table->double('price')->default('0');
             $table->string('venue')->nullable();

@@ -13,7 +13,7 @@
     let schedules = reactive([]);
 
     onMounted(() => {
-        if(getSched)
+        if(getSched.length)
         {
             getSched.forEach((value) => { schedules.push(value) })
         }

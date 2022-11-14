@@ -33,6 +33,8 @@
     const isActive = ref(props.event.isActive ? true : false)
     const isStatus = ref(props.event.status ? true : false)
 
+    const themecolor = ref(toJSON(props.event.specialSettings)[0].themeColor)
+
     const getBanner = ref('')
     const getPhoto = ref('')
     let v = reactive(toJSON(event.venue));
@@ -102,6 +104,10 @@
                 event.speakers.push(element)
             });
         }
+        else if(colname === "themeColor")
+        {
+            themecolor.value = updatedData
+        }
         else
         {
             event[colname] = await updatedData
@@ -115,6 +121,7 @@
         let newValue = !value ? 1 : 0
 
         Inertia.put(route('updateEventRecord', event['id']), { columnName:colname, newData:newValue }, {
+            preserveScroll: true,
             onSuccess:response => {
                 if(colname === 'isPublic')
                 {
@@ -276,7 +283,7 @@
                                             </button>
                                         </template>
                                     </Promo>
-                                    <CustomRegistrationForm>
+                                    <CustomRegistrationForm :event_id="event.id" :existingSpecialSetting="toJSON(event.specialSettings)" @success-update="updateRecord">
                                         <template #button>
                                             <button class="w-full text-white bg-blue-600 hover:bg-blue-500 py-3 px-4 font-semibold flex justify-start items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -320,7 +327,7 @@
                                     <p v-if="event.activeUntil" class="text-sm italic text-gray-400 flex items-baseline gap-3">
                                         Event registration active until {{toDate(event.activeUntil, 'LL')}}
                                         <EditRecordModal :recordValue="event.activeUntil" colName="activeUntil" :event_id="event.id" @success-update="updateRecord">
-                                            <template #title>Change registration validity until</template>
+                                            <template #title>Change registration validity period</template>
                                             <template #button>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
@@ -349,15 +356,29 @@
                             </div>
 
 
+                            <div class="flex flex-col bg-white mt-3">
+                                <p class="py-3 px-3 flex justify-end" :style="{'background-color': themecolor}">
 
-                            <div class="flex flex-col bg-white p-5 mt-3 border">
-                                <div class="">
+                                    <EditRecordModal :recordValue="themecolor" colName="themeColor" :event_id="event.id" @success-update="updateRecord">
+                                        <template #title>Change Theme Color</template>
+                                        <template #button>
+                                            <span class="text-sm text-gray-500 bg-white px-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </span>
+                                        </template>
+                                    </EditRecordModal>
+                                </p>
+                            </div>
+                            <div class="flex flex-col bg-white p-5 border-x border-b">
+                                <div>
                                     <p class="text-gray-400 leading-0 text-md flex items-baseline gap-3">
                                         About:
                                         <EditRecordModal :recordValue="event.description" colName="description" :event_id="event.id" @success-update="updateRecord">
                                             <template #title>Change event description</template>
                                             <template #button>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="shadow-white shadow w-4 h-4 text-blue-600 hover:text-blue-400 cursor-pointer">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                                 </svg>
                                             </template>
@@ -380,7 +401,7 @@
                                     </p>
                                     <p v-for="(sched, idx) in event.schedules" class="leading-relaxed px-3">
                                         <span v-if="event.schedules.length > 1">Session {{idx+1}}:</span>
-                                        {{toDate(sched.date, 'LL')}} @ {{moment(sched.date+' '+sched.startTime).format('hh:mm A')}} - {{moment(sched.date+' '+sched.endTime).format('hh:mm A')}}
+                                        {{toDate(sched.date, 'LL')}} @ {{moment(sched.startTime, 'HH:mm').format('LT')}} - {{moment(sched.endTime, 'HH:mm').format('LT')}}
                                     </p>
                                 </div>
 

@@ -312,7 +312,7 @@
                                 <div class="bg-white overflow-hidden shadow-sm border ring-opacity-75 p-4">
                                     <BreezeInputError :message="errors.schedules" />
                                     <div class="p-6">
-                                        <Scheduler @get-schedules="getFinalSchedules" />
+                                        <Scheduler :getSchedules="[]" @get-schedules="getFinalSchedules" />
                                     </div>
                                 </div>
 

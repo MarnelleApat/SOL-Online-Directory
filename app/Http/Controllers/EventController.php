@@ -12,6 +12,7 @@ use App\Http\Requests\EventRequest;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class EventController extends Controller
 {
@@ -55,6 +56,7 @@ class EventController extends Controller
             'user_id' => Auth::user()->id,
             'thumbnail' => $request->photoImg['file_name'],
             'banner' => $request->banner['file_name'],
+            'specialSettings' => '[{"themeColor":"#2C2C2C"}, {"customFields": []}]'
         ]);
 
         // after storing the Event record
@@ -186,20 +188,17 @@ class EventController extends Controller
             if($request->newData)
             {
                 //detach the existing schedule
-                $removeSched = Schedule::where('event_id', $event->id)->delete();
+                Schedule::where('event_id', $event_id)->delete();
 
                 // insert the updated schedule data of the event
-                if($removeSched)
+                foreach($request->newData as $schedule)
                 {
-                    foreach($request->newData as $schedule)
-                    {
-                        Schedule::create([
-                            'event_id' => $event->id,
-                            'date' => $schedule['date'],
-                            'startTime' => $schedule['startTime'],
-                            'endTime' => $schedule['endTime'],
-                        ]);
-                    }
+                    Schedule::create([
+                        'event_id' => $event_id,
+                        'date' => $schedule['date'],
+                        'startTime' => $schedule['startTime'],
+                        'endTime' => $schedule['endTime'],
+                    ]);
                 }
             }
             return redirect()->back();
@@ -218,6 +217,34 @@ class EventController extends Controller
                     ? $event->categories()->sync($data_ids)
                     : $event->speakers()->sync($data_ids);
             }
+            return redirect()->back();
+        }
+        elseif($request->columnName == 'specialSettings')
+        {
+            $sp = json_decode($request->newData, true);
+            $esp = json_decode($event->specialSettings, true);
+            $customfields = $esp[1]['customFields'];
+
+            $customfields = [];
+
+            foreach ($sp as $_sp)
+            {
+                array_push($customfields, $_sp);
+            }
+
+            $esp[1]['customFields'] = $customfields;
+
+            $event->update(['specialSettings' => json_encode($esp)]);
+            return redirect()->back();
+        }
+        elseif($request->columnName == 'themeColor')
+        {
+            $newcolor = $request->newData;
+            $esp = json_decode($event->specialSettings, true);
+
+            $esp[0]['themeColor'] = $newcolor;
+
+            $event->update(['specialSettings' => json_encode($esp)]);
             return redirect()->back();
         }
         else
