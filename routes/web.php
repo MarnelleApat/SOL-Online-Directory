@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Publich Routes
+Route::get('/events/{slug}', [\App\Http\Controllers\HomeController::class, 'eventPage'])->name('event.public');
+
+// Authenticated Routes
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'homepage'])->name('Homepage');
 Route::get('/article/{article_slug}', [\App\Http\Controllers\HomeController::class, 'SingleArticle'])->name('SingleArticle');
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('dashboard');

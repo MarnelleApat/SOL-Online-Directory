@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\WPRestApi\WP_Category;
 use App\WPRestApi\WP_Post;
 use Inertia\Inertia;
@@ -10,6 +11,21 @@ use Illuminate\Support\Facades\Route;
 
 class HomeController extends Controller
 {
+
+    public function eventPage($slug)
+    {
+        $event = Event::where('slug', $slug)
+            ->with('department')
+            ->with('categories')
+            ->with('speakers')
+            ->with('schedules')
+            ->first();
+
+        return Inertia::render('Homepage/EventPage', [
+            'event' => $event
+        ]);
+    }
+
     public function homepage(WP_Post $wp_post, WP_Category $wp_category)
     {
         $categories = $wp_category->get();
