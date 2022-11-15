@@ -51,8 +51,8 @@
 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
                     <!-- Settings Dropdown -->
-                    <div class="ml-3 relative ring-0 opacity-100">
-                        <BreezeDropdown align="right" width="48">
+                    <div class="ml-3 relative ring-0">
+                        <BreezeDropdown align="right" width="48" contentClasses="bg-white bg-opacity-80">
                             <template #trigger>
                                 <span class="inline-flex rounded-md">
                                     <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">

@@ -155,10 +155,6 @@
                                         </div>
                                     </template>
                                 </BreezeDropdown>
-                                <!-- <p class=" text-slate-500 text-sm leading-tight">
-                                    <pre>{{event.type}}</pre>
-                                    <pre>{{toJSON(event.venue)}}</pre>
-                                </p> -->
                             </div>
                         </div>
                         <!-- show categories of the event in encaptulated -->

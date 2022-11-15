@@ -1,17 +1,20 @@
 <script setup>
     import { Link } from '@inertiajs/inertia-vue3';
-    defineProps({
-        categories: Object
-    })
+    import { computed } from '@vue/reactivity';
+
+    const props = defineProps(['categories', 'styleClass'])
+
+    const classes = computed(() => props.styleClass ? props.styleClass : 'bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full mr-1 mb-1 py-1 px-2 inline-flex'
+);
 
 </script>
 
 <template>
     <div class="flex">
-        <Link :href="route('events.create')">
-            <span v-for="category in categories" class="bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full mr-1 mb-1 py-1 px-2 inline-flex">
+        <span v-for="category in props.categories" :class="classes">
+            <Link :href="route('category.view', category.slug)">
                 {{category.name}}
-            </span>
-        </Link>
+            </Link>
+        </span>
     </div>
 </template>
