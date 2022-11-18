@@ -22,7 +22,8 @@ class HomeController extends Controller
             ->first();
 
         return Inertia::render('Homepage/EventPage', [
-            'event' => $event
+            'event' => $event,
+            'loggedInUser' => auth()->user()
         ]);
     }
 

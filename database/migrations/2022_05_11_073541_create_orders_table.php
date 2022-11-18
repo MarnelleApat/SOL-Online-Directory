@@ -16,11 +16,12 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->string('TrxID')->unique(); // auto generated transaction number in the system
-            $table->string('externalURL')->nullable(); // invoice url from payment gateway
-            $table->string('paymentType'); // payment type opted by customer during checkout payment
-            $table->string('paymentReferenceNo')->nullable();
-            $table->string('approvedBy')->nullable();
+            $table->string('TrxID')->unique();                  // auto generated transaction number in the system (Event ProgramCode + unique counting)
+            $table->string('externalURL')->nullable();          // invoice url from payment gateway (For Stripe Payment => Invoice url)
+            $table->string('paymentType');                      // payment type opted by customer during checkout payment
+            $table->string('paymentReferenceNo')->nullable();   // Stripe transaction code | Check No.
+            $table->string('approvedBy')->nullable();           // User who approved the payment
+            $table->string('status')->default('Pending');       // Pending | Paid
             $table->timestamps();
         });
     }

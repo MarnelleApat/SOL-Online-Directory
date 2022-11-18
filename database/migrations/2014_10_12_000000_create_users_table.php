@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('church')->nullable();
             $table->string('billingAddress')->nullable();
             $table->string('shippingAddress')->nullable();
+            $table->text('specialSettings')->nullable();
+            $table->string('gender')->nullable();
             $table->boolean('is_active')->default(1);
             $table->boolean('is_admin')->default(0);
             $table->tinyInteger('role_id')->default(0);

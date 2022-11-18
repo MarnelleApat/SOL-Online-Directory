@@ -24,8 +24,6 @@
     const customization = [
             {'name':'Billing Address'},
             {'name':'Shipping Address'},
-            {'name':'Gender'},
-            {'name':'Church'},
             {'name':'Church Position'},
             {'name':'Company Name'},
             {'name':'Company Position'}
@@ -42,16 +40,6 @@
     }
 
     const saveSpecialSettings = async () => {
-
-        // console.log(specialSettings)
-
-        // let _form = {
-        //     customField: []
-        // }
-
-        // specialSettings.forEach(element => {
-        //     _form.customField.push(element)
-        // });
 
         let _spstng = {
             'columnName': 'specialSettings',

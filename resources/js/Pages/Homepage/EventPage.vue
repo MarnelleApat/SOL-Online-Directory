@@ -5,13 +5,24 @@
     import toDate from '@/Helpers/StringToDate'
     import categories from '@/Utilities/Categories.vue'
     import BreezeDropdown from '@/Components/Dropdown.vue';
+    import BreezeButton from '@/Components/Button.vue';
+    import currency from '@/Helpers/formatCurrency'
+    import modal from '@/Utilities/MainModal.vue'
+    import eventRegistration from '@/Pages/Users/EventRegistration.vue'
     import moment from 'moment'
+    import { ref } from 'vue';
 
-    const props = defineProps(['event'])
+    const props = defineProps(['event', 'loggedInUser'])
     const event = props.event
 
     const headerTitle = event.title
     const themecolor = toJSON(event.specialSettings)[0].themeColor
+    const regForm = toJSON(event.specialSettings)[1].customFields
+
+    const isOpen = ref(false)
+    const openModal = (emittedValue) => {
+        isOpen.value = emittedValue
+    }
 
 
 
@@ -126,11 +137,61 @@
                                     </p>
                                 </template>
                             </div>
+                            <div class="mt-5 flex flex-col text-white">
+                                <p class="text-sm text-white">Registration Fee:</p>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                                    </svg>&nbsp;
+                                    <span class="font-bold text-xl">{{currency(event.price)}}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="w-2/5 relative">
-                        <div class="bg-blue-500 min-h-[300px] absolute right-0 w-3/4 shadow-xl overflow-hidden">
-                            <img class="w-full" src="https://www.bible.org.sg/wp-content/webp-express/webp-images/uploads/2022/06/Miracle-of-Life-Change-Poster.jpg.webp" />
+                        <div class="min-h-[300px] absolute right-0 w-3/4">
+                            <div class="flex flex-col gap-10">
+                                <img class="w-full shadow-xl overflow-hidden border-4 border-gray-100" :src="event.banner ? event.banner : 'https://via.placeholder.com/300x500/FFFFFF/DDDDDD/?text=EVENT+POSTER'" />
+                                <div class="flex flex-col gap-1">
+                                    <!-- Registration Modal -->
+                                    <modal :isOpen="isOpen" @open-modal="openModal">
+                                        <template #openTriggerButton>
+                                            <BreezeButton type="button" class="text-gray-100 bg-gray-600 hover:bg-gray-500 w-full rounded-none text-lg shadow-lg font-bold py-3 px-4">
+                                                Register Now
+                                            </BreezeButton>
+                                        </template>
+                                        <template #title>
+                                            {{event.title}} Registration Form
+                                            <p class="text-sm leading-5 font-light mt-8 mb-3">
+                                                By providing your contact details, you consent to our collection,
+                                                use and disclosure of your personal data as described in our privacy policy
+                                                on our website. We do strive to limit the amount of personal data we collect
+                                                to that which is sufficient to support the intended purpose of the collection.
+                                                Kindly check our <a href="#" class="text-blue-500 hover:text-blue-400 underline">Privacy Policy</a>
+                                            </p>
+                                        </template>
+                                        <template #content>
+                                            <eventRegistration :event_id="event.id" :customFields="regForm" :loggedInUser="loggedInUser">
+                                                <template #button>
+                                                    <BreezeButton @click="isOpen=false" type="button" class="inline-flex justify-center uppercase rounded-sm border bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500">
+                                                        Cancel
+                                                    </BreezeButton>
+                                                    <BreezeButton type="submit" class="inline-flex justify-center uppercase rounded-sm border border-gray-400 bg-gray-700 px-4 py-2 text-sm font-bold text-white hover:bg-gray-600">
+                                                        Register & Proceed to Payment
+                                                    </BreezeButton>
+                                                </template>
+                                            </eventRegistration>
+                                        </template>
+                                    </modal>
+                                    <BreezeButton type="button" class="flex items-center justify-center gap-2 text-gray-100 bg-green-600 hover:bg-green-700 rounded-none text-lg shadow-lg font-bold py-3 px-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                        </svg>
+                                        Add to Cart
+                                    </BreezeButton>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
