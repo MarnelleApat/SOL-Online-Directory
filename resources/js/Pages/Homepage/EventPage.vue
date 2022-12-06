@@ -8,7 +8,7 @@
     import BreezeButton from '@/Components/Button.vue';
     import currency from '@/Helpers/formatCurrency'
     import modal from '@/Utilities/MainModal.vue'
-    import eventRegistration from '@/Pages/Users/EventRegistration.vue'
+    import eventRegistration from '@/Pages/Customer/EventRegistration.vue'
     import moment from 'moment'
     import { ref } from 'vue';
 
@@ -23,13 +23,10 @@
     const openModal = (emittedValue) => {
         isOpen.value = emittedValue
     }
-
-
-
 </script>
 
 <template>
-    <Head :title="headerTitle" />
+    <Head :title="headerTitle"></Head>
 
     <BreezeAuthenticatedLayout>
         <div class="p-5 min-h-[300px]" :style="{'background-color':themecolor}">
@@ -59,7 +56,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 19" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                                 </svg>&nbsp;
-                                <BreezeDropdown align="right" width="48">
+                                <BreezeDropdown align='right' width="48">
                                     <template #trigger>
                                         <p class="text-gray-600 pl-2 pr-1 text-sm inline-flex items-center rounded-0 bg-white">
                                             {{event.type}} Event
@@ -161,17 +158,9 @@
                                             </BreezeButton>
                                         </template>
                                         <template #title>
-                                            {{event.title}} Registration Form
-                                            <p class="text-sm leading-5 font-light mt-8 mb-3">
-                                                By providing your contact details, you consent to our collection,
-                                                use and disclosure of your personal data as described in our privacy policy
-                                                on our website. We do strive to limit the amount of personal data we collect
-                                                to that which is sufficient to support the intended purpose of the collection.
-                                                Kindly check our <a href="#" class="text-blue-500 hover:text-blue-400 underline">Privacy Policy</a>
-                                            </p>
                                         </template>
                                         <template #content>
-                                            <eventRegistration :event_id="event.id" :customFields="regForm" :loggedInUser="loggedInUser">
+                                            <eventRegistration :event="event" :customFields="regForm">
                                                 <template #button>
                                                     <BreezeButton @click="isOpen=false" type="button" class="inline-flex justify-center uppercase rounded-sm border bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500">
                                                         Cancel
@@ -229,7 +218,7 @@
                             </div>
                         </template>
                         <div v-else class="grid grid-cols-5 gap-3">
-                            <div class="flex flex-col justify-center items-center" v-for="speaker in event.speakers">
+                            <div class="flex flex-col justify-center items-center" v-for="(speaker, idx) in event.speakers" :key="idx">
                                 <img :src="speaker.profileImg" class="rounded-full h-30 mb-2" />
                                 <p class="font-bold text-gray-500 text-md">{{ speaker.name }}</p>
                             </div>

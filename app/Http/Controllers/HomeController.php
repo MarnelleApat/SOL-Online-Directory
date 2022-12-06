@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
-use App\WPRestApi\WP_Category;
-use App\WPRestApi\WP_Post;
 use Inertia\Inertia;
+use App\Models\Event;
+use Stripe\StripeClient;
+use App\WPRestApi\WP_Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\WPRestApi\WP_Category;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -27,30 +28,69 @@ class HomeController extends Controller
         ]);
     }
 
-    public function homepage(WP_Post $wp_post, WP_Category $wp_category)
+    // testing stripe processes
+
+    public function homepage()
     {
-        $categories = $wp_category->get();
+        $prices = DB::table('prices')->get();
 
         return Inertia::render('Homepage/Main', [
-            'canLogin'              => Route::has('login'),
-            'canRegister'           => Route::has('register'),
-            'navigationMenu'        => $categories,
-            'newsArticles'          => $wp_post->get_post_by_category_slug('news'),
-            'missionArticles'       => $wp_post->get_post_by_category_slug('mission-stories'),
-            'humanitarianArticles'  => $wp_post->get_post_by_category_slug('humanitarian'),
-            'theologyArticles'      => $wp_post->get_post_by_category_slug('theology'),
-            'opinionArticles'       => $wp_post->get_post_by_category_slug('opinions'),
-            'announcementArticles'  => $wp_post->get_post_by_category_slug('announcements'),
-            'eventArticles'         => $wp_post->get_post_by_category_slug('events'),
-            'videoArticles'         => $wp_post->get_post_by_category_slug('videos'),
-            'cultureArticles'       => $wp_post->get_post_by_category_slug('culture'),
-            'artArticles'           => $wp_post->get_post_by_category_slug('arts'),
-            'generationArticles'    => $wp_post->get_post_by_category_slug('generations'),
-            'lifestyleArticles'     => $wp_post->get_post_by_category_slug('lifestyle'),
-            'analysisArticles'      => $wp_post->get_post_by_category_slug('analysis'),
-            'contributionArticles'  => $wp_post->get_post_by_category_slug('contribution'),
+           'prices' => $prices
         ]);
     }
+
+    public function donate(Request $request)
+    {
+        $stripe = new StripeClient("sk_test_51KPSpAGYOLqshLviUHUjYPWiNdE4Cw2vMsRH9wVy1KtmjTwoxnqUcPc8og4YXSREiivgYci3ZzhD8DcOMXtuHz4q00owR1EMzw");
+
+        $finalAmount = ($request->amount=='custom' ? $request->customAmount : $request->amount)*100;
+
+        $title = 'Online Donation Testing';
+        $desc = 'Testing for online donation.This wraps up the quickstart. See the links';
+        $desc .= 'below for a few different ways to process a payment for the product you just created.';
+
+        $checkout_session = $stripe->checkout->sessions->create([
+            'mode' => 'payment',
+            'success_url' => route('success').'?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('cancel'),
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'product_data' => [
+                            'name' => $title,
+                            'description' => $desc,
+                        ],
+                        'currency' => 'usd',
+                        'unit_amount' => $finalAmount,
+                    ],
+                    'quantity' => 1,
+                ]
+            ],
+        ]);
+
+        return response('', 409)->header('X-Inertia-Location', $checkout_session->url);
+    }
+
+
+    public function success()
+    {
+        $stripe = new StripeClient("sk_test_51KPSpAGYOLqshLviUHUjYPWiNdE4Cw2vMsRH9wVy1KtmjTwoxnqUcPc8og4YXSREiivgYci3ZzhD8DcOMXtuHz4q00owR1EMzw");
+        $session = $stripe->checkout->sessions->retrieve($_GET['session_id']);
+        $customer = $stripe->customers->retrieve($session->customer);
+
+        return Inertia::render('Homepage/Success', [
+            'session' => $session,
+            'customer' => $customer
+        ]);
+    }
+
+    public function cancel()
+    {
+        return Inertia::render('Homepage/Cancel');
+    }
+
+    // end of testing stripe processes
+
 
     public function PostByCategory( WP_Category $wp_category, WP_Post $wp_post, $category_slug )
     {

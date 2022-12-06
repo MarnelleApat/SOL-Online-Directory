@@ -207,7 +207,9 @@
                                     </EditRecordModal>
                                 </div>
                                 <div class="flex flex-col bg-white p-5 border">
-                                    <categories :categories="event.categories" />
+                                    <categories
+                                        :categories="event.categories"
+                                        styleClass="inline-flex bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full gap-4 mr-1 py-1 px-2 leading-none items-center" />
                                 </div>
                             </div>
 

@@ -33,7 +33,7 @@
                         class="w-full max-w-4xl transform rounded-none bg-white p-10 text-left align-middle shadow-xl transition-all">
                             <DialogTitle
                                 as="h3"
-                                class="text-xl font-bold leading-4 text-gray-600 flex flex-col mt-2">
+                                class="text-xl font-bold leading-4 text-gray-600 flex flex-col">
                                 <h5 class="text-2xl">
                                     <slot name="title"></slot>
                                 </h5>

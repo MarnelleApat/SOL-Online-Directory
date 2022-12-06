@@ -18,8 +18,12 @@ Route::get('/events/{slug}', [\App\Http\Controllers\HomeController::class, 'even
 Route::post('/register/{event_id}', [\App\Http\Controllers\RegistrationController::class, 'register' ])
         ->name('register.event');
 
-// Authenticated Routes
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'homepage'])->name('Homepage');
+Route::post('/donate', [\App\Http\Controllers\HomeController::class, 'donate'])->name('donate');
+Route::get('/success', [\App\Http\Controllers\HomeController::class, 'success'])->name('success');
+Route::get('/cancel', [\App\Http\Controllers\HomeController::class, 'cancel'])->name('cancel');
+
+// Authenticated Routes
 Route::get('/article/{article_slug}', [\App\Http\Controllers\HomeController::class, 'SingleArticle'])->name('SingleArticle');
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/registrants', [\App\Http\Controllers\DashboardController::class, 'index' ])->middleware(['auth', 'verified'])->name('registrants.index');

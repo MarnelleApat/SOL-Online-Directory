@@ -33,10 +33,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'country',
         'church',
         'billingAddress',
-        'ShippingAddress',
+        'shippingAddress',
         'isActive',
         'userType',
         'status',
+        'gender',
+        'specialSettings'
     ];
 
 

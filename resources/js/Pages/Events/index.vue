@@ -158,9 +158,11 @@
                             </div>
                         </div>
                         <!-- show categories of the event in encaptulated -->
-                        <div class="px-6 py-4 absolute w-full bottom-0" v-if="event.categories.length">
+                        <div class="px-3 py-4 absolute w-full bottom-0" v-if="event.categories.length">
                             <!-- <p class="text-xs italic text-gray-500 leading-6">Categories:</p> -->
-                            <categories :categories="event.categories" />
+                            <categories
+                                :categories="event.categories"
+                                styleClass="inline-flex bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full gap-4 mr-1 py-1 px-2 leading-none items-center" />
                         </div>
                     </div>
                 </div>
