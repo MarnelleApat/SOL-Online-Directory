@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 // Publich Routes
 Route::get('/events/{slug}', [\App\Http\Controllers\HomeController::class, 'eventPage'])->name('event.public');
-Route::post('/register/{event_id}', [\App\Http\Controllers\RegistrationController::class, 'register' ])
-        ->name('register.event');
+Route::post('/register/{event_id}', [\App\Http\Controllers\RegistrationController::class, 'register' ])->name('register.event');
+
+Route::get('/validatePromo/{event_id}/{promocode}', [\App\Http\Controllers\PromoController::class, 'validatePromo'])->name('promo.validate');
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'homepage'])->name('Homepage');
 Route::post('/donate', [\App\Http\Controllers\HomeController::class, 'donate'])->name('donate');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PromoRequest;
 use App\Models\Promo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PromoController extends Controller
@@ -41,5 +42,25 @@ class PromoController extends Controller
             'validTo'    => $request->validTo,
         ]);
         return redirect()->back();
+    }
+
+    public function validatePromo($event_id, $promocode)
+    {
+        $now = date('Y-m-d');
+
+        //Promo verification
+        $promo = Promo::where('promoCode', $promocode)
+            ->where('event_id', $event_id)
+            ->whereDate('validFrom', '<=', $now)
+            ->whereDate('validTo', '>=', $now)
+            ->first();
+
+        if($promo)
+        {
+            return response()->json(['status'=>true, 'message'=>'success', 'promo'=>$promo], 200);
+        }
+
+        return response()->json(['status'=>false, 'message'=>'Promo code is not valid', 'promo'=>$promo], 404);
+
     }
 }
