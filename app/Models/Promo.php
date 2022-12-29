@@ -18,6 +18,8 @@ class Promo extends Model
         'promoCode',
         'description',
         'quantity',
+        'consumedQty',
+        'discountPrice',
         'validFrom',
         'validTo',
         'created_at',
@@ -27,6 +29,11 @@ class Promo extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 
 }

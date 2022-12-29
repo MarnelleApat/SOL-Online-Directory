@@ -27,4 +27,13 @@ class Order extends Model
         'created_at',
         'updated_at'
     ];
+
+    protected $casts = [
+        'customFields' => 'array',
+    ];
+
+    public function promo()
+    {
+        return $this->has(Promo::class);
+    }
 }

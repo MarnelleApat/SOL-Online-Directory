@@ -15,14 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 // Publich Routes
 Route::get('/events/{slug}', [\App\Http\Controllers\HomeController::class, 'eventPage'])->name('event.public');
-Route::post('/register/{event_id}', [\App\Http\Controllers\RegistrationController::class, 'register' ])->name('register.event');
-
+Route::post('/register/{event_id}', [\App\Http\Controllers\RegistrationController::class, 'registerCustomer' ])->name('register.event');
+Route::post('/checkout', [\App\Http\Controllers\OrderController::class, 'store' ])->name('checkout.event');
 Route::get('/validatePromo/{event_id}/{promocode}', [\App\Http\Controllers\PromoController::class, 'validatePromo'])->name('promo.validate');
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'homepage'])->name('Homepage');
+Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
+
 Route::post('/donate', [\App\Http\Controllers\HomeController::class, 'donate'])->name('donate');
-Route::get('/success', [\App\Http\Controllers\HomeController::class, 'success'])->name('success');
-Route::get('/cancel', [\App\Http\Controllers\HomeController::class, 'cancel'])->name('cancel');
+Route::get('/success', [\App\Http\Controllers\OrderController::class, 'success'])->name('success');
+Route::get('/cancel', [\App\Http\Controllers\OrderController::class, 'cancel'])->name('cancel');
 
 // Authenticated Routes
 Route::get('/article/{article_slug}', [\App\Http\Controllers\HomeController::class, 'SingleArticle'])->name('SingleArticle');

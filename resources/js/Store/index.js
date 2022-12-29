@@ -1,22 +1,10 @@
-import { createApp } from 'vue';
 
 import { createStore } from 'vuex';
 
-const store = createStore({
-        state() {
-            return {
+import Cart from './modules/Cart';
 
-            }
-        },
-        getters: {
-
-        },
-        mutations:{
-
-        },
-        actions: {
-
-        }
-    })
-
-export default store
+export default createStore({
+    modules:{
+        cart: Cart,
+    }
+})

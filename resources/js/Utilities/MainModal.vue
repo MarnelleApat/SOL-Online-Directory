@@ -20,7 +20,7 @@
         <Dialog as="div" class="relative z-10">
             <div className="fixed inset-0 bg-black/70" aria-hidden="true" />
             <div class="fixed inset-0 overflow-y-scroll">
-                <div class="flex min-h-full justify-center p-4 text-center">
+                <div class="flex justify-center p-4 text-center">
                     <TransitionChild
                         as="template"
                         enter="duration-300 ease-out"

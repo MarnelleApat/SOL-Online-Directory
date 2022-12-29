@@ -18,7 +18,7 @@ class RegistrationController extends Controller
         return Inertia::render('Users/registration');
     }
 
-    public function register($event_id, Request $request)
+    public function registerCustomer($event_id, Request $request)
     {
         # 0. Validation
         $request->validate([
@@ -57,45 +57,5 @@ class RegistrationController extends Controller
 
         return response()->json($customer, 200);
 
-
-
-        # 3. query the event details
-        $event = Event::find($event_id);
-
-        # 4. Prepare for Customer order creation
-        # 5. Generate unique RegistrationCode of the customer to the event by concatinating the EventProgramCode and Event totalRegistrant value
-        $order = Order::create([
-            'customer_id' => $customer->id,
-            'orderNumber' => (new OrderController)->generateOrderNumberForEvent($event_id),
-            'productCode' => $event->programCode,
-            'price' => $event->price,
-            'promo' => null,
-            'discount' => 0,
-            'TrxID' => '',
-            'externalURL' => '',
-            'paymentType' => '',
-            'paymentReferenceNo' => '',
-            'approveBy' => '',
-            'customFields' => '',
-            'status' => 'PENDING'
-        ]);
-
-        # 6. Process Payment
-
-        dd($order);
-
-
-
-        // Save the customer / create new customer record
-
-        // Create Order record
-        // Process payment
-
-
-        // return redirect()->back();
-        // check if AUTH is not NULL
-
-        // Store registration record
-        return Inertia::render('Users/registration');
     }
 }

@@ -7,9 +7,9 @@
     import currency from '@/Helpers/formatCurrency'
     import { ref } from 'vue';
     import { useForm } from '@inertiajs/inertia-vue3';
-    import { Inertia } from '@inertiajs/inertia';
     import categories from '@/Utilities/Categories.vue'
     import CheckPromo from '@/Utilities/CheckPromo.vue'
+    import Checkout from '@/Utilities/Checkout.vue'
     import axios from 'axios';
 
     const props = defineProps(['event', 'customFields', 'errors'])
@@ -23,7 +23,7 @@
     let hideForm = ref(false)
     const customer = ref([])
 
-    const promocode = ref('');
+    const appliedPromo = ref({});
 
     // Registration Form Init
     const registrationForm = useForm({
@@ -53,20 +53,26 @@
         meta_data:''
     })
 
+    const getValidatedPromo = (emittedPromo) => {
+        appliedPromo.value = emittedPromo
+    }
+
     // Send to the backend
     const submitRegistration = async () => {
-
         await axios.post(route('register.event', _event.id), registrationForm)
             .then(response => {
-                console.log(response.data)
                 customer.value = response.data
                 hideForm.value = true
             })
             .catch(err => {
-                console.log(err.response.data.errors)
                 validationErrors.value = err.response.data.errors
                 showError.value = true
             })
+    }
+
+    const goBack = () => {
+        hideForm.value = false
+        appliedPromo.value = {}
     }
 
 </script>
@@ -255,11 +261,19 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                             </svg>&nbsp;
-                            <span class="font-normal text-md">{{currency(_event.price)}}</span>
+                            <span class="font-normal text-md" :class="{'line-through text-red-600': appliedPromo.promo}">
+                                &nbsp;{{currency(_event.price)}}&nbsp;
+                            </span>
+                            <span v-if="appliedPromo.promo" class="font-bold text-md ml-2">
+                                {{currency(appliedPromo.promo.discountPrice)}}
+                            </span>
+
+                            <!-- {{appliedPromo.promo}} -->
                         </div>
                     </div>
                     <div class="flex flex-col mt-5">
-                        <CheckPromo :eventid="_event.id" />
+                        <CheckPromo :eventid="_event.id" @validate-promo="getValidatedPromo" />
+                        <!-- <pre>{{appliedPromo}}</pre> -->
                     </div>
                 </div>
             </div>
@@ -267,12 +281,16 @@
         </div>
         <!-- <pre>{{_event}}</pre> -->
         <div class="flex gap-5 mt-6 justify-between">
-            <BreezeButton @click="hideForm=false" type="button" class="text-gray-100 bg-gray-600 hover:bg-gray-500 w-40 rounded-none text-lg shadow-lg font-bold py-3 px-4">
+            <BreezeButton @click="goBack" type="button" class="text-gray-100 bg-gray-600 hover:bg-gray-500 w-40 rounded-none text-lg shadow-lg font-bold py-3 px-4">
                 Edit
             </BreezeButton>
-            <BreezeButton type="button" class="text-white bg-green-600 hover:bg-green-500 rounded-none text-lg shadow-lg font-bold py-3 px-4">
-                Confirm and Checkout
-            </BreezeButton>
+            <Checkout :customer="customer" :checkoutItem="_event" :promoApply="appliedPromo">
+                <template v-slot:button="{ onClick }">
+                    <BreezeButton @click="onClick" type="button" class="text-white bg-green-600 hover:bg-green-500 rounded-none text-lg shadow-lg font-bold py-3 px-4">
+                        Confirm and Checkout
+                    </BreezeButton>
+                </template>
+            </Checkout>
         </div>
     </template>
 </template>

@@ -5,6 +5,7 @@
     import BreezeDropdownLink from '@/Components/DropdownLink.vue';
     import BreezeNavLink from '@/Components/NavLink.vue';
     import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+    import Cart from '@/Utilities/Cart.vue'
     import { Link } from '@inertiajs/inertia-vue3';
 
     const showingNavigationDropdown = ref(false);
@@ -52,30 +53,37 @@
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
                     <!-- Settings Dropdown -->
                     <div class="ml-3 relative ring-0">
-                        <BreezeDropdown align="right" width="48" contentClasses="bg-white bg-opacity-80">
-                            <template #trigger>
-                                <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-                                        </svg>
-                                        {{$page.props.auth.user ? $page.props.auth.user.niceName : "Hello Guest"}}
-                                        <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </span>
-                            </template>
-
-                            <template #content>
-                                <template v-if="$page.props.auth.user">
-                                    <BreezeDropdownLink :href="route('logout')" as="button" class="hover:bg-gray-100">My Profile</BreezeDropdownLink>
-                                    <BreezeDropdownLink :href="route('logout')" method="post" as="button" class="border-t hover:bg-gray-100 border-gray-200">Log Out</BreezeDropdownLink>
+                        <div class="flex">
+                            <BreezeDropdown align="right" width="48" contentClasses="bg-white bg-opacity-80">
+                                <template #trigger>
+                                    <span class="inline-flex rounded-md">
+                                        <button type="button" class="inline-flex items-center p-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="lg:flex xl:flex sm:hidden">{{$page.props.auth.user ? $page.props.auth.user.niceName : "Hello Guest"}}</span>
+                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
                                 </template>
-                                <BreezeDropdownLink v-else :href="route('login')" as="button" class="hover:bg-gray-100">Log In</BreezeDropdownLink>
 
-                            </template>
-                        </BreezeDropdown>
+                                <template #content>
+                                    <template v-if="$page.props.auth.user">
+                                        <span class="lg:hidden xl:hidden sm:flex px-4 py-2 text-gray-700 text-sm">
+                                            <span class="italic mr-1">Hello</span>{{$page.props.auth.user ? $page.props.auth.user.niceName : "Hello Guest"}}
+                                        </span>
+                                        <BreezeDropdownLink :href="route('logout')" as="button" class="hover:bg-gray-100">My Profile</BreezeDropdownLink>
+                                        <BreezeDropdownLink :href="route('logout')" method="post" as="button" class="border-t hover:bg-gray-100 border-gray-200">Log Out</BreezeDropdownLink>
+                                    </template>
+                                    <BreezeDropdownLink v-else :href="route('login')" as="button" class="hover:bg-gray-100">Log In</BreezeDropdownLink>
+
+                                </template>
+                            </BreezeDropdown>
+                            <!-- Display cart -->
+                            <Cart />
+                        </div>
                     </div>
                 </div>
 

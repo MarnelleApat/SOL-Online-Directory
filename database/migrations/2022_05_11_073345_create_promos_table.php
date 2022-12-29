@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('promoCode')->unique();
             $table->string('description')->nullable();
             $table->integer('quantity')->default(0);
+            $table->integer('consumedQty')->default(0);
+            $table->double('discountPrice')->default(0);
             $table->date('validFrom')->nullable();
             $table->date('validTo')->nullable();
             $table->timestamps();

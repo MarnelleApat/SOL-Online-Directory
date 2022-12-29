@@ -19,6 +19,7 @@ class HomeController extends Controller
             ->with('department')
             ->with('categories')
             ->with('speakers')
+            ->with('promos')
             ->with('schedules')
             ->first();
 
