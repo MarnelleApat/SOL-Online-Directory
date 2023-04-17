@@ -3,7 +3,7 @@ export default {
 
     state: {
         customer: [],
-        cart: (localStorage.getItem("cart") !== null) ? JSON.parse(localStorage.getItem("cart")) : [],
+        cart: localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [],
         // totalCartQuantity: 0,
     },
 
@@ -18,7 +18,10 @@ export default {
 
     actions: {
         addToCart({commit, state}, payload) {
-            const str = state.cart.find(d => d.id === payload.id)
+
+            let event = payload.event
+
+            const str = state.cart.find(d => d.programCode === event.programCode)
             if(!str) {
                 commit('ADD_TO_CART', payload)
                 return true
@@ -51,10 +54,11 @@ export default {
         CART(state, payload) {
             state.cart = payload;
         },
-        ADD_TO_CART(state, item) {
-            item.discount = null
-            item.promo_id = null
-            state.cart.push(item)
+        ADD_TO_CART(state, payload) {
+            payload.event.discount = null
+            payload.event.promo_id = null
+            payload.event.registrant = payload.registrant
+            state.cart.push(payload.event)
             localStorage.setItem("cart", JSON.stringify(state.cart))
         },
         REMOVE_ITEM(state, payload) {
@@ -62,6 +66,7 @@ export default {
             localStorage.setItem("cart", JSON.stringify(state.cart))
         },
         EMPTY_CART(state) {
+            state.cart = []
             localStorage.removeItem("cart")
         }
     }

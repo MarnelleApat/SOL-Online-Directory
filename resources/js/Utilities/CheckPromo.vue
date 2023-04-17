@@ -3,7 +3,7 @@
     import axios from 'axios';
     import { ref } from 'vue';
 
-    const props = defineProps(['eventid'])
+    const props = defineProps(['programcode'])
     const emit = defineEmits(['validatePromo'])
     const promocode = ref(null)
     const isVerifying = ref(false)
@@ -18,7 +18,7 @@
         {
             isVerifying.value = true
             setTimeout(() => {
-                axios.get(route('promo.validate', [props.eventid, code]))
+                axios.get(route('promo.validate', [props.programcode, code]))
                      .then((response) => {
                         valid.value = true
                         emit('validatePromo', response.data)
@@ -36,14 +36,14 @@
 
 </script>
 <template>
-    <div class="flex flex-col justify-center">
+    <div class="flex flex-col justify-center gap-1">
         <slot name="headerText"></slot>
         <div class="flex items-center">
             <BreezeInput
                 @change="validatePromoCode(promocode)"
                 v-model="promocode"
                 type="text"
-                class="text-gray-700 w-full p-1 rounded-none"
+                class="text-gray-700 w-full p-2 border-t-0 border-r-0 border-l-0 bg-white/90 rounded-none border-b-gray-500/30 transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300 border-1"
                 placeholder="ex. EBP2023"
             />
             <div v-if="isVerifying" class="text-left ml-1">

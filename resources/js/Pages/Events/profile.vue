@@ -5,12 +5,12 @@
     import toJSON from '@/Helpers/StringToJson'
     import toDate from '@/Helpers/StringToDate'
     import currency from '@/Helpers/formatCurrency'
+    import moment from 'moment'
     import categories from '@/Utilities/Categories.vue'
     import MediaDialog from '@/Utilities/MediaDialog.vue'
     import EditRecordModal from '@/Utilities/EditRecordDialog.vue'
     import Promo from '@/Utilities/PromoForm.vue'
     import CustomRegistrationForm from '@/Utilities/CustomRegistrationForm.vue'
-    import moment from 'moment'
     import BreezeLabel from '@/Components/Label.vue';
     import { Switch } from '@headlessui/vue'
     import { createToaster } from '@meforma/vue-toaster'

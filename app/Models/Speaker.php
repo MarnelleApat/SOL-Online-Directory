@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Speaker extends Model
 {
@@ -24,8 +23,9 @@ class Speaker extends Model
         'updated_at'
     ];
 
-    public function events() {
-        return $this->belongsToMany(Event::class, 'event_speaker', 'event_id', 'speaker_id');
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'program_speakers', 'speaker_id', 'programCode');
     }
 
 }

@@ -11,15 +11,15 @@ class Order extends Model
 
     protected $fillable = [
         'id',
+        'TrxID',
+        'programCode',
         'customer_id',
         'orderNumber',
-        'productCode',
-        'price',
+        'amount',
         'promo_id',
         'discount',
-        'TrxID',
-        'externalURL',
         'paymentType',
+        'externalURL',
         'paymentReferenceNo',
         'approvedBy',
         'customFields',
@@ -36,4 +36,9 @@ class Order extends Model
     {
         return $this->has(Promo::class);
     }
+
+    // public function items()
+    // {
+    //     return $this->hasMany(OrderItem::class);
+    // }
 }

@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Event;
+use App\Models\Category;
 use Stripe\StripeClient;
-use App\WPRestApi\WP_Post;
 use Illuminate\Http\Request;
-use App\WPRestApi\WP_Category;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -29,14 +28,26 @@ class HomeController extends Controller
         ]);
     }
 
-    // testing stripe processes
 
+    // Homepage
     public function homepage()
     {
-        $prices = DB::table('prices')->get();
+        // Get the categories
+        $categories = Category::take(7)
+            ->get(['slug', 'name']);
 
-        return Inertia::render('Homepage/Main', [
-           'prices' => $prices
+        // Temporariry query (Get the assigned events set as slider)
+        $events = Event::orderBy('created_at', 'DESC')
+            ->with('partner')
+            ->with('categories')
+            ->with('speakers')
+            ->with('promos')
+            ->with('schedules')
+            ->paginate(8);
+
+        return Inertia::render('Homepage/index',[
+            'categories' => $categories,
+            'events' => $events
         ]);
     }
 
@@ -58,11 +69,11 @@ class HomeController extends Controller
                 [
                     'price_data' => [
                         'product_data' => [
-                            'name' => $title,
-                            'description' => $desc,
+                            'name' => 'test',
+                            'description' => 'testtesteststs',
                         ],
                         'currency' => 'usd',
-                        'unit_amount' => $finalAmount,
+                        'unit_amount' => 1000,
                     ],
                     'quantity' => 1,
                 ]
@@ -73,49 +84,81 @@ class HomeController extends Controller
     }
 
 
-    public function success()
+    /**
+     * Checkout: Process Payment
+     */
+    public function processPayment(Request $request)
     {
-        $stripe = new StripeClient("sk_test_51KPSpAGYOLqshLviUHUjYPWiNdE4Cw2vMsRH9wVy1KtmjTwoxnqUcPc8og4YXSREiivgYci3ZzhD8DcOMXtuHz4q00owR1EMzw");
-        $session = $stripe->checkout->sessions->retrieve($_GET['session_id']);
-        $customer = $stripe->customers->retrieve($session->customer);
 
-        return Inertia::render('Homepage/Success', [
-            'session' => $session,
-            'customer' => $customer
-        ]);
+        $lineItems = [];
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        $items = $request->cartItems;
+        $customer = $request->customerInfo;
+
+        $checkedout_programcode = [];
+
+        foreach ($items as $key => $item)
+        {
+            $finalAmount = ($item['price'] - $item['discount'])*100;
+
+            array_push($lineItems, [
+                'price_data' => [
+                    'product_data' => [
+                        'name' => $item['title'],
+                        'description' => strlen($item['description']) > 60 ? substr($item['description'],0,60)."..." : $item['description'],
+                        'images' => [$item['banner']],
+                        'metadata' => [
+                            'programCode' => $item['programCode'],
+                        ],
+                    ],
+                    'currency' => 'usd',
+                    'unit_amount' => $finalAmount,
+                ],
+                'quantity' => 1,
+            ]);
+
+            array_push($checkedout_programcode, json_encode([
+                    'programCode' => $item['programCode'],
+                    'price' => $item['price'],
+                    'discount' => $item['discount']
+                ])
+            );
+        }
+
+        $finalStripeItem = [
+            'mode' => 'payment',
+            'customer_email' => 'marnelle.apat@bible.org.sg', // use the email address of the registrant
+            'metadata' => $checkedout_programcode,
+            'success_url' => route('success').'?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('cancel'),
+            'line_items' => $lineItems,
+        ];
+
+
+        /**
+         * FLOW
+         * 1. Save the customer information. For guest checkout, create new customer record. For logged in user,
+         *    just copy the essential info from the USER record. Unique identifier is email address.
+         * 2. Store the checked out item to the ORDER and ORDER_ITEMS table, including all the item information and customer id
+         * 3. Proceed to the Success Page after the payment and summarize the transaction.
+         * 4. If the user won't proceed the payment, delete the order and order_item record.
+         */
+
+        $checkout_session = $stripe->checkout->sessions->create($finalStripeItem);
+
+        return response('', 409)->header('X-Inertia-Location', $checkout_session->url);
+
     }
 
-    public function cancel()
+    /***
+     * NOT FOUND PAGE
+     *
+     */
+    public function NotFound()
     {
-        return Inertia::render('Homepage/Cancel');
+        return Inertia::render('Homepage/NotFound');
     }
-
-    // end of testing stripe processes
-
-
-    public function PostByCategory( WP_Category $wp_category, WP_Post $wp_post, $category_slug )
-    {
-        $categories = $wp_category->get();
-        $category = $wp_category->get_cat_by_slug($category_slug);
-        $articles = $wp_post->get_post_by_category_id( $category['id'] );
-
-        return Inertia::render( 'Articles/ArticlesByCategory', [
-            'articles' => $articles,
-            'category_name' => $category['name'],
-            'navigationMenu' => $categories
-        ]);
-    }
-
-    public function SingleArticle( WP_Category $wp_category, WP_Post $wp_post, $article_slug )
-    {
-        $categories = $wp_category->get();
-        $post = $wp_post->get_single_post( $article_slug );
-
-        return Inertia::render( 'Articles/Single', [
-            'article' => $post,
-            'navigationMenu' => $categories
-        ]);
-    }
-
 
 }

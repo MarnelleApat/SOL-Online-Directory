@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('stripeCustomerCode')->nullable();
             $table->string('nirc', 15)->nullable();
             $table->string('email')->unique();
             $table->string('firstName')->nullable();

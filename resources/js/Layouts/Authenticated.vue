@@ -1,9 +1,9 @@
 <script setup>
     import { defineComponent } from 'vue';
-    import AuthencatedNavigation from './AuthenticatedNav.vue';
+    import AuthenticatedNavigation from './AuthenticatedNav.vue';
 
     defineComponent(() => {
-        AuthencatedNavigation
+        AuthenticatedNavigation
     })
 </script>
 
@@ -12,7 +12,7 @@
         <div class="min-h-screen bg-gray-100">
 
             <!-- navigation -->
-            <AuthencatedNavigation />
+            <AuthenticatedNavigation />
 
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">

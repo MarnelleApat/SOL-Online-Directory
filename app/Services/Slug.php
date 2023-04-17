@@ -6,11 +6,11 @@ use Illuminate\Support\Str;
 
 class Slug
 {
-    public function createSlug($title='',$model, $id = 0)
+    public function createSlug($title='',$model, $programCode = null)
     {
 
         $slug = Str::slug($title);
-        $allSlugs = $this->getRelatedSlugs($slug,$model, $id);
+        $allSlugs = $this->getRelatedSlugs($slug,$model, $programCode);
         if (! $allSlugs->contains('slug', $slug)){
             return $slug;
         }
@@ -27,12 +27,12 @@ class Slug
         } while ($is_contain);
     }
 
-    public function getRelatedSlugs($slug,$model, $id = 0)
+    public function getRelatedSlugs($slug,$model, $programCode = null)
     {
         $m = $model::class;
 
         return $m::select('slug')->where('slug', 'like', $slug.'%')
-        ->where('id', '<>', $id)
+        ->where('programCode', '<>', $programCode)
         ->get();
     }
 }

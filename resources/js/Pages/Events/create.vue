@@ -1,12 +1,12 @@
 <script setup>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
+    import { reactive, ref } from 'vue';
     import BreezeButton from '@/Components/Button.vue';
     import BreezeInput from '@/Components/Input.vue';
     import BreezeTextarea from '@/Components/Textarea.vue';
     import BreezeInputError from '@/Components/InputError.vue';
     import BreezeLabel from '@/Components/Label.vue';
-    import { reactive, ref } from 'vue';
     import SelectCategories from '@/Utilities/SelectCategories.vue'
     import SelectSpeakers from '@/Utilities/SelectSpeakers.vue'
     import Scheduler from '@/Utilities/Scheduler.vue'

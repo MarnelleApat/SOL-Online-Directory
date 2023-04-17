@@ -1,5 +1,6 @@
 <script setup>
     import Multiselect from '@vueform/multiselect'
+    import spinner from '@/Utilities/Spinner.vue'
     import { onMounted, ref } from 'vue';
 
     // init for multiselect model
@@ -66,7 +67,8 @@
     <br />
     <div class="grid grid-cols-5 gap-3">
         <div class="flex flex-col justify-center items-center" v-for="speaker in speakerModel">
-            <img :src="speaker.profileImg" class="rounded-full h-20 mb-2" />
+            <img v-if="speaker.profileImg" :src="speaker.profileImg" class="rounded-full h-20 mb-2" />
+            <spinner v-else></spinner>
             <p class="font-bold text-gray-500 text-md">{{ speaker.name }}</p>
         </div>
     </div>

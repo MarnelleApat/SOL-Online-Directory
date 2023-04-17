@@ -17,7 +17,6 @@ class Customer extends Model
      */
     protected $fillable = [
         'id',
-        'stripeCustomerCode',
         'nirc',
         'email',
         'firstName',

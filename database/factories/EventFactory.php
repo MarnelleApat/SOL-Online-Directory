@@ -19,25 +19,24 @@ class EventFactory extends Factory
     {
         $title  = $this->faker->text(40);
         $price = $this->faker->numberBetween($min = 200, $max = 250);
-        $schedule = '[{"startDate":"2022-03-09", "startTime":"08:00", "endTime": "09:00"}]';
         $venue = NULL;
         $limit = $this->faker->numberBetween($min = 10, $max = 200);
 
         return [
-            'department_id'     => $this->faker->randomElement([1, 2, 3, 4, 5 ,6 ,7, 8]),
+            'partner_id'     => $this->faker->randomElement([1, 2, 3, 4, 5 ,6 ,7, 8]),
             'programCode'       => 'SIBD'.$this->faker->unique()->numberBetween($min = 1000, $max = 9000),
             'title'             => $title,
             'slug'              => Str::slug($title),
             'description'       => $this->faker->text(100),
-            'checkHandler'      => $this->faker->name(),
             'eventIncharge'     => $this->faker->name(),
-            'schedule'          => $schedule,
             'activeUntil'       => $this->faker->dateTimeThisYear('+6 months'),
             'price'             => $price,
             'venue'             => $venue,
             'limit'             => $limit,
+            'type'              => $this->faker->randomElement(['Physical', 'Online', 'Hybrid']),
             'email'             => $this->faker->email(),
             'totalRegistrants'  => $limit > 10 ? $limit-10 : 3,
+            'status'            => $this->faker->randomElement(['Published', 'Draft', 'Approval']),
             'user_id'           => 1
         ];
     }

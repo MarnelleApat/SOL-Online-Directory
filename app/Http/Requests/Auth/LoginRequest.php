@@ -47,14 +47,20 @@ class LoginRequest extends FormRequest
 
         $isEmail = filter_var($request->login, FILTER_VALIDATE_EMAIL ) ? 'email' : 'username';
 
-        if ( !Auth::attempt([$isEmail => $request->login, 'password' => $request->password], $this->boolean('remember')) )
+        // attemp to login using email or username and password
+        $successulLogin = Auth::attempt([$isEmail => $request->login, 'password' => $request->password], $this->boolean('remember'));
+
+        if ( !$successulLogin )
         {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'message' => trans('auth.failed'),
             ]);
         }
+
+        // check if the account is active
+        $this->isUserStatusActive();
 
         RateLimiter::clear($this->throttleKey());
     }
@@ -116,12 +122,8 @@ class LoginRequest extends FormRequest
         {
             Auth::guard('web')->logout();
 
-            // throw ValidationException::withMessages([
-            //     'message' => ['Account is not activated yet. Please contact administrator']
-            // ]);
-
             throw ValidationException::withMessages([
-                'email' => ['Account is not activated yet. Please contact administrator']
+                'message' => ['Account is not activated yet. Please contact administrator']
             ]);
 
         }

@@ -9,21 +9,20 @@ class Schedule extends Model
 {
     use HasFactory;
 
-    protected $table = 'event_schedules';
+    protected $table = 'program_schedules';
 
     protected $fillable = [
-        'id',
-        'event_id',
+        'programCode',
         'date',
         'startTime',
         'endTime',
-        'created_at',
-        'updated_at'
     ];
+
+    public $timestamps = false;
 
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'programCode');
     }
 
 }

@@ -9,27 +9,30 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $table = 'events';
+
+    protected $primaryKey = 'programCode';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+
     protected $fillable = [
         'id',
         'slug',
-        'department_id',
+        'partner_id',
         'programCode',
         'title',
         'description',
-        'checkHandler',
         'eventIncharge',
-        'schedule',
         'activeUntil',
         'price',
         'venue',
         'limit',
-        'isPublic',
         'email',
         'specialSettings',
         'type',
         'isActive',
         'status',
-        'hasPromo',
         'totalRegistrants',
         'thumbnail',
         'banner',
@@ -38,29 +41,35 @@ class Event extends Model
         'updated_at'
     ];
 
+
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_event', 'event_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'program_categories', 'programCode', 'category_id');
     }
 
     public function speakers()
     {
-        return $this->belongsToMany(Speaker::class, 'event_speaker', 'event_id', 'speaker_id');
+        return $this->belongsToMany(Speaker::class, 'program_speakers', 'programCode', 'speaker_id');
     }
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'programCode');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'programCode');
     }
 
     public function promos()
     {
-        return $this->hasMany(Promo::class);
+        return $this->hasMany(Promo::class, 'programCode');
     }
 
-    public function department()
+    public function partner()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Partner::class);
     }
 
     public function user()

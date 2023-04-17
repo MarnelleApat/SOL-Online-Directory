@@ -63,10 +63,16 @@
 <style src="@vueform/multiselect/themes/default.css"></style>
 
 <style>
+    .multiselect {
+        background: #fff;
+        color: #2c2a2a;
+        border: 1px solid rgba(156, 163, 175, 1);
+        border-radius: 0px;
+    }
     .multiselect-tag.is-user {
         padding: 5px 8px 5px 10px;
         border-radius: 22px;
-        background: #35495e;
+        background: #5e5435;
         margin: 3px 3px 8px;
     }
 
@@ -75,7 +81,7 @@
         border-radius: 50%;
         height: 18px;
         margin-right: 8px;
-        border: 2px solid #ffffffbf;
+        border: 2px solid #fff;
     }
 
     .multiselect-tag.is-user i:before {

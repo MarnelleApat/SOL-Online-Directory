@@ -7,10 +7,13 @@ import BreezeInputError from '@/Components/InputError.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 
-defineProps({
+const props = defineProps({
     canResetPassword: Boolean,
     status: String,
+    errors: String
 });
+
+const headerTitle = "Log In - SOL Online Event Registration"
 
 const form = useForm({
     login: '',
@@ -19,6 +22,9 @@ const form = useForm({
 });
 
 const submit = () => {
+
+    props.errors = {}
+
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
@@ -27,14 +33,22 @@ const submit = () => {
 
 <template>
     <BreezeGuestLayout>
-        <Head title="Log in" />
+        <Head>
+            <title>
+                {{ headerTitle }}
+            </title>
+        </Head>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
 
+        <div v-if="errors.message" class="my-4 font-medium text-center text-sm text-red-600">
+            {{ errors.message }}
+        </div>
+
         <form @submit.prevent="submit">
-            <div>
+            <div class="mt-8">
                 <BreezeLabel for="email" value="Email or Username" />
                 <BreezeInput id="login" type="text" class="mt-1 block w-full" v-model="form.login" required autofocus autocomplete="username" />
                 <BreezeInputError class="mt-2" :message="form.errors.login" />

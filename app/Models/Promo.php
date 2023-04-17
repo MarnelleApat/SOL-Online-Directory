@@ -9,11 +9,11 @@ class Promo extends Model
 {
     use HasFactory;
 
-    protected $table = 'promos';
+    protected $table = 'program_promos';
 
     protected $fillable = [
         'id',
-        'event_id',
+        'programCode',
         'name',
         'promoCode',
         'description',
@@ -28,7 +28,7 @@ class Promo extends Model
 
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'programCode');
     }
 
     public function order()

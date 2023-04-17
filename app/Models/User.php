@@ -38,7 +38,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'userType',
         'status',
         'gender',
-        'specialSettings'
+        'specialSettings',
+        'avatar'
     ];
 
 
@@ -62,8 +63,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function departments()
+    public function partners()
     {
-        return $this->belongsToMany(Department::class, 'department_user', 'user_id', 'department_id');
+        return $this->belongsToMany(Department::class, 'partner_users', 'user_id', 'partner_id');
+    }
+
+    /**
+     * Get the user that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 }

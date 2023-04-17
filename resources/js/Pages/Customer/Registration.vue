@@ -6,7 +6,8 @@
     import MainModal from '@/Utilities/MainModal.vue'
     import { createToaster } from '@meforma/vue-toaster'
     import { useStore } from 'vuex';
-    import { ref, reactive, onMounted, computed } from 'vue';
+    import { ref, reactive, onMounted } from 'vue';
+    import toJSON from '@/Helpers/StringToJson'
 
     const props = defineProps(['selectedEvent'])
     const isExistInCart = ref(false)
@@ -53,28 +54,28 @@
             .then(() => {
                 toaster.success("Added to cart successfully")
                 isExistInCart.value = true
+                regModal.value = true
+                regConfModal.value = true
             })
             .catch(() => {
                 toaster.error("Already exist in the cart.")
             })
     }
 
-    const isOpen = ref(false)
-    const openModal = () => {
-        isOpen.value = true
-    }
+    const regModal = ref(false)
+    const regConfModal = ref(false)
 
 </script>
 
 <template>
-    <MainModal :isOpen="isOpen" @open-modal="openModal">
-        <template #openTriggerButton>
+    <MainModal :isClose="regModal" as="div">
+        <template v-slot:openTriggerButton="{ onClick }">
             <BreezeButton
+                @click="onClick"
                 :disabled="isExistInCart"
-                :class="{'bg-green-400 hover:bg-green-400 active:bg-green-400 text-green-800':isExistInCart}"
-                @click="openModal"
-                type="button"
-                class="flex w-full items-center justify-center gap-2 text-gray-100 bg-green-600 hover:bg-green-700 rounded-none text-lg shadow-lg font-bold py-3 px-4">
+                :class="{'bg-green-400 hover:bg-green-400 text-green-800':isExistInCart, 'bg-green-600 hover:bg-green-600/80 text-green-800':!isExistInCart}"
+                class="active:bg-green-400 flex w-full items-center justify-center gap-2 rounded-none text-[16px] shadow-lg font-bold py-5 px-4"
+                type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                 </svg>
@@ -82,9 +83,9 @@
             </BreezeButton>
         </template>
         <template #title>
-            <h3 class="text-2xl font-bold">Registration Required before adding to cart</h3>
+            <h3 class="text-2xl font-bold">Registration before adding to cart</h3>
         </template>
-        <template #content>
+        <template #default>
             <p class="text-sm leading-5 font-light my-5 mb-3">
                 By providing your contact details, you consent to our collection,
                 use and disclosure of your personal data as described in our privacy policy
@@ -92,7 +93,7 @@
                 to that which is sufficient to support the intended purpose of the collection.
                 Kindly check our <a href="#" class="text-blue-500 hover:text-blue-400 underline">Privacy Policy</a>
             </p>
-            <form @submit.prevent="saveRegistrationAndAddToCart">
+            <form>
                 <div class="flex flex-col gap-5 mt-6">
                     <div class="w-1/4">
                         <BreezeLabel value="NIRC (Last 4-digit)" class="text-gray-500 leading-0 font-semibold" />
@@ -154,21 +155,34 @@
                         </div>
                     </div>
                     <div class="flex justify-end mt-10 gap-3">
-                        <button @click="isOpen=false" type="button" class="inline-flex justify-center items-center uppercase rounded-sm border bg-gray-600 hover:bg-gray-500 px-4 py-2 text-sm font-bold text-white">
-                            Cancel
-                        </button>
-                        <button
-                            class="flex gap-1 justify-center items-center uppercase rounded-sm border bg-green-600 hover:bg-green-500 px-4 py-2 text-sm font-bold text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                            </svg>
-                            Add to cart
-                        </button>
+                        <MainModal :isClose="regConfModal">
+                            <template v-slot:openTriggerButton="{ onClick }">
+                                <button
+                                    @click="onClick"
+                                    type="button"
+                                    class="flex gap-1 justify-center items-center uppercase rounded-sm border bg-green-600 hover:bg-green-500 px-4 py-2 text-sm font-bold text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                    </svg>
+                                    Register & Add to Cart
+                                </button>
+                            </template>
+
+                            <template #default>
+                                <pre>{{registration}}</pre>
+                                <hr />
+                                <!-- <pre>{{toJSON(props.selectedEvent.specialSettings).customFields[2]}}</pre> -->
+                                <br />
+                                <div class="flex justify-between">
+                                    <button @click.prevent="saveRegistrationAndAddToCart()" type="button" class="flex gap-1 justify-center items-center uppercase rounded-sm border bg-green-600 hover:bg-green-500 px-4 py-2 text-sm font-bold text-white">
+                                        CONFIRM
+                                    </button>
+                                </div>
+                            </template>
+                        </MainModal>
                     </div>
                 </div>
             </form>
-            <pre>{{registration}}</pre>
-            <pre>{{props.selectedEvent}}</pre>
         </template>
     </MainModal>
 </template>

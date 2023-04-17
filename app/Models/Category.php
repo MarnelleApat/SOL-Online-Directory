@@ -20,8 +20,9 @@ class Category extends Model
         'updated_at'
     ];
 
-    public function events() {
-        return $this->belongsToMany(Event::class, 'category_event', 'event_id', 'category_id');
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'program_categories', 'category_id', 'programCode');
     }
 
 }

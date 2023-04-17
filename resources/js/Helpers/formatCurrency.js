@@ -1,8 +1,8 @@
 // format currency
-const formatPrice = (value) => {
+const formatPrice = (value, _currency='USD') => {
     var formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD',
+        currency: _currency,
         minimumFractionDigits: 2
     });
     return formatter.format(value);

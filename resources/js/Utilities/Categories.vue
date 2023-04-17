@@ -4,8 +4,7 @@
 
     const props = defineProps(['categories', 'styleClass'])
 
-    const classes = computed(() => props.styleClass ? props.styleClass : 'bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full mr-1 mb-1 px-2 leading-none flex items-center'
-);
+    const classes = computed(() => props.styleClass ? props.styleClass : 'bg-gray-800 hover:bg-gray-400 hover:text-gray-800 text-white text-xs rounded-full mr-1 mb-1 px-2 leading-none flex items-center');
 
 </script>
 

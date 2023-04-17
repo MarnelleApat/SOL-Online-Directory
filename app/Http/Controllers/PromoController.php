@@ -44,13 +44,13 @@ class PromoController extends Controller
         return redirect()->back();
     }
 
-    public function validatePromo($event_id, $promocode)
+    public function validatePromo($programCode, $promocode)
     {
         $now = date('Y-m-d');
 
         //Promo verification
         $promo = Promo::where('promoCode', $promocode)
-            ->where('event_id', $event_id)
+            ->where('programCode', $programCode)
             ->whereDate('validFrom', '<=', $now)
             ->whereDate('validTo', '>=', $now)
             ->first();

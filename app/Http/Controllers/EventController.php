@@ -9,65 +9,110 @@ use App\Models\Speaker;
 use App\Models\Category;
 use App\Models\Department;
 use App\Http\Requests\EventRequest;
+use App\Models\Partner;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
+    /**
+     * Get all the lists of events in the ADMIN portal
+     * Execution: 'Admin' Middleware
+     */
     public function index()
     {
-
-        $events = Event::where('status', true)
-            ->where('isActive', true)
-            ->where('isPublic', true)
-            ->orderBy('id', 'DESC')
-            ->with('department')
-            ->with('categories')
+        $events = Event::orderBy('created_at', 'DESC')
+            // ->with('partners')
             ->with('schedules')
-            ->with('user')
-            ->paginate(7);
+            ->with('categories')
+            ->paginate(8);
 
-
-        return Inertia::render('Events/index', [
+        return Inertia::render('Admin/Events/index',[
             'events' => $events
         ]);
     }
 
+    /**
+    * Search the event by title with the keyword inputted by the user
+    * Execution: 'Admin' Middleware
+    */
+    public function searchEvents(Request $request)
+    {
+        if(!empty($request->keyword))
+        {
+            $events = Event::where('title', 'like', '%' . $request->keyword . '%')
+                ->with('schedules')
+                ->with('categories')
+                ->paginate(8);
+
+            return Inertia::render('Admin/Events/index',[
+                'events' => $events,
+            ]);
+        }
+        else
+        {
+            return redirect()->route('admin.events');
+        }
+    }
+
+    /**
+     * Get all the create/add new Event record in the ADMIN portal
+     * Execution: 'Admin' Middleware
+     */
+    public function create()
+    {
+
+        $partners = Partner::all();
+        $categories = Category::all();
+        $speakers   = Speaker::all();
+
+        return Inertia::render('Admin/Events/create',[
+            'categories' => $categories,
+            'partners'=> $partners,
+            'speakers'=> $speakers,
+            'user' => Auth::user()
+        ]);
+    }
+
+    /**
+     * Store the creation of new Event in the ADMIN portal
+     * Execution: 'Admin' Middleware
+     */
     public function store(EventRequest $request, Slug $slug, Event $event)
     {
+        // dd($request->all());
 
         // proceed to insertion once all passed the validation
         $eventData = Event::create([
-            'title' => $request->title,
-            'department_id' => $request->department['id'],
-            'slug'  => $slug->createSlug($request->title, $event),
-            'programCode' => $request->programCode,
-            'description' => $request->description,
-            'checkHandler' => $request->checkHandler,
-            'eventIncharge' => $request->personIncharge,
-            'activeUntil' => $request->validity,
-            'price' => $request->registrationFee,
-            'venue' => json_encode($request->venue),
-            'limit' => $request->limitReg,
-            'email' => $request->emailIncharge,
-            'type' => $request->eventType,
-            'user_id' => Auth::user()->id,
-            'thumbnail' => $request->photoImg['file_name'],
-            'banner' => $request->banner['file_name'],
-            'specialSettings' => '[{"themeColor":"#2C2C2C"}, {"customFields": []}]'
+            'title'             => $request->title,
+            'partner_id'        => $request->partner['id'],
+            'slug'              => $slug->createSlug($request->title, $event),
+            'programCode'       => $request->programCode,
+            'description'       => $request->description,
+            'eventIncharge'     => $request->personIncharge,
+            'activeUntil'       => $request->validity,
+            'price'             => $request->registrationFee,
+            'venue'             => json_encode($request->venue),
+            'limit'             => $request->limitReg,
+            'email'             => $request->emailIncharge,
+            'type'              => $request->eventType,
+            'user_id'           => Auth::user()->id,
+            'banner'            => $request->banner['file_name'],
+            'specialSettings'   => '[{"customFields": []}]',
+            'status'            => $request->isSaveAsDraft ? 'Draft' : 'Published'
         ]);
 
         // after storing the Event record
         if($eventData)
         {
             // insert schedule check and store the schedule to the schedule table
-            if($request->schedules)
+            if(count($request->schedules) > 0)
             {
-                foreach($request->schedules as $schedule) {
-                    Schedule::create([
-                        'event_id' => $eventData->id,
+                foreach($request->schedules as $schedule)
+                {
+                    $eventData->schedules()->create([
                         'date' => $schedule['date'],
                         'startTime' => $schedule['startTime'],
                         'endTime' => $schedule['endTime'],
@@ -75,8 +120,8 @@ class EventController extends Controller
                 }
             }
 
-            // inser categories => check and store the categories to the pivor table
-            if($request->categories)
+            // insert categories => check and store the categories to the program_categories pivot table
+            if(count($request->categories) > 0)
             {
                 foreach($request->categories as $category) {
                     $eventData->categories()->attach($category['id']);
@@ -84,46 +129,48 @@ class EventController extends Controller
             }
 
             // insert speakers => check and store the speakers to the pivor table
-            if(count($request->speakers))
+            if($request->speakers)
             {
                 foreach($request->speakers as $speaker) {
                     $eventData->speakers()->attach($speaker['id']);
                 }
             }
+
+            // insert payment mode => check and store the payment mode set by the user during the creation.
+            // By default, it is FREE event
+            if(count($request->paymentMode))
+            {
+                foreach($request->paymentMode as $payment)
+                {
+                    $eventData->payments()->create([
+                        'type' => $payment['type'],
+                        'details' => $payment['details'],
+                        'status' => $payment['status'],
+                    ]);
+                }
+            }
         }
 
         // redirect to Event Profile after the insertion
-        return redirect()
-            ->route('event.profile', $eventData->slug)
-            ->with('message', 'Event created successfully. You can now add promos, additional settings and customize registration form');
-
+        return to_route('admin.eventProfile', $eventData->slug)
+            ->with('message', 'Event created successfully. You can now add promos, configure registration form & override special settings.');
     }
 
-    public function create()
-    {
-        $categories = Category::all();
-        $departments = Department::all();
-        $speakers = Speaker::all();
-
-        return Inertia::render('Events/create',[
-            'categories' => $categories,
-            'departments'=> $departments,
-            'speakers'=> $speakers
-        ]);
-    }
-
-    public function profile( $slug )
+    /**
+     * Get the Event Profile Page in the ADMIN portal
+     * Execution: 'Admin' Middleware
+     */
+    public function eventProfile( $slug )
     {
         $event = Event::where('slug', $slug)
-            ->with('department')
+            ->with('partner')
             ->with('categories')
             ->with('speakers')
-            ->with('schedules')
             ->with('promos')
-            ->with('user')
+            ->with('schedules')
             ->first();
 
-        return Inertia::render('Events/profile', [
+        return Inertia::render('Admin/Events/update',[
             'event' => $event
         ]);
     }
@@ -252,5 +299,62 @@ class EventController extends Controller
             $event->update([$request->columnName => $request->newData]);
                 return redirect()->back();
         }
+    }
+
+    /**
+     * ********************************************
+     * Routes available for Public access.
+     * * ********************************************
+    */
+    // Single Event Route (Event Landing Page)
+    public function single($slug)
+    {
+        $event = Event::where('slug', $slug)
+            ->with('partner')
+            ->with('categories')
+            ->with('speakers')
+            ->with('promos')
+            ->with('schedules')
+            ->first();
+
+        // dd($event);
+
+        return Inertia::render('Homepage/SingleEvent', [
+            'event' => $event
+        ]);
+    }
+
+    // Events List
+    public function list()
+    {
+        $events = Event::orderBy('created_at', 'DESC')
+            ->with('partner')
+            ->with('categories')
+            ->with('speakers')
+            ->with('promos')
+            ->with('schedules')
+            ->paginate(8);
+
+        dd($events);
+
+        return Inertia::render('Homepage/EventsList',[
+            'events' => $events
+        ]);
+    }
+
+    // Events List
+    public function guestRegister($programCode)
+    {
+        $event = Event::where('programCode', $programCode)
+            ->with('partner')
+            ->with('categories')
+            ->with('speakers')
+            ->with('promos')
+            ->with('schedules')
+            ->first();
+
+        return Inertia::render('Homepage/GuestRegister',[
+            'event' => $event
+        ]);
     }
 }
