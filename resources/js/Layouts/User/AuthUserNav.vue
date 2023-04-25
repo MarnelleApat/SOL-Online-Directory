@@ -218,7 +218,7 @@
                     <li class="py-6 px-5 hover:bg-gray-200/50 transition ease-in-out hover:-translate-y-1 hover:scale-100 duration-300 text-right">
                         <BreezeNavLink
                             class="flex text-gray-700"
-                            :href="route('checkout')">
+                            :href="route('checkout.index')">
                             <Cart />
                             <span class="text-xl uppercase hover:text-teal-700">Cart</span>
                         </BreezeNavLink>

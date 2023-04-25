@@ -17,7 +17,6 @@ class OrderController extends Controller
 {
     public function generateOrderNumberForEvent($programCode) : string
     {
-
         $event = Event::where('programCode', $programCode)->first(); // get the event
 
         $_programCode = $event->programCode; // get the event programCode
@@ -30,6 +29,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+
         /**
         * Registration Process
         * 1. check if it is guest checkout
@@ -43,32 +43,59 @@ class OrderController extends Controller
         // Guest checkout
         if(!Auth::user())
         {
-            foreach ($request->cartItems as $key => $item)
+            // conditional registration here if GROUP registration or not
+
+            #CREATE CUSTOMER RECORD |  create or update customer account
+            $customer = Customer::updateOrCreate(
+                [
+                    'email' => $request->items[0]['registrant']['email']
+                ],
+                [
+                    'nirc'          => $request->items[0]['registrant']['nirc'],
+                    'email'         => $request->items[0]['registrant']['email'],
+                    'firstName'     => $request->items[0]['registrant']['firstName'],
+                    'lastName'      => $request->items[0]['registrant']['lastName'],
+                    'phoneNumber'   => $request->items[0]['registrant']['phoneNumber'],
+                    'address'       => $request->items[0]['registrant']['address'],
+                    'city'          => $request->items[0]['registrant']['city'],
+                    'postalCode'    => $request->items[0]['registrant']['postalCode'],
+                    'country'       => $request->items[0]['registrant']['country'],
+                    'gender'        => $request->items[0]['registrant']['gender'],
+                    'church'        => $request->items[0]['registrant']['church'],
+                ]
+            );
+
+            // The item is only 1
+            // if(count($request->items) == 1)
+            // {
+            //     foreach ($request->items as $key => $item)
+            //     {
+            //         $customer = Customer::updateOrCreate(
+            //             [
+            //                 'email' => $item['registrant']['email']
+            //             ],
+            //             [
+            //                 'nirc'          => $item['registrant']['nirc'],
+            //                 'email'         => $item['registrant']['email'],
+            //                 'firstName'     => $item['registrant']['firstName'],
+            //                 'lastName'      => $item['registrant']['lastName'],
+            //                 'phoneNumber'   => $item['registrant']['phoneNumber'],
+            //                 'address'       => $item['registrant']['address'],
+            //                 'city'          => $item['registrant']['city'],
+            //                 'postalCode'    => $item['registrant']['postalCode'],
+            //                 'country'       => $item['registrant']['country'],
+            //                 'gender'        => $item['registrant']['gender'],
+            //                 'church'        => $item['registrant']['church'],
+            //             ]
+            //         );
+            //     }
+            // }
+
+            foreach ($request->items as $key => $item)
             {
-
-                #CREATE CUSTOMER RECORD |  create or update customer account
-                $customer = Customer::updateOrCreate(
-                    [
-                        'email' => $item['registrant']['email']
-                    ],
-                    [
-                        'nirc'          => $item['registrant']['nirc'],
-                        'email'         => $item['registrant']['email'],
-                        'firstName'     => $item['registrant']['firstName'],
-                        'lastName'      => $item['registrant']['lastName'],
-                        'phoneNumber'   => $item['registrant']['phoneNumber'],
-                        'address'       => $item['registrant']['address'],
-                        'city'          => $item['registrant']['city'],
-                        'postalCode'    => $item['registrant']['postalCode'],
-                        'country'       => $item['registrant']['country'],
-                        'gender'        => $item['registrant']['gender'],
-                        'church'        => $item['registrant']['church'],
-                    ]
-                );
-
                 #CREATE ORDER RECORD | Generate unique RegistrationCode of the customer to the event by concatinating the EventProgramCode and Event totalRegistrant value
                 $order = Order::create([
-                    'TrxID'                 => 'CHK2023', // temporary (process here if group checkout)
+                    'TrxID'                 => $customer->id.'_RAN2023', // temporary (process here if group checkout)
                     'customer_id'           => $customer->id,
                     'orderNumber'           => (new OrderController)->generateOrderNumberForEvent($item['programCode']),
                     'amount'                => $item['price'],
@@ -76,7 +103,7 @@ class OrderController extends Controller
                     'promo_id'              => $item['promo_id'],
                     'discount'              => $item['discount'] ? $item['discount'] : 0,
                     'externalURL'           => '',
-                    'paymentType'           => $request->paymentType,
+                    'paymentType'           => $request->PaymentType,
                     'paymentReferenceNo'    => 'CHK2023-TEST',
                     'approveBy'             => '',
                     'customFields'          => null,
@@ -91,29 +118,33 @@ class OrderController extends Controller
                     $promo = Promo::find($item['promo_id']);
                     $promo->increment('consumedQty');
                 }
-
-                # // execute payment after successfully storing the Order
-                if($order)
-                {
-                    if($request->paymentType == "cheque")
-                    {
-                        return redirect()->route('thankyou', ['trxnID' => $order->TrxID]);
-                        // redirect to thankyour route as as http://domain.com/thankyou?trxnID=CHK2023
-                    }
-                    elseif($request->paymentType == "credit card")
-                    {
-                        dd($request->paymentType);
-
-                        $payment = new PaymentGateway($request->paymentType);
-                        $checkoutSession = $payment->processPayment($request, $order);
-                        return response('', 409)->header('X-Inertia-Location', $checkoutSession->url);
-                    }
-                }
-
-
             }
 
+            if($request->PaymentType == "cheque")
+            {
+                return redirect()->route('thankyou', ['trxnID' => $order->TrxID]);
+                // redirect to thankyour route as as http://domain.com/thankyou?trxnID=CHK2023
+            }
+
+            # // execute payment after successfully storing the Order
+            // if($order)
+            // {
+            //     if($request->PaymentType == "cheque")
+            //     {
+            //         return redirect()->route('thankyou', ['trxnID' => $order->TrxID]); // redirect to thankyour route as as http://domain.com/thankyou?trxnID=CHK2023
+            //     }
+            //     elseif($request->PaymentType == "credit card")
+            //     {
+            //         dd($request->PaymentType);
+
+            //         $payment = new PaymentGateway($request->PaymentType);
+            //         $checkoutSession = $payment->processPayment($request, $order);
+            //         return response('', 409)->header('X-Inertia-Location', $checkoutSession->url);
+            //     }
+            // }
+
         }
+
         // user logged-in checkout
         // else
         // {

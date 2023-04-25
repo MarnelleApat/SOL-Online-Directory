@@ -37,10 +37,14 @@ Route::get('/events/{programCode}/register', [\App\Http\Controllers\EventControl
 
 
 Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [\App\Http\Controllers\OrderController::class, 'store' ])->name('checkout');
+Route::get('/confirmCheckout', [\App\Http\Controllers\CheckoutController::class, 'confirmCheckout'])->name('checkout.confirm');
+Route::post('/checkout', [\App\Http\Controllers\OrderController::class, 'store' ])->name('checkout.store');
+
+Route::get('/thankyou', [\App\Http\Controllers\OrderController::class, 'thankyou'])->name('thankyou');
+
+
 Route::get('/success', [\App\Http\Controllers\OrderController::class, 'success'])->name('success');
 Route::get('/cancel', [\App\Http\Controllers\OrderController::class, 'cancel'])->name('cancel');
-Route::get('/thankyou', [\App\Http\Controllers\OrderController::class, 'thankyou'])->name('thankyou');
 
 
 Route::get('/validatePromo/{programCode}/{promocode}', [\App\Http\Controllers\PromoController::class, 'validatePromo'])->name('promo.validate');

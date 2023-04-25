@@ -28,6 +28,8 @@
     const event = props.event
     const headerTitle = 'Register | '+event.title
 
+    const countCartItem = ref(0);
+
     const toaster = createToaster({
         dismissible: true,
         duration: 2000
@@ -50,6 +52,8 @@
             {
                 isExistInCart.value = true
             }
+
+            countCartItem.value = JSON.parse(localStorage.getItem("cart")).length
         }
     })
 
@@ -101,9 +105,14 @@
     const registration = reactive({ ...initialState })
 
     // Form Reset
-    function resetForm()
-    {
+    const resetForm = () => {
         Object.assign(registration, initialState)
+    }
+
+    // Auto Populate registration from previous registration in the cart
+    const populateForm = () => {
+        let firstRegistration = JSON.parse(localStorage.getItem("cart"))[0]
+        Object.assign(registration, firstRegistration.registrant)
     }
 
     // validate registration with the validation rules implemented
@@ -112,7 +121,7 @@
     // Submit Registration Form
     const submitRegistration = () => {
 
-        // validatiaon check before the fomr submission
+        // validatiaon check before the form submission
         v.value.$validate()
 
         // check if the form passed the validation
@@ -366,6 +375,13 @@
                                     <BreezeInput v-model="registration.church" type="text" class=" text-gray-700 w-full rounded-none" placeholder="Church" />
                                 </div>
                                 <div class="flex justify-evenly md:justify-end lg:justify-end mt-5 gap-3">
+                                    <BreezeButton
+                                        v-if="countCartItem > 0 && !isExistInCart"
+                                        type="button"
+                                        @click="populateForm()"
+                                        :class="'bg-blue-600 border border-transparent text-sm text-white disabled:bg-blue-400 disabled:border-blue-500 hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:shadow-outline-blue'">
+                                        Use my previous registration
+                                    </BreezeButton>
                                     <BreezeButton
                                         type="reset"
                                         :class="'bg-gray-700 border border-transparent text-sm text-white disabled:bg-gray-400 disabled:border-gray-500/60 hover:bg-gray-600 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray'">

@@ -1,5 +1,9 @@
 <template>
-    <span class="loader"></span>
+    <div class="w-screen h-screen fixed inset-0 z-10 bg-black/20 text-center">
+        <div class="absolute top-1/2 left-1/2">
+            <span class="loader"></span>
+        </div>
+    </div>
 </template>
 <style scoped>
 

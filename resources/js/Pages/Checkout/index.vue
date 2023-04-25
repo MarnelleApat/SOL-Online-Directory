@@ -1,6 +1,6 @@
 <script setup>
     import AuthenticatedUserLayout from '@/Layouts/User/AuthenticatedUser.vue'
-    import { Head, useForm } from '@inertiajs/inertia-vue3'
+    import { Head } from '@inertiajs/inertia-vue3'
     import currency from '@/Helpers/formatCurrency'
     import CheckPromo from '@/Utilities/CheckPromo.vue'
     import { createToaster } from '@meforma/vue-toaster'
@@ -10,7 +10,6 @@
     import { ref } from 'vue';
     import { computed } from '@vue/reactivity'
     import { Inertia } from '@inertiajs/inertia'
-    import Spinner from '@/Utilities/Spinner.vue'
 
     const toaster = createToaster({
             dismissible: true,
@@ -24,7 +23,6 @@
 
     const showMore = ref(null)
     const selectPayment = ref(false)
-    const isPaymentProcessing = ref(false)
 
     const showDetails = (idx) => {
         showMore.value === idx ? (showMore.value = null) : (showMore.value = idx);
@@ -48,21 +46,30 @@
 
 
     const getValidatedPromo = (e, i) => {
-        cartItems.value[i].discount = e.status ? e.promo.discountPrice : null
-        cartItems.value[i].promo_id = e.status ? e.promo.id : null
+        if(e)
+        {
+            cartItems.value[i].discount = e.status ? e.promo.discountPrice : null
+            cartItems.value[i].promo_id = e.status ? e.promo.id : null
+        }
+        else
+        {
+            cartItems.value[i].discount = null
+            cartItems.value[i].promo_id = null
+        }
     }
 
     const removeItem = (item) => {
-            const index = cartItems.value.findIndex(value => value.id === item.id);
 
-            if (index > -1) {
-                let remainingCartItems = cartItems.value.filter(value => value.id !== item.id)
+        const index = cartItems.value.findIndex(value => value.programCode === item.programCode);
 
-                store.dispatch('cart/removeItemFromCart', remainingCartItems)
-                    .then(() => {
-                        toaster.warning('Cart item removed successfully');
-                })
-            }
+        if (index > -1) {
+            let remainingCartItems = cartItems.value.filter(value => value.programCode !== item.programCode)
+
+            store.dispatch('cart/removeItemFromCart', remainingCartItems)
+                .then(() => {
+                    toaster.warning('Cart item removed successfully');
+            })
+        }
         }
 
     const emptyCart = async () => {
@@ -73,28 +80,17 @@
             })
     }
 
-    const orderForm = useForm({
+    const orderDetails = {
         cartItems: cartItems.value,
         customerInfo: 'Customer Info Here'
-    })
+    }
 
     const processPayment = (paymentType) => {
 
-        isPaymentProcessing.value = true
-        orderForm.paymentType = paymentType;
+        orderDetails.paymentType = paymentType;
+        orderDetails.items = JSON.stringify(orderDetails.cartItems)
 
-        Inertia.post(route('checkout'), orderForm,
-            {
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    console.log(response)
-                    isPaymentProcessing.value = false
-                },
-                onError: errors => {
-                    console.log(errors)
-                    isPaymentProcessing.value = false
-                }
-            })
+        Inertia.get(route('checkout.confirm')+'?paymentType='+paymentType, {orderDetails})
     }
 
 </script>
@@ -107,7 +103,7 @@
             <template v-if="cartItems.length">
                 <h2 class="text-4xl font-bold text-gray-600 mt-5">Checkout</h2>
                 <p class="italic text-gray-600 mb-5 text-md leading-tight">Note: Please double check all the items listed below before proceed to payment</p>
-                <div class="overflow-x-scroll">
+                <div class="overflow-x-scroll sm:overflow-x-scroll md:overflow-x-scroll lg:overflow-x-hidden xl:overflow-x-hidden">
                     <table class="w-full whitespace-nowrap md:whitespace-normal lg:whitespace-normal">
                         <tr v-for="(item, index) in cartItems" :key="index" class="bg-gray-50 hover:bg-gray-100 border-t border-x">
                             <td class="text-center align-center pl-4" width="2%">
@@ -173,7 +169,7 @@
                         <div class="p-10 text-right">
                             <p class="text-xl text-gray-600 font-bold">Grand Total</p>
                         </div>
-                        <div class="p-5" colspan="2">
+                        <div class="p-5">
                             <p class="text-2xl font-bold text-gray-700 text-center">
                                 {{ getGrandTotal(cartItems) > 0 ? currency(getGrandTotal(cartItems)) : currency(0.00) }}
                             </p>
@@ -199,12 +195,9 @@
                         </template>
 
                         <template #default>
-                            <div v-if="isPaymentProcessing" class="text-center py-10">
-                                <h2 class="text-4xl text-green-500/70 mb-4">Processing Payment....</h2>
-                                <Spinner />
-                            </div>
-                            <div v-else class="flex flex-col">
+                            <div class="flex flex-col">
                                 <div class="border hover:bg-gray-50">
+                                    <!-- <a :href="route('checkout.index')+'?paymentType=cheque'" class="flex p-4 text-left"> -->
                                     <button type="button" @click.prevent="processPayment('cheque')" class="flex p-4 text-left">
                                         <div class="mr-10">
                                             <img src="../../../../public/images/bss-logo.png" width="170" style="filter: invert(100%);" />
@@ -230,7 +223,7 @@
                                     </button>
                                 </div>
                                 <div class="border hover:bg-gray-50 pb-10">
-                                    <a href="#!" @click.prevent="processPayment('stripe')" class="flex p-4">
+                                    <a :href="route('checkout.index')+'?paymentType=stripe'" class="flex p-4">
                                         <div class="mr-10">
                                             <img src="../../../../public/images/logo-stripe.png" width="170" height="80" />
                                         </div>
@@ -287,7 +280,7 @@
 </template>
 <style>
     .checkoutTableFooter {
-        border-block: 2px dashed #d1d3d5;
+        border-block: 1px dashed #d1d3d5;
         border-inline: 1px solid #e4e7eb;
     }
 </style>

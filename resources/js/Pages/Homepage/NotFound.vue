@@ -6,6 +6,10 @@
     // const event = props.events
     const headerTitle = 'Page Not Found - Streams Of Life'
 
+    defineProps({
+        status: String
+    })
+
 </script>
 
 <template>
@@ -14,7 +18,7 @@
     <AuthenticatedUserLayout>
         <div class="min-h-xl p-10 bg-gradient-to-r from-gray-300 via-slate-300 to-gray-300 ">
             <div class="max-w-6xl mx-auto h-[200px] flex justify-center items-center">
-
+                <!-- <pre>{{ status }}</pre> -->
                 <span class="text-gray-600/50 text-3xl font-bold leading-tight">
                     <span class="font-bold text-gray-500 text-4xl">Oops!...</span>
                     Seems like you cannot find what you are looking for.

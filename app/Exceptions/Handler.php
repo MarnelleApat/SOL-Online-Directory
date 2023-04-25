@@ -49,5 +49,28 @@ class Handler extends ExceptionHandler
 
     }
 
+    /**
+     * Prepare exception for rendering.
+     *
+     * @param  \Throwable  $e
+     * @return \Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        $response = parent::render($request, $e);
+
+        if (in_array($response->status(), [500, 503, 404, 403]))
+        {
+            return redirect()->route('notFound');
+        }
+        else if ($response->status() === 419)
+        {
+            return back()->with([
+                'message' => __('The page expired, please try again.'),
+            ]);
+        }
+
+        return $response;
+    }
 
 }

@@ -32,13 +32,17 @@
                      })
             }, 500)
         }
+        else
+        {
+            emit('validatePromo', {})
+        }
     }
 
 </script>
 <template>
     <div class="flex flex-col justify-center gap-1">
         <slot name="headerText"></slot>
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
             <BreezeInput
                 @change="validatePromoCode(promocode)"
                 v-model="promocode"
